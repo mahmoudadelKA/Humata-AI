@@ -220,11 +220,13 @@ export default function Chat() {
                   <div
                     className={`max-w-2xl px-5 py-3 rounded-2xl ${
                       msg.role === "assistant"
-                        ? "bg-muted/40 text-foreground"
+                        ? "bg-muted/40 text-foreground ai-message"
                         : "bg-primary/30 text-foreground"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    <p className={`whitespace-pre-wrap leading-relaxed ${language === "ar" ? "text-lg font-bold" : "text-sm"}`}>
+                      {msg.content}
+                    </p>
                     {msg.fileInfo && (
                       <div className="mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground flex items-center gap-2">
                         <Upload className="w-3 h-3" />

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -70,6 +72,9 @@
   --font-sans: 'Fira Code', 'JetBrains Mono', 'Space Mono', monospace;
   --font-serif: 'Space Mono', monospace;
   --font-mono: 'Fira Code', 'JetBrains Mono', 'Space Mono', monospace;
+  
+  /* Arabic typography */
+  --font-arabic: 'Cairo', sans-serif;
   
   --radius: .5rem;
   
@@ -276,6 +281,14 @@
     background-color: hsl(248 67% 11%);
     color: hsl(180 100% 95%);
   }
+}
+
+/* Arabic message styling */
+html[lang="ar"] .ai-message {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.8;
 }
 
 /**

@@ -58,8 +58,10 @@ export async function sendChatMessage(
 
     const config: any = {};
 
-    // Build system instruction with technical transparency override
-    const technicalTransparencyInstruction = `You are an AI assistant that is fully transparent about its technical specifications. If the user asks for your specific model name, model ID, or what model you are running (e.g., 'What is your model ID?', 'What model are you?', 'What's your name?'), you MUST respond with your exact current model ID: "${MODEL_NAME}". Do not evade the question with generic responses like 'I am a large language model...' - be direct and provide the exact model identifier.`;
+    // Build system instruction with technical transparency override and output cleanliness
+    const technicalTransparencyInstruction = `You are an AI assistant that is fully transparent about its technical specifications. If the user asks for your specific model name, model ID, or what model you are running (e.g., 'What is your model ID?', 'What model are you?', 'What's your name?'), you MUST respond with your exact current model ID: "${MODEL_NAME}". Do not evade the question with generic responses like 'I am a large language model...' - be direct and provide the exact model identifier.
+
+CRITICAL OUTPUT REQUIREMENT: Your responses MUST be clean, readable, professional prose. AVOID using any decorative Markdown characters like asterisks (*), hashtags (#), backticks (\`), or excessive formatting symbols. Focus on clear, clean text only. Use simple line breaks for paragraph separation instead of Markdown formatting.`;
 
     let finalSystemInstruction = technicalTransparencyInstruction;
     
