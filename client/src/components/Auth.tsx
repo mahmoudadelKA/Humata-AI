@@ -169,8 +169,25 @@ export function Auth() {
       </div>
 
       {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-card border border-border rounded-lg p-8 max-w-md w-full mx-4 shadow-xl">
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] animate-in fade-in duration-200"
+          onClick={() => setShowAuthModal(false)}
+          data-testid="modal-backdrop"
+        >
+          <div 
+            className="relative bg-card border border-border/60 rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl animate-in scale-in-95 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/30 rounded-lg transition-colors duration-200"
+              data-testid="button-close-modal"
+              aria-label="Close modal"
+            >
+              <span className="text-xl font-bold">✕</span>
+            </button>
+
             <h2 className={`text-2xl font-bold mb-6 text-foreground ${language === "ar" ? "text-3xl" : ""}`}>
               {isLogin ? (language === "ar" ? "تسجيل الدخول" : "Login") : (language === "ar" ? "إنشاء حساب" : "Create Account")}
             </h2>
@@ -182,7 +199,7 @@ export function Auth() {
                   placeholder={language === "ar" ? "الاسم" : "Name"}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                   required
                   data-testid="input-name"
                 />
@@ -192,7 +209,7 @@ export function Auth() {
                 placeholder={language === "ar" ? "البريد الإلكتروني" : "Email"}
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                 required
                 data-testid="input-email"
               />
@@ -201,7 +218,7 @@ export function Auth() {
                 placeholder={language === "ar" ? "كلمة المرور" : "Password"}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 rounded-lg bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
                 required
                 data-testid="input-password"
               />
@@ -219,19 +236,11 @@ export function Auth() {
             <div className="mt-4 text-center">
               <button
                 onClick={() => setIsLogin(!isLogin)}
-                className={`text-sm text-primary hover:underline ${language === "ar" ? "font-bold" : ""}`}
+                className={`text-sm text-primary hover:underline transition-colors duration-200 ${language === "ar" ? "font-bold" : ""}`}
               >
                 {isLogin ? (language === "ar" ? "لا تملك حساب؟ سجل الآن" : "Don't have an account? Sign up") : (language === "ar" ? "لديك حساب بالفعل؟ سجل الدخول" : "Already have an account? Login")}
               </button>
             </div>
-
-            <button
-              onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
-              data-testid="button-close-modal"
-            >
-              ✕
-            </button>
           </div>
         </div>
       )}
