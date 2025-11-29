@@ -82,33 +82,40 @@ export async function uploadFileToGemini(
   fileName: string
 ): Promise<{ fileUri: string; mimeType: string; fileName: string }> {
   try {
-    console.log(`[Gemini] Uploading file - file: ${fileName}, type: ${mimeType}`);
+    console.log(`[Gemini] uploadFileToGemini called - file: ${fileName}, mimeType: ${mimeType}`);
+    console.log(`[Gemini] File path: ${filePath}`);
     
+    // Read file as Buffer (not base64)
     const fileBytes = fs.readFileSync(filePath);
-    const base64Data = fileBytes.toString("base64");
-    
-    console.log(`[Gemini] File size: ${fileBytes.length} bytes, base64 length: ${base64Data.length}`);
+    console.log(`[Gemini] File read successfully - size: ${fileBytes.length} bytes`);
+    console.log(`[Gemini] Calling ai.files.upload with mimeType: ${mimeType}`);
 
-    // Upload file to Gemini File API with proper structure
+    // Upload file to Gemini File API
+    // The Gemini API expects the raw bytes, not base64
     const uploadResult = await ai.files.upload({
       file: {
-        mimeType,
+        mimeType: mimeType,
         displayName: fileName,
-        data: base64Data,
+        data: fileBytes as any,
       },
-    } as any);
+    });
 
+    console.log(`[Gemini] Upload API response received`);
+    
     if (!uploadResult.uri) {
-      throw new Error("File upload failed - no URI returned");
+      console.error("[Gemini] Upload failed - no URI in response");
+      throw new Error("File upload failed - no URI returned from Gemini");
     }
 
-    console.log(`[Gemini] File uploaded - URI: ${uploadResult.uri}`);
+    console.log(`[Gemini] File uploaded successfully - URI: ${uploadResult.uri}, state: ${uploadResult.state}`);
 
     // Wait for file processing to complete
     let file = uploadResult;
     let attempts = 0;
-    while (file.state === "PROCESSING" && attempts < 30) {
-      console.log(`[Gemini] Processing... (${attempts + 1}/30)`);
+    const maxAttempts = 30;
+    
+    while (file.state === "PROCESSING" && attempts < maxAttempts) {
+      console.log(`[Gemini] Waiting for file processing (${attempts + 1}/${maxAttempts})...`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       const getResult = await ai.files.get({ name: file.name! });
@@ -116,15 +123,17 @@ export async function uploadFileToGemini(
       attempts++;
     }
 
+    console.log(`[Gemini] File processing complete - final state: ${file.state}`);
+
     if (file.state === "FAILED") {
-      throw new Error("File processing failed");
+      throw new Error("File processing failed in Gemini API");
     }
 
     if (file.state === "PROCESSING") {
-      throw new Error("File processing timeout");
+      throw new Error("File processing timeout - exceeded maximum wait time");
     }
 
-    console.log(`[Gemini] File ready - state: ${file.state}`);
+    console.log(`[Gemini] File is ready for use - URI: ${file.uri}`);
 
     return {
       fileUri: file.uri!,
@@ -133,6 +142,11 @@ export async function uploadFileToGemini(
     };
   } catch (error: any) {
     console.error("[Gemini] File upload error:", error);
+    console.error("[Gemini] Error details:", {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+    });
     throw new Error(error.message || "Failed to upload file to Gemini");
   }
 }

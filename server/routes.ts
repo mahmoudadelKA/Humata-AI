@@ -11,29 +11,41 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Strict MIME type filter for Gemini Vision
+const ALLOWED_MIME_TYPES = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
+
 const upload = multer({
   storage: multer.diskStorage({
-    destination: uploadDir,
+    destination: (req, file, cb) => {
+      console.log(`[Multer] Setting destination: ${uploadDir}`);
+      cb(null, uploadDir);
+    },
     filename: (req, file, cb) => {
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      cb(null, `${uniqueSuffix}-${file.originalname}`);
+      const filename = `${uniqueSuffix}-${file.originalname}`;
+      console.log(`[Multer] Generated filename: ${filename}`);
+      cb(null, filename);
     },
   }),
   limits: {
-    fileSize: 20 * 1024 * 1024,
+    fileSize: 20 * 1024 * 1024, // 20MB
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/webp",
-      "application/pdf",
-    ];
-    if (allowedTypes.includes(file.mimetype)) {
+    console.log(`[Multer] fileFilter called - filename: ${file.originalname}, mimetype: ${file.mimetype}, encoding: ${file.encoding}`);
+    
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      console.log(`[Multer] MIME type accepted: ${file.mimetype}`);
       cb(null, true);
     } else {
-      cb(new Error("Invalid file type. Only images and PDFs are allowed."));
+      const errorMsg = `File type not supported. Received: ${file.mimetype}. Allowed types: ${ALLOWED_MIME_TYPES.join(", ")}`;
+      console.error(`[Multer] ${errorMsg}`);
+      cb(new Error(errorMsg));
     }
   },
 });
