@@ -118,10 +118,13 @@ export default function Hub() {
       <div className="relative z-10">
         <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
           <div className="max-w-6xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center flex-col gap-1">
               <h1 className={`text-3xl font-bold text-primary ${language === "ar" ? "text-4xl" : ""}`}>
                 HUMATA AI
               </h1>
+              <p className={`text-xs text-muted-foreground/70 ${language === "ar" ? "text-sm font-bold" : ""}`}>
+                {t("hub.system", language)}
+              </p>
             </div>
           </div>
         </header>
@@ -170,14 +173,6 @@ export default function Hub() {
           </div>
 
         </main>
-
-        <footer className="border-t border-border/30 mt-12 py-6">
-          <div className="max-w-6xl mx-auto px-6 text-center">
-            <p className={`text-sm text-muted-foreground/50 ${language === "ar" ? "text-base" : ""}`}>
-              {t("hub.system", language)}
-            </p>
-          </div>
-        </footer>
       </div>
     </div>
   );
