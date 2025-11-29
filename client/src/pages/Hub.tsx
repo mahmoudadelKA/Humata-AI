@@ -1,7 +1,11 @@
-import { Link } from "wouter";
-import { MessageSquare, Brain, Stethoscope, Eye, FileText, Zap, Lightbulb, Cpu, Rss } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { MessageSquare, Brain, Stethoscope, Eye, FileText, Zap, Lightbulb, Cpu, Rss, Send } from "lucide-react";
+import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
 import type { FeatureCard } from "@shared/schema";
 
 const featureKeys = [
@@ -75,6 +79,33 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
 
 export default function Hub() {
   const { language } = useAppContext();
+  const [, setLocation] = useLocation();
+  const [inputValue, setInputValue] = useState("");
+
+  const sendMessageMutation = useMutation({
+    mutationFn: async (message: string) => {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message,
+          sessionId: "hub-preview",
+          systemPrompt: undefined,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to send message");
+      return response.json();
+    },
+    onSuccess: () => {
+      setInputValue("");
+      setLocation("/chat");
+    },
+  });
+
+  const handleSendMessage = () => {
+    if (!inputValue.trim()) return;
+    sendMessageMutation.mutate(inputValue);
+  };
   
   const features: FeatureCard[] = featureKeys.map(key => ({
     id: key.id,
@@ -116,6 +147,33 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-6 py-8">
+          <div className="text-center mb-12">
+            <h2 className={`text-2xl font-bold mb-6 text-foreground ${language === "ar" ? "text-4xl" : ""}`}>
+              {t("hub.chat.title", language)}
+            </h2>
+            
+            <div className="max-w-2xl mx-auto mb-12">
+              <div className="flex items-center gap-2 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20">
+                <Input
+                  placeholder={t("hub.chat.input", language)}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  disabled={sendMessageMutation.isPending}
+                  className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1"
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!inputValue.trim() || sendMessageMutation.isPending}
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <div className="text-center mb-16">
             <h2 className={`text-3xl font-bold mb-4 text-foreground ${language === "ar" ? "text-5xl" : ""}`}>
               {t("hub.select", language)}
