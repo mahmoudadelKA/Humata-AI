@@ -17,7 +17,7 @@ function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
 
   return (
-    <div className={`fixed top-4 left-4 z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "flex-row-reverse font-bold" : ""}`}>
+    <div className={`fixed top-4 z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "right-4 flex-row-reverse font-bold" : "left-4"}`}>
       {/* Auth Component */}
       <Auth />
 
