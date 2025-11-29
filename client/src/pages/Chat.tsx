@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Upload, Send, ArrowLeft, Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -177,61 +176,58 @@ export default function Chat() {
   };
 
   return (
-    <div className="min-h-screen bg-background cyber-grid flex flex-col">
-      <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-background cyber-grid flex flex-col" dir="rtl">
+      <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
+            <h2 className="text-lg font-bold text-foreground">
+              {personaInfo.title}
+            </h2>
+          </div>
+          <Link href="/">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => (window.location.href = "/")}
               data-testid="button-back"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div>
-              <h2 className="text-xl font-bold text-glow-cyan text-foreground">
-                {personaInfo.title}
-              </h2>
-              <p className="text-xs text-muted-foreground uppercase tracking-widest">
-                {personaInfo.description}
-              </p>
-            </div>
-          </div>
+          </Link>
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-6 py-8 space-y-4">
+      <main className="flex-1 overflow-y-auto flex flex-col">
+        <div className="max-w-3xl w-full mx-auto px-6 py-8 space-y-6 flex-1">
           {messages.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center text-center">
+            <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="text-6xl mb-4 opacity-10">◆</div>
-              <p className="text-muted-foreground mb-2">No messages yet</p>
+              <p className="text-muted-foreground mb-2">لا توجد رسائل حتى الآن</p>
               <p className="text-xs text-muted-foreground/50">
-                Upload a file or send a message to begin
+                ارفع ملف أو أرسل رسالة لتبدأ المحادثة
               </p>
             </div>
           ) : (
             messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
+                className={`flex w-full ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
                 data-testid={`message-${msg.id}`}
               >
-                <Card
-                  className={`max-w-2xl p-4 ${
+                <div
+                  className={`max-w-2xl px-5 py-3 rounded-2xl ${
                     msg.role === "assistant"
-                      ? "bg-accent/10 border-accent/20"
-                      : "bg-primary/10 border-primary/20"
+                      ? "bg-muted/40 text-foreground"
+                      : "bg-primary/30 text-foreground"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                   {msg.fileInfo && (
-                    <div className="mt-2 pt-2 border-t border-border/20 text-xs text-muted-foreground">
-                      📎 {msg.fileInfo.name}
+                    <div className="mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground flex items-center gap-2">
+                      <Upload className="w-3 h-3" />
+                      {msg.fileInfo.name}
                     </div>
                   )}
-                </Card>
+                </div>
               </div>
             ))
           )}
@@ -239,25 +235,27 @@ export default function Chat() {
         </div>
       </main>
 
-      <footer className="border-t border-border/30 bg-background/95 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-6 py-6 space-y-4">
+      <footer className="border-t border-border/30 bg-background/95 backdrop-blur-sm sticky bottom-0">
+        <div className="max-w-3xl w-full mx-auto px-6 py-6 space-y-4">
           {uploadedFileInfo && (
-            <div className="p-3 bg-accent/5 border border-accent/20 rounded-lg text-xs">
-              <div className="flex items-center justify-between">
-                <span>📎 {uploadedFileInfo.fileName}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setUploadedFileInfo(null)}
-                  data-testid="button-clear-file"
-                >
-                  ✕
-                </Button>
+            <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Upload className="w-4 h-4" />
+                <span>{uploadedFileInfo.fileName}</span>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setUploadedFileInfo(null)}
+                data-testid="button-clear-file"
+                className="h-6 px-2"
+              >
+                ✕
+              </Button>
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20">
             <Input
               ref={fileInputRef}
               type="file"
@@ -268,11 +266,12 @@ export default function Chat() {
             />
 
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadFileMutation.isPending || sendMessageMutation.isPending}
               data-testid="button-upload-file"
+              className="h-8 w-8"
             >
               {uploadFileMutation.isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -282,12 +281,13 @@ export default function Chat() {
             </Button>
 
             <Input
-              placeholder="Type your message..."
+              placeholder="اكتب رسالتك..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               disabled={sendMessageMutation.isPending}
               data-testid="input-message"
+              className="border-0 bg-transparent placeholder:text-muted-foreground/50 focus-visible:ring-0 focus-visible:outline-none flex-1"
             />
 
             <Button
@@ -298,6 +298,8 @@ export default function Chat() {
                 sendMessageMutation.isPending
               }
               data-testid="button-send"
+              size="icon"
+              className="h-8 w-8 rounded-full"
             >
               {sendMessageMutation.isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
