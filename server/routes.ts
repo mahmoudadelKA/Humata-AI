@@ -321,6 +321,21 @@ export async function registerRoutes(
     }
   });
 
+  // Get a specific conversation by ID (works for both authenticated and unauthenticated sessions)
+  app.get("/api/conversations/:id", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const conversation = await storage.getConversation(id);
+      if (!conversation) {
+        res.status(404).json({ error: "Conversation not found" });
+        return;
+      }
+      res.json(conversation);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.post("/api/conversations", async (req: Request, res: Response) => {
     try {
       const userId = (req as any).userId;

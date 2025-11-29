@@ -77,12 +77,11 @@ export default function Chat() {
     if (convId) {
       const loadConversationMessages = async () => {
         try {
-          const response = await fetch("/api/conversations", {
+          const response = await fetch(`/api/conversations/${convId}`, {
             credentials: "include",
           });
           if (response.ok) {
-            const conversations = await response.json();
-            const conversation = conversations.find((c: any) => c.id === convId);
+            const conversation = await response.json();
             if (conversation && conversation.messages) {
               setMessages(conversation.messages);
             }
