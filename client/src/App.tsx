@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import { Auth } from "@/components/Auth";
 import Hub from "@/pages/Hub";
 import Chat from "@/pages/Chat";
 import NotFound from "@/pages/not-found";
+import { AuthModal } from "@/components/AuthModal";
 
 function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
@@ -76,10 +77,13 @@ function Router() {
 }
 
 function AppContent() {
+  const { showAuthModal } = useAppContext();
+  
   return (
     <>
       <TopLeftControls />
       <Router />
+      {showAuthModal && <AuthModal />}
     </>
   );
 }
@@ -89,6 +93,8 @@ function App() {
   const [theme, setTheme] = useState<Theme>("dark");
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
@@ -120,6 +126,10 @@ function App() {
     setTheme,
     setUser,
     setToken,
+    showAuthModal,
+    setShowAuthModal,
+    isLogin,
+    setIsLogin,
   };
 
   return (

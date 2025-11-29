@@ -18,6 +18,10 @@ export interface AppContextType {
   setTheme: (theme: Theme) => void;
   setUser: (user: User | null) => void;
   setToken: (token: string | null) => void;
+  showAuthModal: boolean;
+  setShowAuthModal: (show: boolean) => void;
+  isLogin: boolean;
+  setIsLogin: (isLogin: boolean) => void;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
