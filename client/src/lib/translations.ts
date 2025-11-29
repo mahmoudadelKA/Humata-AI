@@ -14,6 +14,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "hub.chat.input": "أسال الذكاء الاصطناعي...",
     "hub.chat.send": "إرسال",
     "feature.chat": "الدردشة",
+    "feature.ask": "اسأل",
   },
   en: {
     "system.active": "System Active",
@@ -28,6 +29,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "hub.chat.input": "Ask the AI...",
     "hub.chat.send": "Send",
     "feature.chat": "Chat",
+    "feature.ask": "Ask",
   },
 };
 

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Settings, Download, Link2, Radio } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -30,12 +30,22 @@ interface UploadedFileInfo {
 }
 
 const getPersonaInfo = (persona?: string) => {
-  return {
-    title: "الدردشة",
-    description: "محادثة ذكية متقدمة مع Gemini 2.5 Pro",
-    systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم. قدم إجابات مفيدة وصحيحة ومدروسة على استفسارات المستخدمين. الرد بصيغة عربية سليمة.`,
-    controlIcons: ["upload"],
+  const personas: Record<string, any> = {
+    chat: {
+      title: "الدردشة",
+      description: "محادثة ذكية متقدمة مع Gemini 2.5 Pro",
+      systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم. قدم إجابات مفيدة وصحيحة ومدروسة على استفسارات المستخدمين. الرد بصيغة عربية سليمة.`,
+      controlIcons: ["upload"],
+    },
+    ask: {
+      title: "اسأل",
+      description: "أسئلة ذكية مع 3 خيارات",
+      systemPrompt: `أنت مساعد ذكاء اصطناعي متخصص في الإجابة على الأسئلة. قدم إجابات دقيقة وشاملة ومفيدة. الرد بصيغة عربية سليمة.`,
+      controlIcons: ["upload", "search", "ai-only"],
+    },
   };
+  
+  return personas[persona] || personas.chat;
 };
 
 export default function Chat() {
@@ -56,6 +66,7 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
+  const [enableGrounding, setEnableGrounding] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -449,17 +460,47 @@ export default function Chat() {
               </Button>
             )}
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowUrlModal(true)}
-              disabled={sendMessageMutation.isPending}
-              data-testid="button-url"
-              className="h-8 w-8"
-              title={language === "ar" ? "إضافة رابط" : "Add URL"}
-            >
-              <Link2 className="w-4 h-4" />
-            </Button>
+            {personaInfo.controlIcons?.includes("search") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEnableGrounding(!enableGrounding)}
+                disabled={sendMessageMutation.isPending}
+                data-testid="button-search"
+                className={`h-8 w-8 ${enableGrounding ? "text-primary" : ""}`}
+                title={language === "ar" ? "بحث جوجل" : "Google Search"}
+              >
+                <Search className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("ai-only") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEnableGrounding(false)}
+                disabled={sendMessageMutation.isPending}
+                data-testid="button-ai-only"
+                className={`h-8 w-8 ${!enableGrounding ? "text-primary" : ""}`}
+                title={language === "ar" ? "ذكاء فقط" : "AI Only"}
+              >
+                <Radio className="w-4 h-4" />
+              </Button>
+            )}
+
+            {persona === "chat" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowUrlModal(true)}
+                disabled={sendMessageMutation.isPending}
+                data-testid="button-url"
+                className="h-8 w-8"
+                title={language === "ar" ? "إضافة رابط" : "Add URL"}
+              >
+                <Link2 className="w-4 h-4" />
+              </Button>
+            )}
 
             <Input
               placeholder={t("chat.placeholder", language)}

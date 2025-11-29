@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { MessageSquare, Send, Search } from "lucide-react";
+import { MessageSquare, HelpCircle, Send, Search } from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 
 const featureKeys = [
   { id: "chat", titleKey: "feature.chat", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
+  { id: "ask", titleKey: "feature.ask", icon: HelpCircle, route: "/chat?persona=ask", glowColor: "magenta" },
 ];
 
 function FeatureCardComponent({ feature }: any) {
@@ -15,6 +16,7 @@ function FeatureCardComponent({ feature }: any) {
   
   const colorMap: Record<string, { border: string; shadow: string; icon: string }> = {
     cyan: { border: "hsl(180 100% 50%)", icon: "hsl(180 100% 50%)", shadow: "0 0 12px hsl(180 100% 50% / 0.4), 0 0 24px hsl(180 100% 50% / 0.2)" },
+    magenta: { border: "hsl(328 100% 50%)", icon: "hsl(328 100% 50%)", shadow: "0 0 12px hsl(328 100% 50% / 0.4), 0 0 24px hsl(328 100% 50% / 0.2)" },
   };
 
   const colors = colorMap[feature.glowColor] || colorMap.cyan;
