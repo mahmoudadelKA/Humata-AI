@@ -547,6 +547,22 @@ export default function Chat() {
             </div>
           )}
 
+          {(personaInfo.controlIcons?.length || 0) > 0 && (
+            <div className="px-4 py-2 bg-muted/20 rounded-lg border border-border/10">
+              <div className="flex flex-wrap gap-2 items-center">
+                <span className={`text-xs font-semibold text-muted-foreground ${language === "ar" ? "text-sm" : ""}`}>
+                  {language === "ar" ? "الأدوات المتاحة:" : "Available Tools:"}
+                </span>
+                {personaInfo.controlIcons?.includes("upload") && <span className="text-xs px-2 py-1 bg-primary/20 rounded">📤 {language === "ar" ? "رفع ملف" : "Upload"}</span>}
+                {personaInfo.controlIcons?.includes("search") && <span className="text-xs px-2 py-1 bg-accent/20 rounded">🔍 {language === "ar" ? "بحث" : "Search"}</span>}
+                {personaInfo.controlIcons?.includes("ai-only") && <span className="text-xs px-2 py-1 bg-primary/20 rounded">🤖 {language === "ar" ? "ذكاء فقط" : "AI Only"}</span>}
+                {personaInfo.controlIcons?.includes("link") && <span className="text-xs px-2 py-1 bg-accent/20 rounded">🔗 {language === "ar" ? "رابط" : "URL"}</span>}
+                {personaInfo.controlIcons?.includes("settings") && <span className="text-xs px-2 py-1 bg-primary/20 rounded">⚙️ {language === "ar" ? "إعدادات" : "Settings"}</span>}
+                {personaInfo.controlIcons?.includes("download") && <span className="text-xs px-2 py-1 bg-accent/20 rounded">📥 {language === "ar" ? "تحميل" : "Download"}</span>}
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20 focus-within:outline-none focus-within:ring-0">
             <Input
               ref={fileInputRef}
