@@ -42,9 +42,9 @@ const getPersonaInfo = (persona?: string) => {
     },
     research: {
       title: "البحث العلمي",
-      description: "بحث أكاديمي متقدم مع مصادر موثوقة (PubMed, Google Scholar, ResearchGate)",
-      systemPrompt: `أنت باحث أكاديمي متقدم متخصص. قدم تحليلات عميقة، استشهادات موثوقة، وبحثاً شاملاً. استخدم مراجع من مصادر موثوقة مثل PubMed و Google Scholar و ResearchGate. الرد بصيغة عربية أكاديمية.`,
-      controlIcons: ["search"],
+      description: "بحث أكاديمي متقدم مع مصادر موثوقة (PubMed, Google Scholar, ResearchGate, ScienceDirect)",
+      systemPrompt: `أنت باحث أكاديمي متقدم متخصص. قدم تحليلات عميقة، استشهادات موثوقة، وبحثاً شاملاً. استخدم مراجع من مصادر موثوقة موثوقة مثل PubMed و Google Scholar و ResearchGate و ScienceDirect و IEEE Xplore. الرد بصيغة عربية أكاديمية.`,
+      controlIcons: ["search", "download"],
     },
     tests: {
       title: "الاختبارات",
