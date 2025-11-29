@@ -46,6 +46,16 @@ export interface ChatSession {
   createdAt: Date;
 }
 
+export interface Conversation {
+  id: string;
+  userId: string;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: Date;
+  updatedAt: Date;
+  shareToken?: string;
+}
+
 export interface FeatureCard {
   id: string;
   title: string;

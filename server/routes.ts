@@ -234,6 +234,75 @@ export async function registerRoutes(
     }
   });
 
+  // Conversations API
+  app.get("/api/conversations", async (req: Request, res: Response) => {
+    try {
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+      const conversations = await storage.getConversations(userId);
+      res.json(conversations.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/conversations", async (req: Request, res: Response) => {
+    try {
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+      const { title } = req.body;
+      const conversation = await storage.createConversation(userId, title || "New Conversation");
+      res.json(conversation);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put("/api/conversations/:id", async (req: Request, res: Response) => {
+    try {
+      const { title } = req.body;
+      const conversation = await storage.updateConversation(req.params.id, title);
+      if (!conversation) {
+        res.status(404).json({ error: "Conversation not found" });
+        return;
+      }
+      res.json(conversation);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/conversations/:id", async (req: Request, res: Response) => {
+    try {
+      const deleted = await storage.deleteConversation(req.params.id);
+      res.json({ success: deleted });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/conversations/:id/messages", async (req: Request, res: Response) => {
+    try {
+      const { content, role } = req.body;
+      const message = {
+        id: randomUUID(),
+        role: role as "user" | "assistant",
+        content,
+        timestamp: new Date(),
+      };
+      await storage.addMessageToConversation(req.params.id, message);
+      res.json(message);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.get("/api/health", (req: Request, res: Response) => {
     res.json({ 
       status: "online", 
