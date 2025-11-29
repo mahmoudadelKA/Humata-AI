@@ -85,15 +85,18 @@ export async function uploadFileToGemini(
     console.log(`[Gemini] Uploading file - file: ${fileName}, type: ${mimeType}`);
     
     const fileBytes = fs.readFileSync(filePath);
+    const base64Data = fileBytes.toString("base64");
     
-    // Upload file to Gemini File API using proper structure
+    console.log(`[Gemini] File size: ${fileBytes.length} bytes, base64 length: ${base64Data.length}`);
+
+    // Upload file to Gemini File API with proper structure
     const uploadResult = await ai.files.upload({
       file: {
-        mimeType: mimeType,
+        mimeType,
         displayName: fileName,
-        data: fileBytes,
+        data: base64Data,
       },
-    });
+    } as any);
 
     if (!uploadResult.uri) {
       throw new Error("File upload failed - no URI returned");
