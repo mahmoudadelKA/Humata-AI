@@ -17,13 +17,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "hub.chat.input": "أسال الذكاء الاصطناعي...",
     "hub.chat.send": "إرسال",
     "feature.chat": "الدردشة",
-    "feature.quick": "أسال",
-    "feature.docs": "البحث العلمي",
-    "feature.tests": "الاختبارات",
-    "feature.image": "توليد الصور",
-    "feature.assistant": "المساعد العلمي",
-    "feature.khedive": "الخديوي",
-    "feature.sync": "التزامن",
   },
   en: {
     "system.active": "System Active",
@@ -41,13 +34,6 @@ export const translations: Record<Language, Record<string, string>> = {
     "hub.chat.input": "Ask the AI...",
     "hub.chat.send": "Send",
     "feature.chat": "Neural Chat",
-    "feature.quick": "Quick Ask",
-    "feature.docs": "Research Hub",
-    "feature.tests": "Tests",
-    "feature.image": "Image Generation",
-    "feature.assistant": "Scientific Assistant",
-    "feature.khedive": "Khedive Advisor",
-    "feature.sync": "Quick Sync",
   },
 };
 

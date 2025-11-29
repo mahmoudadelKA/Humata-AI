@@ -10,13 +10,6 @@ import type { FeatureCard } from "@shared/schema";
 
 const featureKeys = [
   { id: "chat", titleKey: "feature.chat", icon: "MessageSquare", route: "/chat", glowColor: "cyan" },
-  { id: "quick", titleKey: "feature.quick", icon: "HelpCircle", route: "/chat?mode=quick", glowColor: "cyan" },
-  { id: "docs", titleKey: "feature.docs", icon: "Search", route: "/chat?mode=docs", glowColor: "purple" },
-  { id: "doctor", titleKey: "feature.tests", icon: "CheckCircle", route: "/chat?persona=doctor", glowColor: "magenta" },
-  { id: "vision", titleKey: "feature.image", icon: "Wand2", route: "/chat?mode=vision", glowColor: "magenta" },
-  { id: "assistant", titleKey: "feature.assistant", icon: "Users", route: "/chat?mode=assistant", glowColor: "green" },
-  { id: "khedive", titleKey: "feature.khedive", icon: "Crown", route: "/chat?persona=khedive", glowColor: "yellow" },
-  { id: "sync", titleKey: "feature.sync", icon: "RefreshCw", route: "/chat?mode=sync", glowColor: "cyan" },
 ];
 
 const iconMap: Record<string, typeof MessageSquare> = {
