@@ -69,6 +69,12 @@ const getPersonaInfo = (persona?: string) => {
       description: "تحليل استراتيجي متقدم واتخاذ القرارات",
       systemPrompt: `أنت الخديوي، مستشار استراتيجي متقدم. توفر تحليل عميق، رؤى استراتيجية وإرشادات مدروسة حول القرارات المعقدة. استجاباتك شاملة، استراتيجية وموجهة لمساعدة المستخدمين في التغلب على التحديات بثقة.`,
     },
+    images: {
+      title: "صور ذكاء اصطناعي",
+      description: "محرك البحث عن الصور المتقدم",
+      systemPrompt: "",
+      isEmbedded: true,
+    },
   };
   return (
     personas[persona || ""] || {
@@ -262,6 +268,45 @@ export default function Chat() {
   const handleFileSelect = async (file: File) => {
     uploadFileMutation.mutate(file);
   };
+
+  // For embedded content like images (AI Images section)
+  if (persona === "images") {
+    return (
+      <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
+        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
+          <div className="px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
+                {personaInfo.title}
+              </h2>
+            </div>
+            <Link href="/">
+              <Button
+                variant="ghost"
+                size="icon"
+                data-testid="button-back"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+        </header>
+        <main className="flex-1 overflow-hidden">
+          <iframe
+            src="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "none",
+              borderRadius: "0",
+            }}
+            title="Kiira AI Images"
+            data-testid="embedded-iframe"
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>

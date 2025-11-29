@@ -17,7 +17,7 @@ const featureKeys = [
   { id: "doctor", titleKey: "feature.doctor", icon: "Lightbulb", route: "/chat?persona=doctor", glowColor: "cyan" },
   { id: "scientist", titleKey: "feature.scientist", icon: "Brain", route: "/chat?persona=scientist", glowColor: "magenta" },
   { id: "khedive", titleKey: "feature.khedive", icon: "Crown", route: "/chat?persona=khedive", glowColor: "purple" },
-  { id: "ai-images", titleKey: "feature.ai-images", icon: "Zap", route: "https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend", glowColor: "yellow", external: true },
+  { id: "ai-images", titleKey: "feature.ai-images", icon: "Zap", route: "/chat?persona=images", glowColor: "yellow" },
 ];
 
 const iconMap: Record<string, typeof MessageSquare> = {
@@ -78,14 +78,6 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
     </div>
   );
 
-  if (feature.external) {
-    return (
-      <a href={feature.route} target="_blank" rel="noopener noreferrer">
-        {card}
-      </a>
-    );
-  }
-
   return <Link href={feature.route}>{card}</Link>;
 }
 
@@ -110,7 +102,6 @@ export default function Hub() {
     route: key.route,
     glowColor: key.glowColor as any,
     position: "top-left",
-    external: key.external,
   }));
 
   return (
