@@ -283,7 +283,7 @@ export default function Chat() {
             </div>
           )}
 
-          <div className="flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20">
+          <div className="flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20 focus-within:outline-none focus-within:ring-0">
             <Input
               ref={fileInputRef}
               type="file"
@@ -315,7 +315,7 @@ export default function Chat() {
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               disabled={sendMessageMutation.isPending}
               data-testid="input-message"
-              className="border-0 bg-transparent placeholder:text-muted-foreground/50 focus-visible:ring-0 focus-visible:outline-none flex-1"
+              className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1"
             />
 
             <Button
