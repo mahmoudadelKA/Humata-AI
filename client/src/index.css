@@ -441,6 +441,47 @@
       0 0 40px hsl(270 100% 60% / 0.1);
   }
 
+  .embedded-panel-green {
+    border-color: hsl(120 100% 50% / 0.4);
+  }
+
+  .embedded-panel-green:hover {
+    border-color: hsl(120 100% 50% / 0.7);
+    box-shadow: 
+      inset 0 1px 3px hsl(0 0% 0% / 0.8),
+      inset 0 -1px 3px hsl(0 0% 100% / 0.05),
+      0 0 12px hsl(120 100% 50% / 0.4),
+      0 0 24px hsl(120 100% 50% / 0.2),
+      0 0 40px hsl(120 100% 50% / 0.1);
+  }
+
+  .embedded-panel-yellow {
+    border-color: hsl(45 100% 50% / 0.4);
+  }
+
+  .embedded-panel-yellow:hover {
+    border-color: hsl(45 100% 50% / 0.7);
+    box-shadow: 
+      inset 0 1px 3px hsl(0 0% 0% / 0.8),
+      inset 0 -1px 3px hsl(0 0% 100% / 0.05),
+      0 0 12px hsl(45 100% 50% / 0.4),
+      0 0 24px hsl(45 100% 50% / 0.2),
+      0 0 40px hsl(45 100% 50% / 0.1);
+  }
+
+  /* Center Showcase Panel */
+  .embedded-panel-showcase {
+    border: 2px solid hsl(180 100% 50% / 0.5);
+    background: hsl(248 55% 14% / 0.92);
+    border-radius: 0;
+    box-shadow: 
+      inset 0 1px 3px hsl(0 0% 0% / 0.8),
+      inset 0 -1px 3px hsl(0 0% 100% / 0.05),
+      0 0 20px hsl(180 100% 50% / 0.3),
+      0 0 40px hsl(270 100% 60% / 0.2),
+      0 0 60px hsl(328 100% 50% / 0.1);
+  }
+
   /* Neon text glow - Enhanced 3D Layered Effect */
   .text-glow-cyan {
     text-shadow: 
@@ -507,6 +548,34 @@
             drop-shadow(0 0 32px hsl(270 100% 60% / 0.6))
             drop-shadow(0 2px 12px hsl(270 100% 50% / 0.6));
     animation: icon-pulse-purple 2s ease-in-out infinite;
+  }
+
+  .neon-icon-heavy-green {
+    filter: drop-shadow(0 0 1px hsl(120 100% 50% / 1))
+            drop-shadow(0 0 2px hsl(120 100% 50% / 1))
+            drop-shadow(0 0 3px hsl(120 100% 50% / 0.95))
+            drop-shadow(0 0 5px hsl(120 100% 50% / 0.95))
+            drop-shadow(0 0 8px hsl(120 100% 50% / 0.9))
+            drop-shadow(0 0 12px hsl(120 100% 50% / 0.85))
+            drop-shadow(0 0 16px hsl(120 100% 50% / 0.8))
+            drop-shadow(0 0 24px hsl(120 100% 50% / 0.7))
+            drop-shadow(0 0 32px hsl(120 100% 50% / 0.6))
+            drop-shadow(0 2px 12px hsl(120 100% 40% / 0.6));
+    animation: icon-pulse-green 2s ease-in-out infinite;
+  }
+
+  .neon-icon-heavy-yellow {
+    filter: drop-shadow(0 0 1px hsl(45 100% 50% / 1))
+            drop-shadow(0 0 2px hsl(45 100% 50% / 1))
+            drop-shadow(0 0 3px hsl(45 100% 50% / 0.95))
+            drop-shadow(0 0 5px hsl(45 100% 50% / 0.95))
+            drop-shadow(0 0 8px hsl(45 100% 50% / 0.9))
+            drop-shadow(0 0 12px hsl(45 100% 50% / 0.85))
+            drop-shadow(0 0 16px hsl(45 100% 50% / 0.8))
+            drop-shadow(0 0 24px hsl(45 100% 50% / 0.7))
+            drop-shadow(0 0 32px hsl(45 100% 50% / 0.6))
+            drop-shadow(0 2px 12px hsl(45 100% 40% / 0.6));
+    animation: icon-pulse-yellow 2s ease-in-out infinite;
   }
 
   /* Icon pulse animations for pulsating neon effect */
@@ -577,6 +646,52 @@
                   drop-shadow(0 0 24px hsl(270 100% 60% / 0.6))
                   drop-shadow(0 0 32px hsl(270 100% 60% / 0.5))
                   drop-shadow(0 2px 12px hsl(270 100% 50% / 0.5)); }
+  }
+
+  @keyframes icon-pulse-green {
+    0%, 100% { filter: drop-shadow(0 0 1px hsl(120 100% 50% / 1))
+                        drop-shadow(0 0 2px hsl(120 100% 50% / 1))
+                        drop-shadow(0 0 3px hsl(120 100% 50% / 0.95))
+                        drop-shadow(0 0 5px hsl(120 100% 50% / 0.95))
+                        drop-shadow(0 0 8px hsl(120 100% 50% / 0.9))
+                        drop-shadow(0 0 12px hsl(120 100% 50% / 0.85))
+                        drop-shadow(0 0 16px hsl(120 100% 50% / 0.8))
+                        drop-shadow(0 0 24px hsl(120 100% 50% / 0.7))
+                        drop-shadow(0 0 32px hsl(120 100% 50% / 0.6))
+                        drop-shadow(0 2px 12px hsl(120 100% 40% / 0.6)); }
+    50% { filter: drop-shadow(0 0 1px hsl(120 100% 50% / 0.9))
+                  drop-shadow(0 0 2px hsl(120 100% 50% / 0.9))
+                  drop-shadow(0 0 3px hsl(120 100% 50% / 0.85))
+                  drop-shadow(0 0 5px hsl(120 100% 50% / 0.85))
+                  drop-shadow(0 0 8px hsl(120 100% 50% / 0.8))
+                  drop-shadow(0 0 12px hsl(120 100% 50% / 0.75))
+                  drop-shadow(0 0 16px hsl(120 100% 50% / 0.7))
+                  drop-shadow(0 0 24px hsl(120 100% 50% / 0.6))
+                  drop-shadow(0 0 32px hsl(120 100% 50% / 0.5))
+                  drop-shadow(0 2px 12px hsl(120 100% 40% / 0.5)); }
+  }
+
+  @keyframes icon-pulse-yellow {
+    0%, 100% { filter: drop-shadow(0 0 1px hsl(45 100% 50% / 1))
+                        drop-shadow(0 0 2px hsl(45 100% 50% / 1))
+                        drop-shadow(0 0 3px hsl(45 100% 50% / 0.95))
+                        drop-shadow(0 0 5px hsl(45 100% 50% / 0.95))
+                        drop-shadow(0 0 8px hsl(45 100% 50% / 0.9))
+                        drop-shadow(0 0 12px hsl(45 100% 50% / 0.85))
+                        drop-shadow(0 0 16px hsl(45 100% 50% / 0.8))
+                        drop-shadow(0 0 24px hsl(45 100% 50% / 0.7))
+                        drop-shadow(0 0 32px hsl(45 100% 50% / 0.6))
+                        drop-shadow(0 2px 12px hsl(45 100% 40% / 0.6)); }
+    50% { filter: drop-shadow(0 0 1px hsl(45 100% 50% / 0.9))
+                  drop-shadow(0 0 2px hsl(45 100% 50% / 0.9))
+                  drop-shadow(0 0 3px hsl(45 100% 50% / 0.85))
+                  drop-shadow(0 0 5px hsl(45 100% 50% / 0.85))
+                  drop-shadow(0 0 8px hsl(45 100% 50% / 0.8))
+                  drop-shadow(0 0 12px hsl(45 100% 50% / 0.75))
+                  drop-shadow(0 0 16px hsl(45 100% 50% / 0.7))
+                  drop-shadow(0 0 24px hsl(45 100% 50% / 0.6))
+                  drop-shadow(0 0 32px hsl(45 100% 50% / 0.5))
+                  drop-shadow(0 2px 12px hsl(45 100% 40% / 0.5)); }
   }
 
   /* Console/terminal style input */
