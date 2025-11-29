@@ -23,7 +23,8 @@ export interface FeatureCard {
   description: string;
   icon: string;
   route: string;
-  glowColor: "cyan" | "magenta" | "purple";
+  glowColor: "cyan" | "magenta" | "purple" | "green" | "yellow";
+  position?: "top-left" | "top-center" | "top-right" | "middle-left" | "middle-right" | "bottom-left" | "bottom-center" | "bottom-right";
 }
 
 export const sendMessageSchema = z.object({

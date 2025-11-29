@@ -193,15 +193,15 @@ export default function Hub() {
           {/* Middle Row with Center Showcase */}
           <div className="grid grid-cols-12 gap-6 mb-6">
             {/* Left Card */}
-            <div className="col-span-2">
+            <div className="col-span-2 row-span-2 flex items-stretch">
               {middleRowFeatures[0] && (
                 <FeatureCardComponent feature={middleRowFeatures[0]} />
               )}
             </div>
 
             {/* Center Showcase Panel */}
-            <div className="col-span-8">
-              <div className="embedded-panel embedded-panel-showcase h-full min-h-64 flex flex-col items-center justify-center relative overflow-hidden">
+            <div className="col-span-8 row-span-2">
+              <div className="embedded-panel embedded-panel-showcase h-full min-h-80 flex flex-col items-center justify-center relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-cyan-500 via-purple-500 to-magenta-500 animate-pulse" />
                 <div className="relative z-10 text-center">
                   <div className="mb-6 flex justify-center">
@@ -222,7 +222,7 @@ export default function Hub() {
             </div>
 
             {/* Right Card */}
-            <div className="col-span-2">
+            <div className="col-span-2 row-span-2 flex items-stretch">
               {middleRowFeatures[1] && (
                 <FeatureCardComponent feature={middleRowFeatures[1]} />
               )}
