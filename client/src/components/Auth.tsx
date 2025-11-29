@@ -117,18 +117,18 @@ export function Auth() {
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setShowUserMenu(!showUserMenu)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors ${language === "ar" ? "font-bold" : ""}`}
+          className={`flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-primary/20 transition-colors ${language === "ar" ? "font-bold flex-row-reverse" : ""}`}
           data-testid="button-user-menu"
         >
-          <span className="text-primary font-semibold">{user.name}</span>
+          <span className="text-primary font-semibold text-sm">{user.name}</span>
           <ChevronDown className="w-4 h-4 text-primary" />
         </button>
 
         {showUserMenu && (
-          <div className="absolute top-full right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50">
+          <div className={`absolute top-full ${language === "ar" ? "left-0" : "right-0"} mt-2 bg-card border border-border rounded-lg shadow-lg z-50`}>
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-2 text-left text-red-500 hover:bg-muted transition-colors flex items-center gap-2 font-semibold"
+              className={`w-full px-4 py-2 text-left text-red-500 hover:bg-muted transition-colors flex items-center gap-2 font-semibold ${language === "ar" ? "flex-row-reverse" : ""}`}
               data-testid="button-logout"
             >
               <LogOut className="w-4 h-4" />
@@ -142,24 +142,26 @@ export function Auth() {
 
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className={`flex items-center gap-2 ${language === "ar" ? "flex-row-reverse" : ""}`}>
         <Button
           variant="ghost"
+          size="sm"
           onClick={() => {
             setIsLogin(true);
             setShowAuthModal(true);
           }}
-          className={`h-9 ${language === "ar" ? "font-bold" : ""}`}
+          className={`h-8 px-3 text-sm ${language === "ar" ? "font-bold" : ""}`}
           data-testid="button-login"
         >
           {language === "ar" ? "تسجيل دخول" : "Login"}
         </Button>
         <Button
+          size="sm"
           onClick={() => {
             setIsLogin(false);
             setShowAuthModal(true);
           }}
-          className={`h-9 ${language === "ar" ? "font-bold" : ""}`}
+          className={`h-8 px-3 text-sm ${language === "ar" ? "font-bold" : ""}`}
           data-testid="button-signup"
         >
           {language === "ar" ? "تسجيل" : "Signup"}

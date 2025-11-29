@@ -17,7 +17,13 @@ function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
 
   return (
-    <div className={`fixed top-4 ${language === "ar" ? "right-4" : "left-4"} z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "font-bold" : ""}`}>
+    <div className={`fixed top-4 left-4 z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "flex-row-reverse font-bold" : ""}`}>
+      {/* Auth Component */}
+      <Auth />
+
+      <div className="w-0.5 h-7 bg-border/40 rounded-full"></div>
+
+      {/* Theme Controls */}
       <Button
         variant="ghost"
         size="icon"
@@ -45,8 +51,6 @@ function TopLeftControls() {
         <span className="text-[11px] font-bold text-accent">{language.toUpperCase()}</span>
       </Button>
 
-      <div className="w-0.5 h-7 bg-border/40 rounded-full"></div>
-
       <Button
         variant="ghost"
         size="icon"
@@ -57,14 +61,6 @@ function TopLeftControls() {
       >
         <div className="w-2 h-2 rounded-full bg-primary/50"></div>
       </Button>
-    </div>
-  );
-}
-
-function TopRightAuth() {
-  return (
-    <div className="fixed top-4 left-4 z-50">
-      <Auth />
     </div>
   );
 }
@@ -83,7 +79,6 @@ function AppContent() {
   return (
     <>
       <TopLeftControls />
-      <TopRightAuth />
       <Router />
     </>
   );
