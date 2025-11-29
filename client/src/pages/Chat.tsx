@@ -340,29 +340,7 @@ export default function Chat() {
         <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8">
           <div className="max-w-3xl w-full mx-auto space-y-6 flex-1">
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center">
-              <div className="text-6xl mb-4 opacity-10">◆</div>
-              <p className={`text-foreground mb-2 font-semibold ${language === "ar" ? "text-lg" : ""}`}>{personaInfo.title}</p>
-              <p className={`text-muted-foreground/70 max-w-md whitespace-pre-wrap leading-relaxed ${language === "ar" ? "text-base" : "text-sm"}`}>
-                {personaInfo.description}
-              </p>
-              <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-border/20 max-w-md">
-                <p className={`text-xs font-semibold text-muted-foreground mb-2 ${language === "ar" ? "text-sm" : ""}`}>
-                  {language === "ar" ? "الأيقونات المتاحة:" : "Available Controls:"}
-                </p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {personaInfo.controlIcons?.includes("upload") && <span className="px-2 py-1 bg-primary/20 rounded text-xs">📤 {language === "ar" ? "رفع" : "Upload"}</span>}
-                  {personaInfo.controlIcons?.includes("search") && <span className="px-2 py-1 bg-accent/20 rounded text-xs">🔍 {language === "ar" ? "بحث" : "Search"}</span>}
-                  {personaInfo.controlIcons?.includes("ai-only") && <span className="px-2 py-1 bg-primary/20 rounded text-xs">🤖 {language === "ar" ? "ذكاء" : "AI Only"}</span>}
-                  {personaInfo.controlIcons?.includes("link") && <span className="px-2 py-1 bg-accent/20 rounded text-xs">🔗 {language === "ar" ? "رابط" : "URL"}</span>}
-                  {personaInfo.controlIcons?.includes("settings") && <span className="px-2 py-1 bg-primary/20 rounded text-xs">⚙️ {language === "ar" ? "إعدادات" : "Settings"}</span>}
-                  {personaInfo.controlIcons?.includes("download") && <span className="px-2 py-1 bg-accent/20 rounded text-xs">📥 {language === "ar" ? "تحميل" : "Download"}</span>}
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground/50 mt-6">
-                {t("chat.start", language)}
-              </p>
-            </div>
+            <div className="h-full" />
           ) : (
             <>
               {messages.map((msg) => (
