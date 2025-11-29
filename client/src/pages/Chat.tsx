@@ -291,17 +291,20 @@ export default function Chat() {
             </Link>
           </div>
         </header>
-        <main className="flex-1 overflow-hidden">
+        <main className="flex-1 overflow-hidden w-full">
           <iframe
-            src="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
+            src="/api/proxy-iframe"
             style={{
               width: "100%",
               height: "100%",
               border: "none",
               borderRadius: "0",
+              backgroundColor: "transparent",
             }}
             title="Kiira AI Images"
             data-testid="embedded-iframe"
+            allow="accelerometer; camera; geolocation; gyroscope; magnetometer; microphone; payment; usb"
+            allowFullScreen
           />
         </main>
       </div>
