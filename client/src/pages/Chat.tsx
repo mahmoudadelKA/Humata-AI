@@ -53,11 +53,11 @@ const getPersonaInfo = (persona: string | null) => {
 
 export default function Chat() {
   const [searchParams] = useLocation();
-  const params = new URLSearchParams(searchParams.split("?")[1] || "");
+  const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : searchParams);
   const persona = params.get("persona") || "";
   const mode = params.get("mode") || "";
-  const convId = params.get("convId") || ""; // Get conversation ID from Hub
-  const initialMessage = params.get("initialMessage") || ""; // Message from Hub search box
+  const convId = params.get("convId") || ""; 
+  const initialMessage = params.get("initialMessage") || "";
   const { language, user, token } = useAppContext();
 
   const personaInfo = getPersonaInfo(persona || null);
