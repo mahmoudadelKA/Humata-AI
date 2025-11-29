@@ -1,0 +1,36 @@
+FINAL FEATURE SET IMPLEMENTATION: Implement all User-Defined Input/Output Controls.
+
+The following requests are final and must be implemented across the existing stable architecture (Gemini 2.5 Pro).
+
+I. UI & INPUT STRUCTURAL CHANGES (Frontend):
+
+1.  **"Ask" (اسأل) Interface:** Implement 3 distinct functional icons side-by-side within the chat input area for source selection:
+    - Icon 1: **File Upload** (Multer/GoogleAIFileManager routing).
+    - Icon 2: **Google Search Toggle** (Enables/Disables Google Grounding).
+    - Icon 3: **AI Only Mode** (Disables Grounding and File Input).
+
+2.  **"Quizzes" (الاختبارات) Interface:** Implement 3 specific functional icons within the chat input area:
+    - Icon 1: **File Upload** (Source document for questions).
+    - Icon 2: **URL/Link Input** (A modal/input field to paste a source URL).
+    - Icon 3 (Settings): A button that triggers a separate **Configuration Modal/Pop-up** to define quiz parameters (Difficulty level, Number of Questions, Question Type).
+
+3.  **"Scientific Research" (البحث العلمي):** Add a **Download Button/Icon** to the search interface that triggers a client-side function to format and download the generated search results as a **.docx or .pdf file**.
+
+4.  **"Doctor" (الدكتور) & "Scientific Assistant" (المساعد العلمي):** Ensure a dedicated **File Upload Icon** is available in the input box for both of these chat interfaces.
+
+5.  **"AI Images" (صور ذكاء اصطناعي):** Change this feature card to be a simple **external redirect link** that opens the following URL in a new tab: `https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend`.
+
+6.  **"Image Generation" (توليد الصور):** Change this route's core functionality from AI generation to a **Google Image Search interface** (integrating Google Search Grounding focused on images) displaying the best search results.
+
+II. BACKEND LOGIC & SYSTEM INSTRUCTIONS (Persona & Grounding):
+
+1.  **Permanent Grounding:** For the following routes, **PERMANENTLY ENABLE AND PRIORITIZE GOOGLE SEARCH GROUNDING**:
+    - **"Scientific Research"**
+    - **"The Doctor"**
+    - **"Scientific Assistant"**
+2.  **Persona Assignment:** Set the System Instructions for the above routes to match their strict professional personas (Academic Researcher, Medical Doctor, Polymath).
+
+III. INTEGRATION CONFIRMATION:
+- Ensure the **File Upload Logic (Multer/GoogleAIFileManager)** is correctly routed and accessible by the "Ask," "Quizzes," "Doctor," and "Scientific Assistant" routes.
+
+Action: Implement all structural, UI, and backend logic changes detailed above.
