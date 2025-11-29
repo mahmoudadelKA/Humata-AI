@@ -226,6 +226,15 @@ export async function registerRoutes(
           currentConversationId = newConv.id;
           isFirstResponse = true;
           console.log(`[Routes] New conversation created: ${currentConversationId}`);
+        } else {
+          // Verify conversation exists and belongs to user
+          const existingConv = await storage.getConversation(currentConversationId);
+          if (!existingConv || existingConv.userId !== userId) {
+            console.log(`[Routes] Conversation not found or unauthorized, creating new one`);
+            const firstUserMsg = message.substring(0, 50);
+            const newConv = await storage.createConversation(userId, firstUserMsg);
+            currentConversationId = newConv.id;
+          }
         }
         
         console.log(`[Routes] Adding user message to conversation ${currentConversationId}`);
