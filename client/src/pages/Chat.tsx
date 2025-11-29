@@ -95,27 +95,6 @@ export default function Chat() {
     }
   }, [convId]);
 
-  // Auto-send initial message from Hub
-  const sendMessageMutationRef = useRef<any>(null);
-  
-  useEffect(() => {
-    if (initialMessage && sendMessageMutationRef.current) {
-      const userMessage = {
-        id: Date.now().toString(),
-        role: "user" as const,
-        content: initialMessage,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMessage]);
-      setInputValue("");
-      
-      // Send the message
-      sendMessageMutationRef.current.mutate({
-        message: initialMessage,
-      });
-    }
-  }, [initialMessage]);
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -199,10 +178,24 @@ export default function Chat() {
     },
   });
 
-  // Store mutation ref for auto-send
+  // Auto-send initial message from Hub
   useEffect(() => {
-    sendMessageMutationRef.current = sendMessageMutation;
-  }, [sendMessageMutation]);
+    if (initialMessage && sendMessageMutation) {
+      const userMessage = {
+        id: Date.now().toString(),
+        role: "user" as const,
+        content: initialMessage,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMessage]);
+      setInputValue("");
+      
+      // Send the message to AI
+      sendMessageMutation.mutate({
+        message: initialMessage,
+      });
+    }
+  }, [initialMessage, sendMessageMutation]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() && !uploadedFileInfo) {
