@@ -57,13 +57,13 @@ export default function Chat() {
   const params = new URLSearchParams(searchParams.split("?")[1] || "");
   const persona = params.get("persona") || "";
   const mode = params.get("mode") || "";
-  const { language } = useAppContext();
+  const { language, user, token } = useAppContext();
 
   const personaInfo = getPersonaInfo(persona);
   const { toast } = useToast();
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [sessionId, setSessionId] = useState<string>("");
+  const [conversationId, setConversationId] = useState<string>("");
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -113,12 +113,17 @@ export default function Chat() {
       fileName?: string;
       mimeType?: string;
     }) => {
+      const headers: any = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           message: data.message,
-          sessionId,
+          conversationId,
           persona: persona || undefined,
           systemPrompt: personaInfo.systemPrompt,
           base64Data: data.base64Data,
@@ -136,7 +141,7 @@ export default function Chat() {
     },
     onSuccess: (data) => {
       setMessages((prev) => [...prev, data.message]);
-      setSessionId(data.sessionId);
+      setConversationId(data.conversationId);
       setUploadedFileInfo(null);
     },
     onError: (error: any) => {
@@ -186,6 +191,7 @@ export default function Chat() {
             <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
               {personaInfo.title}
             </h2>
+            {conversationId && <span className="text-xs text-muted-foreground">{conversationId.substring(0, 8)}</span>}
           </div>
           <Link href="/">
             <Button

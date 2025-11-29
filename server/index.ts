@@ -23,6 +23,15 @@ app.use(
 
 app.use(express.urlencoded({ extended: false, limit: "50mb" }));
 
+// Auth middleware
+app.use((req, res, next) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (token) {
+    (req as any).userId = token;
+  }
+  next();
+});
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",

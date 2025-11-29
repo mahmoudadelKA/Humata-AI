@@ -136,7 +136,8 @@ export async function registerRoutes(
   
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
-      const { message, sessionId, persona, systemPrompt, base64Data, fileName, mimeType } = req.body;
+      const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType } = req.body;
+      const userId = (req as any).userId;
 
       console.log(`[Routes] Chat request - message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}`);
 
@@ -145,17 +146,20 @@ export async function registerRoutes(
         return;
       }
 
-      let currentSessionId = sessionId;
-      if (!currentSessionId) {
-        const session = await storage.createSession();
-        currentSessionId = session.id;
-      }
+      let currentConversationId = conversationId;
+      let isFirstResponse = false;
 
-      const existingMessages = await storage.getMessages(currentSessionId);
-      const history = existingMessages.map((msg) => ({
-        role: msg.role,
-        content: msg.content,
-      }));
+      // Get conversation history
+      let history: Array<{ role: string; content: string }> = [];
+      if (currentConversationId) {
+        const conversation = await storage.getConversation(currentConversationId);
+        if (conversation) {
+          history = conversation.messages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          }));
+        }
+      }
 
       const aiResponse = await sendChatMessage(message, history, {
         systemPrompt: systemPrompt || undefined,
@@ -179,14 +183,35 @@ export async function registerRoutes(
         timestamp: new Date(),
       };
 
-      await storage.addMessage(currentSessionId, userMessage);
-      await storage.addMessage(currentSessionId, assistantMessage);
+      // Save to conversation if user is authenticated
+      if (userId) {
+        if (!currentConversationId) {
+          // Create new conversation on first AI response
+          const firstUserMsg = message.substring(0, 50);
+          const newConv = await storage.createConversation(userId, firstUserMsg);
+          currentConversationId = newConv.id;
+          isFirstResponse = true;
+        }
+        
+        await storage.addMessageToConversation(currentConversationId, userMessage);
+        await storage.addMessageToConversation(currentConversationId, assistantMessage);
+      } else {
+        // Fallback to session for non-authenticated users
+        let sessionId = conversationId;
+        if (!sessionId) {
+          const session = await storage.createSession();
+          sessionId = session.id;
+        }
+        await storage.addMessage(sessionId, userMessage);
+        await storage.addMessage(sessionId, assistantMessage);
+        currentConversationId = sessionId;
+      }
 
       console.log(`[Routes] Chat response sent successfully`);
 
       res.json({
         message: assistantMessage,
-        sessionId: currentSessionId,
+        conversationId: currentConversationId,
       });
     } catch (error: any) {
       console.error("[Routes] Chat error:", error);
@@ -237,7 +262,7 @@ export async function registerRoutes(
   // Conversations API
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).user?.id;
+      const userId = (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: "Unauthorized" });
         return;
@@ -251,7 +276,7 @@ export async function registerRoutes(
 
   app.post("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).user?.id;
+      const userId = (req as any).userId;
       if (!userId) {
         res.status(401).json({ error: "Unauthorized" });
         return;
