@@ -14,6 +14,7 @@ export interface GeminiChatOptions {
   base64Data?: string;
   mimeType?: string;
   fileName?: string;
+  enableGrounding?: boolean;
 }
 
 export async function sendChatMessage(
@@ -72,8 +73,18 @@ CRITICAL OUTPUT REQUIREMENT: Your responses MUST be clean, readable, professiona
 
     config.systemInstruction = finalSystemInstruction;
 
+    // Add grounding/web search capability when enabled
+    if (options.enableGrounding) {
+      console.log(`[Gemini] Enabling web search for this query`);
+      config.tools = [
+        {
+          googleSearch: {}
+        }
+      ];
+    }
+
     console.log(
-      `[Gemini] Sending generateContent - items: ${contents.length}, hasFile: ${!!options.base64Data}, modelId: ${MODEL_NAME}`
+      `[Gemini] Sending generateContent - items: ${contents.length}, hasFile: ${!!options.base64Data}, modelId: ${MODEL_NAME}, enableGrounding: ${options.enableGrounding}`
     );
 
     const response = await ai.models.generateContent({

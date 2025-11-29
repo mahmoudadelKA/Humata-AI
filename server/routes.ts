@@ -168,10 +168,10 @@ export async function registerRoutes(
   
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
-      const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType } = req.body;
+      const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType, enableGrounding } = req.body;
       const userId = (req as any).userId;
 
-      console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}`);
+      console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}, enableGrounding: ${enableGrounding}`);
 
       if (!message || typeof message !== "string") {
         res.status(400).json({ error: "Message is required" });
@@ -198,6 +198,7 @@ export async function registerRoutes(
         base64Data: base64Data || undefined,
         mimeType: mimeType || undefined,
         fileName: fileName || undefined,
+        enableGrounding: enableGrounding || false,
       });
 
       const userMessage = {
