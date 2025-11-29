@@ -117,17 +117,20 @@ const getPersonaInfo = (persona?: string) => {
       title: "الخديوي - المستشار الاستراتيجي",
       description: "تحليل استراتيجي متقدم واتخاذ القرارات",
       systemPrompt: `أنت الخديوي، مستشار استراتيجي متقدم. توفر تحليل عميق، رؤى استراتيجية وإرشادات مدروسة حول القرارات المعقدة. استجاباتك شاملة، استراتيجية وموجهة لمساعدة المستخدمين في التغلب على التحديات بثقة.`,
+      controlIcons: ["upload", "search"],
     },
     "google-images": {
       title: "توليد الصور",
       description: "البحث عن الصور من Google Images",
       systemPrompt: "",
+      controlIcons: [],
       isEmbedded: true,
     },
     images: {
       title: "صور ذكاء اصطناعي",
       description: "محرك البحث عن الصور من Kiira AI",
       systemPrompt: "",
+      controlIcons: [],
       isEmbedded: true,
     },
   };
@@ -136,6 +139,7 @@ const getPersonaInfo = (persona?: string) => {
       title: "الدردشة",
       description: "محادثة ذكية متقدمة",
       systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم. قدم إجابات مفيدة وصحيحة ومدروسة على استفسارات المستخدمين. الرد بصيغة عربية سليمة.`,
+      controlIcons: ["upload", "search"],
     }
   );
 };
