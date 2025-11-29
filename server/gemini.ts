@@ -37,7 +37,7 @@ export async function sendChatMessage(
     
     // Add file data if URI is provided
     if (options.fileUri && options.mimeType) {
-      console.log(`[Gemini] Adding file reference to message - URI: ${options.fileUri}, type: ${options.mimeType}`);
+      console.log(`[Gemini] Adding file reference - URI: ${options.fileUri}, type: ${options.mimeType}`);
       userParts.push({
         fileData: {
           mimeType: options.mimeType,
@@ -60,7 +60,7 @@ export async function sendChatMessage(
       config.systemInstruction = options.systemPrompt;
     }
 
-    console.log(`[Gemini] Sending generateContent request - contents: ${contents.length} items, hasFile: ${!!options.fileUri}`);
+    console.log(`[Gemini] Sending generateContent - items: ${contents.length}, hasFile: ${!!options.fileUri}`);
 
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
@@ -68,7 +68,7 @@ export async function sendChatMessage(
       config,
     });
 
-    console.log(`[Gemini] Response received successfully`);
+    console.log(`[Gemini] Response received`);
     return response.text || "I apologize, but I couldn't generate a response.";
   } catch (error: any) {
     console.error("[Gemini] API error:", error);
@@ -82,30 +82,30 @@ export async function uploadFileToGemini(
   fileName: string
 ): Promise<{ fileUri: string; mimeType: string; fileName: string }> {
   try {
-    console.log(`[Gemini] Uploading file to Gemini - file: ${fileName}, type: ${mimeType}`);
+    console.log(`[Gemini] Uploading file - file: ${fileName}, type: ${mimeType}`);
     
     const fileBytes = fs.readFileSync(filePath);
     
-    // Upload file to Gemini File API
+    // Upload file to Gemini File API using proper structure
     const uploadResult = await ai.files.upload({
       file: {
         mimeType: mimeType,
         displayName: fileName,
-        data: fileBytes.toString("base64"),
+        data: fileBytes,
       },
     });
 
     if (!uploadResult.uri) {
-      throw new Error("File upload failed - no URI returned from Gemini");
+      throw new Error("File upload failed - no URI returned");
     }
 
-    console.log(`[Gemini] File uploaded successfully - URI: ${uploadResult.uri}`);
+    console.log(`[Gemini] File uploaded - URI: ${uploadResult.uri}`);
 
     // Wait for file processing to complete
     let file = uploadResult;
     let attempts = 0;
     while (file.state === "PROCESSING" && attempts < 30) {
-      console.log(`[Gemini] Waiting for file processing... (attempt ${attempts + 1}/30)`);
+      console.log(`[Gemini] Processing... (${attempts + 1}/30)`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       const getResult = await ai.files.get({ name: file.name! });
@@ -114,14 +114,14 @@ export async function uploadFileToGemini(
     }
 
     if (file.state === "FAILED") {
-      throw new Error("File processing failed in Gemini API");
+      throw new Error("File processing failed");
     }
 
     if (file.state === "PROCESSING") {
-      throw new Error("File processing timeout - took too long");
+      throw new Error("File processing timeout");
     }
 
-    console.log(`[Gemini] File ready for use - state: ${file.state}, URI: ${file.uri}`);
+    console.log(`[Gemini] File ready - state: ${file.state}`);
 
     return {
       fileUri: file.uri!,

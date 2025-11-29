@@ -3,10 +3,9 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import fs from "fs";
 import { storage } from "./storage";
-import { sendChatMessage, processUploadedFile } from "./gemini";
+import { sendChatMessage, uploadFileToGemini } from "./gemini";
 import { randomUUID } from "crypto";
 
-// Use /tmp/ for reliable temporary file storage
 const uploadDir = "/tmp/uploads";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -21,7 +20,7 @@ const upload = multer({
     },
   }),
   limits: {
-    fileSize: 20 * 1024 * 1024, // 20MB limit
+    fileSize: 20 * 1024 * 1024,
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
@@ -44,12 +43,11 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
-  // Chat endpoint - handles text and optional file data
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
-      const { message, sessionId, persona, systemPrompt, fileData } = req.body;
+      const { message, sessionId, persona, systemPrompt, fileUri, fileName, mimeType } = req.body;
 
-      console.log(`[Routes] Chat request received - message: "${message?.substring(0, 50)}...", hasFile: ${!!fileData}`);
+      console.log(`[Routes] Chat request - message: "${message?.substring(0, 50)}...", hasFile: ${!!fileUri}`);
 
       if (!message || typeof message !== "string") {
         res.status(400).json({ error: "Message is required" });
@@ -70,7 +68,9 @@ export async function registerRoutes(
 
       const aiResponse = await sendChatMessage(message, history, {
         systemPrompt: systemPrompt || undefined,
-        fileData: fileData || undefined,
+        fileUri: fileUri || undefined,
+        mimeType: mimeType || undefined,
+        fileName: fileName || undefined,
       });
 
       const userMessage = {
@@ -78,7 +78,7 @@ export async function registerRoutes(
         role: "user" as const,
         content: message,
         timestamp: new Date(),
-        fileInfo: fileData ? { name: fileData.fileName, type: fileData.mimeType } : undefined,
+        fileInfo: fileUri ? { name: fileName || "file", type: mimeType || "unknown" } : undefined,
       };
 
       const assistantMessage = {
@@ -105,12 +105,11 @@ export async function registerRoutes(
     }
   });
 
-  // File upload endpoint - processes file and returns base64 data
   app.post("/api/upload", upload.single("file"), async (req: Request, res: Response) => {
     try {
       const file = req.file;
       
-      console.log(`[Routes] Upload request received - file: ${file?.originalname || 'none'}`);
+      console.log(`[Routes] Upload request - file: ${file?.originalname || 'none'}`);
       
       if (!file) {
         console.error("[Routes] No file in upload request");
@@ -118,21 +117,22 @@ export async function registerRoutes(
         return;
       }
 
-      console.log(`[Routes] File metadata - path: ${file.path}, mimetype: ${file.mimetype}, size: ${file.size}`);
+      console.log(`[Routes] File metadata - path: ${file.path}, type: ${file.mimetype}, size: ${file.size}`);
 
-      const fileData = await processUploadedFile(file.path, file.mimetype, file.originalname);
+      const uploadResult = await uploadFileToGemini(file.path, file.mimetype, file.originalname);
 
-      // Clean up temp file after processing
       fs.unlink(file.path, (err) => {
         if (err) console.error("[Routes] Failed to delete temp file:", err);
         else console.log(`[Routes] Temp file deleted: ${file.path}`);
       });
 
-      console.log(`[Routes] Upload processed successfully - fileName: ${file.originalname}`);
+      console.log(`[Routes] Upload successful - fileUri: ${uploadResult.fileUri}`);
 
       res.json({
         success: true,
-        fileData: fileData,
+        fileUri: uploadResult.fileUri,
+        fileName: uploadResult.fileName,
+        mimeType: uploadResult.mimeType,
       });
     } catch (error: any) {
       console.error("[Routes] Upload error:", error);
@@ -143,7 +143,6 @@ export async function registerRoutes(
     }
   });
 
-  // Health check endpoint
   app.get("/api/health", (req: Request, res: Response) => {
     res.json({ 
       status: "online", 
