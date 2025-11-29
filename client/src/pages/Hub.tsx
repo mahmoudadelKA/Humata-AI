@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { MessageSquare, Brain, CheckCircle, Wand2, FileText, Zap, Lightbulb, Users, RefreshCw, Send, HelpCircle, Search, Crown } from "lucide-react";
+import { MessageSquare, Brain, CheckCircle, Wand2, FileText, Zap, Lightbulb, Users, RefreshCw, Send, HelpCircle, Search, Crown, Sparkles, Lightbulb as LightbulbIcon } from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
@@ -146,6 +146,7 @@ export default function Hub() {
           <div className="text-center mb-12">
             <div className="max-w-2xl mx-auto mb-12">
               <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-2 border border-primary/40 shadow-lg">
+                <Search className="w-4 h-4 text-muted-foreground/60" />
                 <Input
                   placeholder={t("hub.chat.input", language)}
                   value={inputValue}
@@ -153,6 +154,15 @@ export default function Hub() {
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1"
                 />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  data-testid="button-quick-search"
+                  title={language === "ar" ? "بحث سريع" : "Quick Search"}
+                >
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </Button>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim()}
