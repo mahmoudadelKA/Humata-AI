@@ -10,6 +10,14 @@ import type { FeatureCard } from "@shared/schema";
 
 const featureKeys = [
   { id: "chat", titleKey: "feature.chat", icon: "MessageSquare", route: "/chat", glowColor: "cyan" },
+  { id: "ask", titleKey: "feature.ask", icon: "HelpCircle", route: "/chat?persona=ask", glowColor: "magenta" },
+  { id: "research", titleKey: "feature.research", icon: "Search", route: "/chat?persona=research", glowColor: "purple" },
+  { id: "tests", titleKey: "feature.tests", icon: "CheckCircle", route: "/chat?persona=tests", glowColor: "green" },
+  { id: "images", titleKey: "feature.images", icon: "Wand2", route: "/chat?persona=images", glowColor: "yellow" },
+  { id: "doctor", titleKey: "feature.doctor", icon: "Lightbulb", route: "/chat?persona=doctor", glowColor: "cyan" },
+  { id: "scientist", titleKey: "feature.scientist", icon: "Brain", route: "/chat?persona=scientist", glowColor: "magenta" },
+  { id: "khedive", titleKey: "feature.khedive", icon: "Crown", route: "/chat?persona=khedive", glowColor: "purple" },
+  { id: "ai-images", titleKey: "feature.ai-images", icon: "Zap", route: "https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend", glowColor: "yellow", external: true },
 ];
 
 const iconMap: Record<string, typeof MessageSquare> = {
@@ -40,37 +48,45 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
 
   const colors = colorMap[feature.glowColor] || colorMap.cyan;
 
-  return (
-    <Link href={feature.route}>
-      <div
-        className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 transition-all duration-150"
-        style={{
-          borderRadius: "0",
-          border: `2px solid ${colors.border}`,
-          backgroundColor: "hsl(248 55% 14% / 0.7)",
-          boxShadow: `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`,
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
-          e.currentTarget.style.borderColor = `${colors.border}`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
-          e.currentTarget.style.borderColor = `${colors.border}`;
-        }}
-        data-testid={`card-feature-${feature.id}`}
-      >
-        <IconComponent 
-          className={`w-14 h-14 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
-          style={{ color: colors.icon }}
-          strokeWidth={2}
-        />
-        <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
-          {feature.title}
-        </h3>
-      </div>
-    </Link>
+  const card = (
+    <div
+      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 transition-all duration-150"
+      style={{
+        borderRadius: "0",
+        border: `2px solid ${colors.border}`,
+        backgroundColor: "hsl(248 55% 14% / 0.7)",
+        boxShadow: `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
+        e.currentTarget.style.borderColor = `${colors.border}`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
+        e.currentTarget.style.borderColor = `${colors.border}`;
+      }}
+      data-testid={`card-feature-${feature.id}`}
+    >
+      <IconComponent 
+        className={`w-14 h-14 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
+        style={{ color: colors.icon }}
+        strokeWidth={2}
+      />
+      <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
+        {feature.title}
+      </h3>
+    </div>
   );
+
+  if (feature.external) {
+    return (
+      <a href={feature.route} target="_blank" rel="noopener noreferrer">
+        {card}
+      </a>
+    );
+  }
+
+  return <Link href={feature.route}>{card}</Link>;
 }
 
 export default function Hub() {
@@ -94,6 +110,7 @@ export default function Hub() {
     route: key.route,
     glowColor: key.glowColor as any,
     position: "top-left",
+    external: key.external,
   }));
 
   return (

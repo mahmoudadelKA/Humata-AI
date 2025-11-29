@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2 } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Settings, Download, Link2, Radio } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -32,17 +32,42 @@ interface UploadedFileInfo {
 const getPersonaInfo = (persona?: string) => {
   const personas: Record<
     string,
-    { title: string; description: string; systemPrompt: string }
+    { title: string; description: string; systemPrompt: string; controlIcons?: string[] }
   > = {
+    ask: {
+      title: "اسأل",
+      description: "أسئلة سريعة وذكية",
+      systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم متخصص في الإجابة على الأسئلة. قدم إجابات دقيقة وشاملة ومفيدة. الرد بصيغة عربية سليمة.`,
+      controlIcons: ["upload", "search", "ai-only"],
+    },
+    research: {
+      title: "البحث العلمي",
+      description: "بحث أكاديمي متقدم",
+      systemPrompt: `أنت باحث أكاديمي متقدم متخصص. قدم تحليلات عميقة، استشهادات موثوقة، وبحثاً شاملاً. استخدم مراجع علمية موثوقة. الرد بصيغة عربية أكاديمية.`,
+      controlIcons: ["download"],
+    },
+    tests: {
+      title: "الاختبارات",
+      description: "إنشاء واختبار المعرفة",
+      systemPrompt: `أنت خبير في إنشاء الاختبارات والتقييمات التعليمية. أنشئ أسئلة دقيقة ومناسبة للمستوى المطلوب. الرد بصيغة عربية واضحة.`,
+      controlIcons: ["upload", "link", "settings"],
+    },
+    doctor: {
+      title: "الدكتور - مستشار صحي",
+      description: "معلومات طبية وآفاق صحية",
+      systemPrompt: `أنت طبيب متخصص وباحث طبي. توفر معلومات طبية تعليمية دقيقة. تحذير مهم: تذكر دائماً أن المستخدمين يجب عليهم استشارة متخصصي الرعاية الصحية المؤهلين. الرد بصيغة عربية طبية.`,
+      controlIcons: ["upload", "search"],
+    },
+    scientist: {
+      title: "المساعد العلمي",
+      description: "مساعد أكاديمي متخصص",
+      systemPrompt: `أنت باحث ومساعد أكاديمي متعدد المجالات. توفر تحليلات عميقة، توضيحات علمية وإجابات شاملة على أسئلة متقدمة. الرد بصيغة عربية أكاديمية.`,
+      controlIcons: ["upload", "search"],
+    },
     khedive: {
       title: "الخديوي - المستشار الاستراتيجي",
       description: "تحليل استراتيجي متقدم واتخاذ القرارات",
       systemPrompt: `أنت الخديوي، مستشار استراتيجي متقدم. توفر تحليل عميق، رؤى استراتيجية وإرشادات مدروسة حول القرارات المعقدة. استجاباتك شاملة، استراتيجية وموجهة لمساعدة المستخدمين في التغلب على التحديات بثقة.`,
-    },
-    doctor: {
-      title: "مستشار صحي - مساعد طبي",
-      description: "معلومات طبية وآفاق صحية",
-      systemPrompt: `أنت مساعد معلومات طبية. توفر معلومات تعليمية حول المواضيع الصحية. تحذير مهم: تذكر دائماً أن المستخدمين يجب عليهم استشارة متخصصي الرعاية الصحية المؤهلين للتشخيص والعلاج.`,
     },
   };
   return (
@@ -70,6 +95,11 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState<string>(convId);
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
+  const [enableGrounding, setEnableGrounding] = useState(["research", "doctor", "scientist"].includes(persona));
+  const [showUrlModal, setShowUrlModal] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [quizSettings, setQuizSettings] = useState({ difficulty: "medium", questions: 10, type: "multiple" });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -359,20 +389,96 @@ export default function Chat() {
               data-testid="input-file"
             />
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadFileMutation.isPending || sendMessageMutation.isPending}
-              data-testid="button-upload-file"
-              className="h-8 w-8"
-            >
-              {uploadFileMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Upload className="w-4 h-4" />
-              )}
-            </Button>
+            {personaInfo.controlIcons?.includes("upload") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadFileMutation.isPending || sendMessageMutation.isPending}
+                data-testid="button-upload-file"
+                className="h-8 w-8"
+                title={t("chat.file-upload", language)}
+              >
+                {uploadFileMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("search") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEnableGrounding(!enableGrounding)}
+                data-testid="button-grounding"
+                className={`h-8 w-8 ${enableGrounding ? "text-primary" : ""}`}
+                title={t("chat.google-search", language)}
+              >
+                <Search className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("ai-only") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEnableGrounding(false)}
+                data-testid="button-ai-only"
+                className={`h-8 w-8 ${!enableGrounding ? "text-primary" : ""}`}
+                title={t("chat.ai-only", language)}
+              >
+                <Radio className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("link") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowUrlModal(true)}
+                data-testid="button-url"
+                className="h-8 w-8"
+                title={t("chat.url-input", language)}
+              >
+                <Link2 className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("settings") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowSettingsModal(true)}
+                data-testid="button-settings"
+                className="h-8 w-8"
+                title={t("chat.settings", language)}
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("download") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const text = messages.map(m => `${m.role === "assistant" ? "AI" : "User"}: ${m.content}`).join("\n\n");
+                  const blob = new Blob([text], { type: "text/plain" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `research-${Date.now()}.txt`;
+                  a.click();
+                }}
+                data-testid="button-download"
+                className="h-8 w-8"
+                title={t("chat.download", language)}
+              >
+                <Download className="w-4 h-4" />
+              </Button>
+            )}
 
             <Input
               placeholder={t("chat.placeholder", language)}
@@ -402,6 +508,58 @@ export default function Chat() {
               )}
             </Button>
           </div>
+
+          {showUrlModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-card p-6 rounded-lg w-96 shadow-lg">
+                <h3 className="font-bold mb-4">{t("chat.url-input", language)}</h3>
+                <Input
+                  placeholder="https://example.com"
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  className="mb-4"
+                />
+                <div className="flex gap-2">
+                  <Button onClick={() => setShowUrlModal(false)} variant="outline" className="flex-1">{language === "ar" ? "إلغاء" : "Cancel"}</Button>
+                  <Button onClick={() => { setUrlInput(""); setShowUrlModal(false); }} className="flex-1">{language === "ar" ? "تم" : "Done"}</Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showSettingsModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-card p-6 rounded-lg w-96 shadow-lg">
+                <h3 className="font-bold mb-4">{t("chat.settings", language)}</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm mb-2 block">{language === "ar" ? "المستوى" : "Difficulty"}</label>
+                    <select value={quizSettings.difficulty} onChange={(e) => setQuizSettings({...quizSettings, difficulty: e.target.value})} className="w-full p-2 border rounded">
+                      <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
+                      <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
+                      <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm mb-2 block">{language === "ar" ? "عدد الأسئلة" : "Questions"}</label>
+                    <Input type="number" value={quizSettings.questions} onChange={(e) => setQuizSettings({...quizSettings, questions: parseInt(e.target.value)})} min="1" max="50" />
+                  </div>
+                  <div>
+                    <label className="text-sm mb-2 block">{language === "ar" ? "نوع السؤال" : "Type"}</label>
+                    <select value={quizSettings.type} onChange={(e) => setQuizSettings({...quizSettings, type: e.target.value})} className="w-full p-2 border rounded">
+                      <option value="multiple">{language === "ar" ? "خيارات متعددة" : "Multiple Choice"}</option>
+                      <option value="short">{language === "ar" ? "إجابة قصيرة" : "Short Answer"}</option>
+                      <option value="essay">{language === "ar" ? "مقالة" : "Essay"}</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <Button onClick={() => setShowSettingsModal(false)} variant="outline" className="flex-1">{language === "ar" ? "إلغاء" : "Cancel"}</Button>
+                  <Button onClick={() => setShowSettingsModal(false)} className="flex-1">{language === "ar" ? "تم" : "Done"}</Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </footer>
     </div>
