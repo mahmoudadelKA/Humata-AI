@@ -43,7 +43,7 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   return (
     <Link href={feature.route}>
       <div
-        className="group cursor-pointer flex flex-col items-center justify-center gap-2 w-32 h-32 transition-all duration-150"
+        className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 transition-all duration-150"
         style={{
           borderRadius: "0",
           border: `2px solid ${colors.border}`,
@@ -61,11 +61,11 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
         data-testid={`card-feature-${feature.id}`}
       >
         <IconComponent 
-          className={`w-10 h-10 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
+          className={`w-14 h-14 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
           style={{ color: colors.icon }}
           strokeWidth={2}
         />
-        <h3 className="text-[11px] font-bold text-center leading-tight text-foreground" style={{ maxWidth: "120px" }}>
+        <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
           {feature.title}
         </h3>
       </div>
@@ -116,36 +116,36 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-6 py-8">
-          <div className="text-center mb-12">
-            <h2 className={`text-3xl font-bold mb-2 text-foreground ${language === "ar" ? "text-4xl" : ""}`}>
+          <div className="text-center mb-16">
+            <h2 className={`text-3xl font-bold mb-4 text-foreground ${language === "ar" ? "text-5xl" : ""}`}>
               {t("hub.select", language)}
             </h2>
-            <p className={`text-sm text-muted-foreground ${language === "ar" ? "text-base" : ""}`}>
+            <p className={`text-base text-muted-foreground ${language === "ar" ? "text-lg font-semibold" : ""}`}>
               {t("hub.description", language)}
             </p>
           </div>
 
           <div 
-            className="flex flex-wrap justify-center items-center gap-6"
+            className="flex flex-wrap justify-center items-center gap-8"
             data-testid="feature-grid"
-            style={{ maxWidth: "900px", margin: "0 auto" }}
+            style={{ maxWidth: "1000px", margin: "0 auto" }}
           >
             {features.map((feature) => (
               <FeatureCardComponent key={feature.id} feature={feature} />
             ))}
           </div>
 
-          <div className="mt-8 text-center">
-            <div className={`inline-flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground border border-border/30 rounded ${language === "ar" ? "text-sm font-bold" : ""}`}>
+          <div className="mt-12 text-center">
+            <div className={`inline-flex items-center gap-3 px-5 py-3 text-sm text-muted-foreground border border-border/30 rounded ${language === "ar" ? "text-base font-bold" : ""}`}>
               <span>{t("hub.powered", language)}</span>
               <span className="font-semibold">{t("hub.gemini", language)}</span>
             </div>
           </div>
         </main>
 
-        <footer className="border-t border-border/30 mt-8 py-4">
+        <footer className="border-t border-border/30 mt-12 py-6">
           <div className="max-w-6xl mx-auto px-6 text-center">
-            <p className={`text-xs text-muted-foreground/50 ${language === "ar" ? "text-sm" : ""}`}>
+            <p className={`text-sm text-muted-foreground/50 ${language === "ar" ? "text-base" : ""}`}>
               {t("hub.system", language)}
             </p>
           </div>
