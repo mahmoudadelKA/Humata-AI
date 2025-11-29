@@ -1,18 +1,60 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+  fileInfo?: {
+    name: string;
+    type: string;
+    uri?: string;
+  };
+}
+
+export interface ChatSession {
+  id: string;
+  messages: ChatMessage[];
+  createdAt: Date;
+}
+
+export interface FeatureCard {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  route: string;
+  glowColor: "cyan" | "magenta" | "purple";
+}
+
+export const sendMessageSchema = z.object({
+  message: z.string().min(1, "Message is required"),
+  sessionId: z.string().optional(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export type SendMessageInput = z.infer<typeof sendMessageSchema>;
+
+export const uploadFileSchema = z.object({
+  prompt: z.string().optional(),
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+export type UploadFileInput = z.infer<typeof uploadFileSchema>;
+
+export interface ChatResponse {
+  message: ChatMessage;
+  sessionId: string;
+}
+
+export interface UploadResponse {
+  success: boolean;
+  fileUri?: string;
+  fileName?: string;
+  mimeType?: string;
+  error?: string;
+}
+
+export interface AnalyzeResponse {
+  success: boolean;
+  analysis?: string;
+  error?: string;
+}
