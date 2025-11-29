@@ -29,7 +29,7 @@ interface UploadedFileInfo {
   mimeType: string;
 }
 
-const getPersonaInfo = (persona?: string) => {
+const getPersonaInfo = (persona: string | null) => {
   const personas: Record<string, any> = {
     chat: {
       title: "الدردشة",
@@ -45,7 +45,10 @@ const getPersonaInfo = (persona?: string) => {
     },
   };
   
-  return personas[persona] || personas.chat;
+  if (persona && personas[persona]) {
+    return personas[persona];
+  }
+  return personas.chat;
 };
 
 export default function Chat() {
@@ -57,7 +60,7 @@ export default function Chat() {
   const initialMessage = params.get("initialMessage") || ""; // Message from Hub search box
   const { language, user, token } = useAppContext();
 
-  const personaInfo = getPersonaInfo(persona);
+  const personaInfo = getPersonaInfo(persona || null);
   const { toast } = useToast();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -147,6 +150,7 @@ export default function Chat() {
           conversationId,
           persona: persona || undefined,
           systemPrompt: personaInfo.systemPrompt,
+          enableGrounding: enableGrounding,
           base64Data: data.base64Data,
           fileName: data.fileName,
           mimeType: data.mimeType,
