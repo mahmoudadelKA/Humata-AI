@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { MoreVertical, Trash2, Edit2, Share2 } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 
 interface Conversation {
   id: string;
@@ -44,6 +45,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
     },
     onSuccess: () => {
       setOpenMenu(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
     },
   });
 
@@ -61,6 +63,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
     onSuccess: () => {
       setRenamingId(null);
       setNewTitle("");
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
     },
   });
 
