@@ -319,9 +319,10 @@
     inset: -1px;
   }
 
-  /* Cyberpunk Grid Pattern Background - Enhanced Circuit Board Texture */
+  /* Cyberpunk Grid Pattern Background - Enhanced Circuit Board Texture with User Image */
   .cyber-grid {
     background-image: 
+      /* Neon overlay grid patterns */
       /* Fine horizontal lines */
       linear-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px),
       /* Fine vertical lines */
@@ -333,9 +334,13 @@
       radial-gradient(circle at 20px 20px, rgba(0, 240, 255, 0.12) 1.5px, transparent 1.5px),
       /* Diagonal accent lines for complexity */
       linear-gradient(45deg, transparent 48%, rgba(0, 240, 255, 0.05) 49%, rgba(0, 240, 255, 0.05) 51%, transparent 52%),
-      linear-gradient(-45deg, transparent 48%, rgba(255, 0, 110, 0.04) 49%, rgba(255, 0, 110, 0.04) 51%, transparent 52%);
-    background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px, 40px 40px, 80px 80px, 80px 80px;
-    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+      linear-gradient(-45deg, transparent 48%, rgba(255, 0, 110, 0.04) 49%, rgba(255, 0, 110, 0.04) 51%, transparent 52%),
+      /* Complex background texture image */
+      url('https://f.top4top.io/p_3620nlgq21.png');
+    background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px, 40px 40px, 80px 80px, 80px 80px, cover;
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, center;
+    background-attachment: fixed;
+    background-color: hsl(248 67% 11%);
   }
 
   /* Circuit pattern for more tech feel */
