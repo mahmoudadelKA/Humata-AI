@@ -16,7 +16,7 @@ interface FilePreview {
 }
 
 interface UploadedFileInfo {
-  fileUri: string;
+  base64Data: string;
   fileName: string;
   mimeType: string;
 }
@@ -86,7 +86,7 @@ export default function Chat() {
   }, [messages]);
 
   const sendMessageMutation = useMutation({
-    mutationFn: async (data: { message: string; fileUri?: string; fileName?: string; mimeType?: string }) => {
+    mutationFn: async (data: { message: string; base64Data?: string; fileName?: string; mimeType?: string }) => {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -95,7 +95,7 @@ export default function Chat() {
           sessionId,
           persona: persona || undefined,
           systemPrompt: personaInfo.systemPrompt,
-          fileUri: data.fileUri,
+          base64Data: data.base64Data,
           fileName: data.fileName,
           mimeType: data.mimeType,
         }),
@@ -140,9 +140,9 @@ export default function Chat() {
       return response.json() as Promise<UploadResponse>;
     },
     onSuccess: (data) => {
-      if (data.success && data.fileUri) {
+      if (data.success && data.base64Data) {
         setUploadedFileInfo({
-          fileUri: data.fileUri,
+          base64Data: data.base64Data,
           fileName: data.fileName || "file",
           mimeType: data.mimeType || "unknown",
         });
@@ -218,7 +218,7 @@ export default function Chat() {
     
     sendMessageMutation.mutate({
       message: trimmedInput || "Please analyze this file and describe what you see.",
-      fileUri: uploadedFileInfo?.fileUri,
+      base64Data: uploadedFileInfo?.base64Data,
       fileName: uploadedFileInfo?.fileName,
       mimeType: uploadedFileInfo?.mimeType,
     });

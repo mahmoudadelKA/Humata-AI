@@ -57,9 +57,9 @@ export async function registerRoutes(
   
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
-      const { message, sessionId, persona, systemPrompt, fileUri, fileName, mimeType } = req.body;
+      const { message, sessionId, persona, systemPrompt, base64Data, fileName, mimeType } = req.body;
 
-      console.log(`[Routes] Chat request - message: "${message?.substring(0, 50)}...", hasFile: ${!!fileUri}`);
+      console.log(`[Routes] Chat request - message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}`);
 
       if (!message || typeof message !== "string") {
         res.status(400).json({ error: "Message is required" });
@@ -80,7 +80,7 @@ export async function registerRoutes(
 
       const aiResponse = await sendChatMessage(message, history, {
         systemPrompt: systemPrompt || undefined,
-        fileUri: fileUri || undefined,
+        base64Data: base64Data || undefined,
         mimeType: mimeType || undefined,
         fileName: fileName || undefined,
       });
@@ -90,7 +90,7 @@ export async function registerRoutes(
         role: "user" as const,
         content: message,
         timestamp: new Date(),
-        fileInfo: fileUri ? { name: fileName || "file", type: mimeType || "unknown" } : undefined,
+        fileInfo: base64Data ? { name: fileName || "file", type: mimeType || "unknown" } : undefined,
       };
 
       const assistantMessage = {
@@ -138,11 +138,11 @@ export async function registerRoutes(
         else console.log(`[Routes] Temp file deleted: ${file.path}`);
       });
 
-      console.log(`[Routes] Upload successful - fileUri: ${uploadResult.fileUri}`);
+      console.log(`[Routes] Upload successful - fileName: ${uploadResult.fileName}`);
 
       res.json({
         success: true,
-        fileUri: uploadResult.fileUri,
+        base64Data: uploadResult.base64Data,
         fileName: uploadResult.fileName,
         mimeType: uploadResult.mimeType,
       });
