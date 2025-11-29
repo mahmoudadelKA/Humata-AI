@@ -54,6 +54,8 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState<string>(convId);
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const [showUrlModal, setShowUrlModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -437,7 +439,7 @@ export default function Chat() {
                 disabled={uploadFileMutation.isPending || sendMessageMutation.isPending}
                 data-testid="button-upload-file"
                 className="h-8 w-8"
-                title={t("chat.file-upload", language)}
+                title={language === "ar" ? "رفع ملف" : "Upload File"}
               >
                 {uploadFileMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -447,6 +449,17 @@ export default function Chat() {
               </Button>
             )}
 
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowUrlModal(true)}
+              disabled={sendMessageMutation.isPending}
+              data-testid="button-url"
+              className="h-8 w-8"
+              title={language === "ar" ? "إضافة رابط" : "Add URL"}
+            >
+              <Link2 className="w-4 h-4" />
+            </Button>
 
             <Input
               placeholder={t("chat.placeholder", language)}
@@ -476,6 +489,55 @@ export default function Chat() {
               )}
             </Button>
           </div>
+
+          {showUrlModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-card p-6 rounded-lg w-96 shadow-lg">
+                <h3 className="font-bold mb-4">{language === "ar" ? "إضافة رابط" : "Add URL"}</h3>
+                <Input
+                  placeholder={language === "ar" ? "الصق الرابط هنا..." : "Paste URL here..."}
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  className="mb-4"
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => {
+                      setShowUrlModal(false);
+                      setUrlInput("");
+                    }} 
+                    variant="outline" 
+                    className="flex-1"
+                  >
+                    {language === "ar" ? "إلغاء" : "Cancel"}
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      if (urlInput.trim()) {
+                        const userMessage = {
+                          id: Date.now().toString(),
+                          role: "user" as const,
+                          content: `${urlInput}`,
+                          timestamp: new Date(),
+                        };
+                        setMessages((prev) => [...prev, userMessage]);
+                        setInputValue("");
+                        sendMessageMutation.mutate({
+                          message: `يرجى جلب محتوى هذا الرابط ومناقشته معي: ${urlInput}`,
+                        });
+                        setShowUrlModal(false);
+                        setUrlInput("");
+                      }
+                    }} 
+                    className="flex-1"
+                  >
+                    {language === "ar" ? "تم" : "Done"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
         </div>
       </footer>
