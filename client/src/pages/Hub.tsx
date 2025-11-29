@@ -151,12 +151,8 @@ export default function Hub() {
 
         <main className="max-w-6xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
-            <h2 className={`text-2xl font-bold mb-6 text-foreground ${language === "ar" ? "text-4xl" : ""}`}>
-              {t("hub.chat.title", language)}
-            </h2>
-            
             <div className="max-w-2xl mx-auto mb-12">
-              <div className="flex items-center gap-2 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20">
+              <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-2 border border-primary/40 shadow-lg">
                 <Input
                   placeholder={t("hub.chat.input", language)}
                   value={inputValue}
