@@ -95,33 +95,39 @@ const iconMap: Record<string, typeof MessageSquare> = {
 function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   const IconComponent = iconMap[feature.icon];
   
-  const glowClass = {
-    cyan: "neon-card neon-card-cyan group",
-    magenta: "neon-card neon-card-magenta group",
-    purple: "neon-card neon-card-purple group",
-    green: "neon-card neon-card-green group",
-    yellow: "neon-card neon-card-yellow group",
-  }[feature.glowColor];
-
-  const iconGlow = {
-    cyan: "text-[hsl(180,100%,50%)] neon-icon-simple-cyan",
-    magenta: "text-[hsl(328,100%,50%)] neon-icon-simple-magenta",
-    purple: "text-[hsl(270,100%,60%)] neon-icon-simple-purple",
-    green: "text-[hsl(120,100%,50%)] neon-icon-simple-green",
-    yellow: "text-[hsl(45,100%,50%)] neon-icon-simple-yellow",
+  const colorMap = {
+    cyan: { border: "hsl(180 100% 50%)", icon: "hsl(180,100%,50%)", glow: "neon-icon-simple-cyan" },
+    magenta: { border: "hsl(328 100% 50%)", icon: "hsl(328,100%,50%)", glow: "neon-icon-simple-magenta" },
+    purple: { border: "hsl(270 100% 60%)", icon: "hsl(270,100%,60%)", glow: "neon-icon-simple-purple" },
+    green: { border: "hsl(120 100% 50%)", icon: "hsl(120,100%,50%)", glow: "neon-icon-simple-green" },
+    yellow: { border: "hsl(45 100% 50%)", icon: "hsl(45,100%,50%)", glow: "neon-icon-simple-yellow" },
   }[feature.glowColor];
 
   return (
     <Link href={feature.route}>
       <div
-        className={`${glowClass} p-3 cursor-pointer flex flex-col items-center justify-center gap-2 aspect-square`}
+        className="group cursor-pointer flex flex-col items-center justify-center gap-1.5 w-20 h-20 p-2 border-2 rounded-none transition-all duration-150 hover:shadow-lg"
+        style={{
+          borderColor: `${colorMap.border} / 0.4`,
+          backgroundColor: "hsl(248 55% 14% / 0.5)",
+          boxShadow: `inset 0 0 0 1px ${colorMap.border} / 0.2, 0 0 4px ${colorMap.border} / 0.1`,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = `${colorMap.border} / 0.8`;
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border} / 0.4, 0 0 8px ${colorMap.border} / 0.3`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = `${colorMap.border} / 0.4`;
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border} / 0.2, 0 0 4px ${colorMap.border} / 0.1`;
+        }}
         data-testid={`card-feature-${feature.id}`}
       >
         <IconComponent 
-          className={`w-8 h-8 ${iconGlow} transition-all duration-200 group-hover:scale-110`} 
-          strokeWidth={2}
+          className={`w-7 h-7 ${colorMap.glow} transition-transform duration-150 group-hover:scale-110`}
+          style={{ color: colorMap.icon }}
+          strokeWidth={1.5}
         />
-        <h3 className="text-xs font-bold text-foreground text-center leading-tight">
+        <h3 className="text-[10px] font-bold text-center leading-tight text-foreground" style={{ maxWidth: "80px" }}>
           {feature.title}
         </h3>
       </div>
@@ -160,7 +166,7 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-6 py-8" dir="rtl">
-          <div className="text-center mb-8">
+          <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2 text-foreground">
               اختر الواجهة
             </h2>
@@ -170,7 +176,7 @@ export default function Hub() {
           </div>
 
           <div 
-            className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4"
+            className="flex flex-wrap justify-center items-center gap-6"
             data-testid="feature-grid"
           >
             {features.map((feature) => (
