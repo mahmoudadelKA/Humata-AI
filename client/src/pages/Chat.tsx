@@ -7,12 +7,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { ChatMessage, ChatResponse, UploadResponse, AnalyzeResponse } from "@shared/schema";
+import type { ChatMessage, ChatResponse, UploadResponse, FileData } from "@shared/schema";
 
 interface FilePreview {
   file: File;
   preview?: string;
   type: "image" | "pdf" | "other";
+}
+
+interface UploadedFileData {
+  base64: string;
+  mimeType: string;
+  fileName: string;
 }
 
 function getPersonaInfo(persona: string | null) {
@@ -64,7 +70,7 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [attachedFile, setAttachedFile] = useState<FilePreview | null>(null);
-  const [uploadedFileUri, setUploadedFileUri] = useState<string | null>(null);
+  const [uploadedFileData, setUploadedFileData] = useState<UploadedFileData | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -80,7 +86,7 @@ export default function Chat() {
   }, [messages]);
 
   const sendMessageMutation = useMutation({
-    mutationFn: async (data: { message: string; fileUri?: string; fileName?: string; mimeType?: string }) => {
+    mutationFn: async (data: { message: string; fileData?: UploadedFileData }) => {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -89,9 +95,7 @@ export default function Chat() {
           sessionId,
           persona: persona || undefined,
           systemPrompt: personaInfo.systemPrompt,
-          fileUri: data.fileUri,
-          fileName: data.fileName,
-          mimeType: data.mimeType,
+          fileData: data.fileData,
         }),
       });
       
@@ -105,7 +109,7 @@ export default function Chat() {
     onSuccess: (data) => {
       setMessages((prev) => [...prev, data.message]);
       setSessionId(data.sessionId);
-      setUploadedFileUri(null);
+      setUploadedFileData(null);
     },
     onError: (error: Error) => {
       toast({
@@ -127,17 +131,18 @@ export default function Chat() {
       });
       
       if (!response.ok) {
-        throw new Error("Failed to upload file");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to upload file");
       }
       
       return response.json() as Promise<UploadResponse>;
     },
     onSuccess: (data) => {
-      if (data.success && data.fileUri) {
-        setUploadedFileUri(data.fileUri);
+      if (data.success && data.fileData) {
+        setUploadedFileData(data.fileData);
         toast({
           title: "File uploaded",
-          description: `${data.fileName} ready for analysis`,
+          description: `${data.fileData.fileName} ready for analysis`,
         });
       }
     },
@@ -179,7 +184,7 @@ export default function Chat() {
       URL.revokeObjectURL(attachedFile.preview);
     }
     setAttachedFile(null);
-    setUploadedFileUri(null);
+    setUploadedFileData(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -189,7 +194,7 @@ export default function Chat() {
     e?.preventDefault();
     
     const trimmedInput = input.trim();
-    if (!trimmedInput && !uploadedFileUri) return;
+    if (!trimmedInput && !uploadedFileData) return;
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
@@ -199,7 +204,6 @@ export default function Chat() {
       fileInfo: attachedFile ? {
         name: attachedFile.file.name,
         type: attachedFile.file.type,
-        uri: uploadedFileUri || undefined,
       } : undefined,
     };
 
@@ -208,9 +212,7 @@ export default function Chat() {
     
     sendMessageMutation.mutate({
       message: trimmedInput || "Please analyze this file and describe what you see.",
-      fileUri: uploadedFileUri || undefined,
-      fileName: attachedFile?.file.name,
-      mimeType: attachedFile?.file.type,
+      fileData: uploadedFileData || undefined,
     });
     
     handleRemoveFile();
@@ -375,7 +377,7 @@ export default function Chat() {
                     <span className="flex items-center gap-1">
                       <Loader2 className="w-3 h-3 animate-spin" /> Uploading...
                     </span>
-                  ) : uploadedFileUri ? (
+                  ) : uploadedFileData ? (
                     "Ready for analysis"
                   ) : (
                     "Preparing..."
@@ -435,7 +437,7 @@ export default function Chat() {
 
             <Button
               type="submit"
-              disabled={isLoading || (!input.trim() && !uploadedFileUri)}
+              disabled={isLoading || (!input.trim() && !uploadedFileData)}
               className="flex-shrink-0 neon-glow-cyan"
               data-testid="button-send"
             >

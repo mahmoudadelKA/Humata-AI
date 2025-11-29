@@ -1,14 +1,13 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import multer from "multer";
-import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
-import { sendChatMessage, uploadFileToGemini } from "./gemini";
-import { sendMessageSchema } from "@shared/schema";
+import { sendChatMessage, processUploadedFile } from "./gemini";
 import { randomUUID } from "crypto";
 
-const uploadDir = path.join(process.cwd(), "uploads");
+// Use /tmp/ for reliable temporary file storage
+const uploadDir = "/tmp/uploads";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -22,7 +21,7 @@ const upload = multer({
     },
   }),
   limits: {
-    fileSize: 20 * 1024 * 1024,
+    fileSize: 20 * 1024 * 1024, // 20MB limit
   },
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
@@ -45,9 +44,12 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
+  // Chat endpoint - handles text and optional file data
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
-      const { message, sessionId, persona, systemPrompt, fileUri, fileName, mimeType } = req.body;
+      const { message, sessionId, persona, systemPrompt, fileData } = req.body;
+
+      console.log(`[Routes] Chat request received - message: "${message?.substring(0, 50)}...", hasFile: ${!!fileData}`);
 
       if (!message || typeof message !== "string") {
         res.status(400).json({ error: "Message is required" });
@@ -68,9 +70,7 @@ export async function registerRoutes(
 
       const aiResponse = await sendChatMessage(message, history, {
         systemPrompt: systemPrompt || undefined,
-        fileUri: fileUri || undefined,
-        fileName: fileName || undefined,
-        mimeType: mimeType || undefined,
+        fileData: fileData || undefined,
       });
 
       const userMessage = {
@@ -78,7 +78,7 @@ export async function registerRoutes(
         role: "user" as const,
         content: message,
         timestamp: new Date(),
-        fileInfo: fileUri ? { name: fileName || "file", type: mimeType || "unknown", uri: fileUri } : undefined,
+        fileInfo: fileData ? { name: fileData.fileName, type: fileData.mimeType } : undefined,
       };
 
       const assistantMessage = {
@@ -91,44 +91,51 @@ export async function registerRoutes(
       await storage.addMessage(currentSessionId, userMessage);
       await storage.addMessage(currentSessionId, assistantMessage);
 
+      console.log(`[Routes] Chat response sent successfully`);
+
       res.json({
         message: assistantMessage,
         sessionId: currentSessionId,
       });
     } catch (error: any) {
-      console.error("Chat error:", error);
+      console.error("[Routes] Chat error:", error);
       res.status(500).json({ 
         error: error.message || "Failed to process chat message" 
       });
     }
   });
 
+  // File upload endpoint - processes file and returns base64 data
   app.post("/api/upload", upload.single("file"), async (req: Request, res: Response) => {
     try {
       const file = req.file;
+      
+      console.log(`[Routes] Upload request received - file: ${file?.originalname || 'none'}`);
+      
       if (!file) {
+        console.error("[Routes] No file in upload request");
         res.status(400).json({ success: false, error: "No file uploaded" });
         return;
       }
 
-      const filePath = file.path;
-      const mimeType = file.mimetype;
-      const displayName = file.originalname;
+      console.log(`[Routes] File metadata - path: ${file.path}, mimetype: ${file.mimetype}, size: ${file.size}`);
 
-      const uploadResult = await uploadFileToGemini(filePath, mimeType, displayName);
+      const fileData = await processUploadedFile(file.path, file.mimetype, file.originalname);
 
-      fs.unlink(filePath, (err) => {
-        if (err) console.error("Failed to delete temp file:", err);
+      // Clean up temp file after processing
+      fs.unlink(file.path, (err) => {
+        if (err) console.error("[Routes] Failed to delete temp file:", err);
+        else console.log(`[Routes] Temp file deleted: ${file.path}`);
       });
+
+      console.log(`[Routes] Upload processed successfully - fileName: ${file.originalname}`);
 
       res.json({
         success: true,
-        fileUri: uploadResult.uri,
-        fileName: displayName,
-        mimeType: mimeType,
+        fileData: fileData,
       });
     } catch (error: any) {
-      console.error("Upload error:", error);
+      console.error("[Routes] Upload error:", error);
       res.status(500).json({ 
         success: false, 
         error: error.message || "Failed to upload file" 
@@ -136,6 +143,7 @@ export async function registerRoutes(
     }
   });
 
+  // Health check endpoint
   app.get("/api/health", (req: Request, res: Response) => {
     res.json({ 
       status: "online", 

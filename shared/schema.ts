@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export interface FileData {
+  base64: string;
+  mimeType: string;
+  fileName: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -8,7 +14,6 @@ export interface ChatMessage {
   fileInfo?: {
     name: string;
     type: string;
-    uri?: string;
   };
 }
 
@@ -47,9 +52,7 @@ export interface ChatResponse {
 
 export interface UploadResponse {
   success: boolean;
-  fileUri?: string;
-  fileName?: string;
-  mimeType?: string;
+  fileData?: FileData;
   error?: string;
 }
 

@@ -1,6 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 import * as fs from "fs";
-import * as path from "path";
+
+// DON'T DELETE THIS COMMENT
+// Using blueprint:javascript_gemini integration
+// The newest Gemini model series is "gemini-2.5-flash" or "gemini-2.5-pro"
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
@@ -8,9 +11,11 @@ const MODEL_NAME = "gemini-2.5-flash";
 
 export interface GeminiChatOptions {
   systemPrompt?: string;
-  fileUri?: string;
-  fileName?: string;
-  mimeType?: string;
+  fileData?: {
+    base64: string;
+    mimeType: string;
+    fileName: string;
+  };
 }
 
 export async function sendChatMessage(
@@ -30,11 +35,13 @@ export async function sendChatMessage(
 
     const userParts: any[] = [];
     
-    if (options.fileUri && options.mimeType) {
+    // Add file as inline data if provided
+    if (options.fileData) {
+      console.log(`[Gemini] Adding file to request: ${options.fileData.fileName}, type: ${options.fileData.mimeType}`);
       userParts.push({
-        fileData: {
-          fileUri: options.fileUri,
-          mimeType: options.mimeType,
+        inlineData: {
+          data: options.fileData.base64,
+          mimeType: options.fileData.mimeType,
         },
       });
     }
@@ -52,63 +59,47 @@ export async function sendChatMessage(
       config.systemInstruction = options.systemPrompt;
     }
 
+    console.log(`[Gemini] Sending request with ${contents.length} messages, hasFile: ${!!options.fileData}`);
+
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
       contents,
       config,
     });
 
+    console.log(`[Gemini] Response received successfully`);
     return response.text || "I apologize, but I couldn't generate a response.";
   } catch (error: any) {
-    console.error("Gemini API error:", error);
+    console.error("[Gemini] API error:", error);
     throw new Error(error.message || "Failed to generate response from AI");
   }
 }
 
-export async function uploadFileToGemini(
+export async function processUploadedFile(
   filePath: string,
   mimeType: string,
-  displayName: string
-): Promise<{ uri: string; name: string; mimeType: string }> {
+  fileName: string
+): Promise<{ base64: string; mimeType: string; fileName: string }> {
   try {
+    console.log(`[Gemini] Processing file: ${fileName}, path: ${filePath}, type: ${mimeType}`);
+    
     const fileBytes = fs.readFileSync(filePath);
     const base64Data = fileBytes.toString("base64");
     
-    const uploadResult = await ai.files.upload({
-      file: {
-        mimeType,
-        displayName,
-        data: base64Data,
-      },
-    });
-
-    if (!uploadResult.uri) {
-      throw new Error("File upload failed - no URI returned");
-    }
-
-    let file = uploadResult;
-    while (file.state === "PROCESSING") {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const getResult = await ai.files.get({ name: file.name! });
-      file = getResult;
-    }
-
-    if (file.state === "FAILED") {
-      throw new Error("File processing failed");
-    }
-
+    console.log(`[Gemini] File processed successfully, base64 length: ${base64Data.length}`);
+    
     return {
-      uri: file.uri!,
-      name: file.name!,
-      mimeType: file.mimeType!,
+      base64: base64Data,
+      mimeType: mimeType,
+      fileName: fileName,
     };
   } catch (error: any) {
-    console.error("File upload error:", error);
-    throw new Error(error.message || "Failed to upload file to Gemini");
+    console.error("[Gemini] File processing error:", error);
+    throw new Error(error.message || "Failed to process file");
   }
 }
 
-export async function analyzeImageBase64(
+export async function analyzeImage(
   base64Data: string,
   mimeType: string,
   prompt: string = "Analyze this image in detail and describe its key elements, context, and any notable aspects."
@@ -131,7 +122,7 @@ export async function analyzeImageBase64(
 
     return response.text || "Unable to analyze the image.";
   } catch (error: any) {
-    console.error("Image analysis error:", error);
+    console.error("[Gemini] Image analysis error:", error);
     throw new Error(error.message || "Failed to analyze image");
   }
 }
