@@ -42,9 +42,9 @@ const getPersonaInfo = (persona?: string) => {
     },
     research: {
       title: "البحث العلمي",
-      description: "بحث أكاديمي متقدم",
-      systemPrompt: `أنت باحث أكاديمي متقدم متخصص. قدم تحليلات عميقة، استشهادات موثوقة، وبحثاً شاملاً. استخدم مراجع علمية موثوقة. الرد بصيغة عربية أكاديمية.`,
-      controlIcons: ["download"],
+      description: "بحث أكاديمي متقدم مع مصادر موثوقة (PubMed, Google Scholar, ResearchGate)",
+      systemPrompt: `أنت باحث أكاديمي متقدم متخصص. قدم تحليلات عميقة، استشهادات موثوقة، وبحثاً شاملاً. استخدم مراجع من مصادر موثوقة مثل PubMed و Google Scholar و ResearchGate. الرد بصيغة عربية أكاديمية.`,
+      controlIcons: ["search"],
     },
     tests: {
       title: "الاختبارات",
@@ -54,14 +54,14 @@ const getPersonaInfo = (persona?: string) => {
     },
     doctor: {
       title: "الدكتور - مستشار صحي",
-      description: "معلومات طبية وآفاق صحية",
-      systemPrompt: `أنت طبيب متخصص وباحث طبي. توفر معلومات طبية تعليمية دقيقة. تحذير مهم: تذكر دائماً أن المستخدمين يجب عليهم استشارة متخصصي الرعاية الصحية المؤهلين. الرد بصيغة عربية طبية.`,
+      description: "معلومات طبية من مصادر موثوقة (Mayo Clinic, WHO, Medline Plus)",
+      systemPrompt: `أنت طبيب متخصص وباحث طبي. توفر معلومات طبية تعليمية دقيقة من مصادر موثوقة مثل Mayo Clinic و WHO و Medline Plus. تحذير مهم: تذكر دائماً أن المستخدمين يجب عليهم استشارة متخصصي الرعاية الصحية المؤهلين. الرد بصيغة عربية طبية.`,
       controlIcons: ["upload", "search"],
     },
     scientist: {
       title: "المساعد العلمي",
-      description: "مساعد أكاديمي متخصص",
-      systemPrompt: `أنت باحث ومساعد أكاديمي متعدد المجالات. توفر تحليلات عميقة، توضيحات علمية وإجابات شاملة على أسئلة متقدمة. الرد بصيغة عربية أكاديمية.`,
+      description: "حل مسائل رياضية، فيزيائية، كيميائية، لغة عربية",
+      systemPrompt: `أنت باحث ومساعد أكاديمي متخصص في الرياضيات والفيزياء والكيمياء واللغة العربية. توفر حلولاً دقيقة، شروحات تفصيلية، واستخدام مصادر تعليمية موثوقة. الرد بصيغة عربية أكاديمية واضحة.`,
       controlIcons: ["upload", "search"],
     },
     khedive: {
@@ -69,9 +69,15 @@ const getPersonaInfo = (persona?: string) => {
       description: "تحليل استراتيجي متقدم واتخاذ القرارات",
       systemPrompt: `أنت الخديوي، مستشار استراتيجي متقدم. توفر تحليل عميق، رؤى استراتيجية وإرشادات مدروسة حول القرارات المعقدة. استجاباتك شاملة، استراتيجية وموجهة لمساعدة المستخدمين في التغلب على التحديات بثقة.`,
     },
+    "google-images": {
+      title: "توليد الصور",
+      description: "البحث عن الصور من Google Images",
+      systemPrompt: "",
+      isEmbedded: true,
+    },
     images: {
       title: "صور ذكاء اصطناعي",
-      description: "محرك البحث عن الصور المتقدم",
+      description: "محرك البحث عن الصور من Kiira AI",
       systemPrompt: "",
       isEmbedded: true,
     },
@@ -269,7 +275,52 @@ export default function Chat() {
     uploadFileMutation.mutate(file);
   };
 
-  // For embedded content like images (AI Images section)
+  // For embedded content like Google Images or AI Images
+  if (persona === "google-images") {
+    return (
+      <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
+        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
+          <div className="px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
+                {personaInfo.title}
+              </h2>
+            </div>
+            <Link href="/">
+              <Button
+                variant="ghost"
+                size="icon"
+                data-testid="button-back"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+        </header>
+        <main className="flex-1 overflow-hidden w-full flex items-center justify-center">
+          <div className="text-center">
+            <p className={`text-foreground mb-6 ${language === "ar" ? "text-lg" : ""}`}>
+              {language === "ar" ? "انقر على الزر أدناه للوصول إلى Google Images" : "Click the button below to access Google Images"}
+            </p>
+            <a 
+              href="https://images.google.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button 
+                size="lg"
+                data-testid="open-google-images"
+                className="px-8"
+              >
+                {language === "ar" ? "فتح Google Images" : "Open Google Images"}
+              </Button>
+            </a>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   if (persona === "images") {
     return (
       <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
@@ -294,7 +345,7 @@ export default function Chat() {
         <main className="flex-1 overflow-hidden w-full flex items-center justify-center">
           <div className="text-center">
             <p className={`text-foreground mb-6 ${language === "ar" ? "text-lg" : ""}`}>
-              {language === "ar" ? "انقر على الزر أدناه للوصول إلى محرك البحث عن الصور" : "Click the button below to access the image search engine"}
+              {language === "ar" ? "انقر على الزر أدناه للوصول إلى محرك البحث عن الصور Kiira AI" : "Click the button below to access Kiira AI image search"}
             </p>
             <a 
               href="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
@@ -306,7 +357,7 @@ export default function Chat() {
                 data-testid="open-kiira-images"
                 className="px-8"
               >
-                {language === "ar" ? "فتح محرك البحث" : "Open Image Search"}
+                {language === "ar" ? "فتح Kiira AI" : "Open Kiira AI"}
               </Button>
             </a>
           </div>
