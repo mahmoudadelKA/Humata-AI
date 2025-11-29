@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -43,6 +43,12 @@ const getPersonaInfo = (persona: string | null) => {
       systemPrompt: `أنت مساعد ذكاء اصطناعي متخصص في الإجابة على الأسئلة. قدم إجابات دقيقة وشاملة ومفيدة. الرد بصيغة عربية سليمة.`,
       controlIcons: ["upload", "search", "ai-only"],
     },
+    research: {
+      title: "البحث العلمي",
+      description: "بحث متقدم من مصادر علمية موثوقة",
+      systemPrompt: `أنت باحث متخصص. قم بإجراء بحث شامل من مصادر علمية موثوقة. قدم النتائج مع الاستشهادات والمراجع. استخدم البيانات والإحصائيات الموثوقة. الرد بصيغة عربية سليمة.`,
+      controlIcons: ["google-scholar", "pubmed", "research-db"],
+    },
   };
   
   if (persona && personas[persona]) {
@@ -69,7 +75,7 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" ? true : false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -489,6 +495,48 @@ export default function Chat() {
                 title={language === "ar" ? "ذكاء فقط" : "AI Only"}
               >
                 <Radio className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("google-scholar") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open("https://scholar.google.com/", "_blank")}
+                disabled={sendMessageMutation.isPending}
+                data-testid="button-google-scholar"
+                className="h-8 w-8"
+                title={language === "ar" ? "Google Scholar" : "Google Scholar"}
+              >
+                <Globe className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("pubmed") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open("https://pubmed.ncbi.nlm.nih.gov/", "_blank")}
+                disabled={sendMessageMutation.isPending}
+                data-testid="button-pubmed"
+                className="h-8 w-8"
+                title={language === "ar" ? "PubMed" : "PubMed"}
+              >
+                <FileText className="w-4 h-4" />
+              </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("research-db") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.open("https://www.researchgate.net/", "_blank")}
+                disabled={sendMessageMutation.isPending}
+                data-testid="button-research-db"
+                className="h-8 w-8"
+                title={language === "ar" ? "ResearchGate" : "ResearchGate"}
+              >
+                <Database className="w-4 h-4" />
               </Button>
             )}
 

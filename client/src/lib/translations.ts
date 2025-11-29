@@ -15,6 +15,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "hub.chat.send": "إرسال",
     "feature.chat": "الدردشة",
     "feature.ask": "اسأل",
+    "feature.research": "البحث العلمي",
   },
   en: {
     "system.active": "System Active",
@@ -30,6 +31,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "hub.chat.send": "Send",
     "feature.chat": "Chat",
     "feature.ask": "Ask",
+    "feature.research": "Research",
   },
 };
 
