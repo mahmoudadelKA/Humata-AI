@@ -32,19 +32,19 @@ function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
 
   return (
-    <div className="fixed top-4 left-4 z-50 flex items-center gap-2 bg-muted/20 border border-border/30 rounded-lg p-2 backdrop-blur-sm">
+    <div className="fixed top-4 left-4 z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all">
       <Button
         variant="ghost"
         size="icon"
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         data-testid="button-theme-toggle"
-        className="h-8 w-8"
+        className="h-9 w-9 rounded-lg hover:bg-primary/10"
         title={theme === "dark" ? "Light Mode" : "Dark Mode"}
       >
         {theme === "dark" ? (
-          <Sun className="w-4 h-4" />
+          <Sun className="w-5 h-5 text-primary" />
         ) : (
-          <Moon className="w-4 h-4" />
+          <Moon className="w-5 h-5 text-primary" />
         )}
       </Button>
 
@@ -53,24 +53,24 @@ function TopLeftControls() {
         size="icon"
         onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
         data-testid="button-language-toggle"
-        className="h-8 w-8"
+        className="h-9 w-9 rounded-lg hover:bg-accent/10 flex items-center justify-center gap-1"
         title={language === "ar" ? "English" : "العربية"}
       >
-        <Globe className="w-4 h-4" />
-        <span className="text-[10px] ml-1">{language.toUpperCase()}</span>
+        <Globe className="w-5 h-5 text-accent" />
+        <span className="text-[11px] font-bold text-accent">{language.toUpperCase()}</span>
       </Button>
 
-      <div className="w-px h-6 bg-border/20"></div>
+      <div className="w-0.5 h-7 bg-border/40 rounded-full"></div>
 
       <Button
         variant="ghost"
         size="icon"
         data-testid="button-reserved"
-        className="h-8 w-8 opacity-50 cursor-default"
+        className="h-9 w-9 opacity-40 cursor-default rounded-lg"
         disabled
         title="Reserved for future use"
       >
-        <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+        <div className="w-2 h-2 rounded-full bg-primary/50"></div>
       </Button>
     </div>
   );

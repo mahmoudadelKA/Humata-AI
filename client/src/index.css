@@ -114,7 +114,61 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
-/* Dark mode is identical - always cyberpunk */
+/* Light mode */
+.light {
+  --button-outline: rgba(0, 120, 212, .15);
+  --badge-outline: rgba(200, 50, 150, .10);
+  --opaque-button-border-intensity: 12;
+  --elevate-1: rgba(0, 120, 212, .06);
+  --elevate-2: rgba(200, 50, 150, .12);
+  
+  --background: 0 0% 98%;
+  --foreground: 0 0% 20%;
+  --border: 0 0% 80%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+  --card-border: 200 100% 50%;
+  
+  --sidebar: 0 0% 96%;
+  --sidebar-foreground: 0 0% 20%;
+  --sidebar-border: 0 0% 80%;
+  --sidebar-primary: 200 100% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 320 100% 50%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-ring: 200 100% 50%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+  --popover-border: 200 100% 40%;
+  
+  --primary: 200 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 85%;
+  --secondary-foreground: 0 0% 20%;
+  
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 50%;
+  
+  --accent: 320 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 85% 50%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --input: 0 0% 95%;
+  --ring: 200 100% 50%;
+  
+  --chart-1: 200 100% 50%;
+  --chart-2: 320 100% 50%;
+  --chart-3: 270 100% 50%;
+  --chart-4: 45 100% 55%;
+  --chart-5: 120 100% 45%;
+}
+
+/* Dark mode is cyberpunk */
 .dark {
   --button-outline: rgba(0, 240, 255, .15);
   --badge-outline: rgba(255, 0, 110, .10);

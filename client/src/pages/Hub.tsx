@@ -1,83 +1,18 @@
 import { Link } from "wouter";
 import { MessageSquare, Brain, Stethoscope, Eye, FileText, Zap, Lightbulb, Cpu, Rss } from "lucide-react";
+import { useAppContext } from "@/App";
+import { t } from "@/lib/translations";
 import type { FeatureCard } from "@shared/schema";
 
-const features: FeatureCard[] = [
-  // Top row
-  {
-    id: "chat",
-    title: "الحدثة",
-    description: "محادثة ذكية مع الذكاء الاصطناعي المتقدم",
-    icon: "MessageSquare",
-    route: "/chat",
-    glowColor: "cyan",
-    position: "top-left",
-  },
-  {
-    id: "quick",
-    title: "أسال",
-    description: "أسئلة وأجوبة سريعة وفورية",
-    icon: "Lightbulb",
-    route: "/chat?mode=quick",
-    glowColor: "cyan",
-    position: "top-center",
-  },
-  {
-    id: "docs",
-    title: "البحث العلمي",
-    description: "تحليل البحوث والمستندات العلمية",
-    icon: "FileText",
-    route: "/chat?mode=docs",
-    glowColor: "purple",
-    position: "top-right",
-  },
-  // Middle row
-  {
-    id: "doctor",
-    title: "الاختبارات",
-    description: "اختبارات وتحليل متقدم",
-    icon: "Stethoscope",
-    route: "/chat?persona=doctor",
-    glowColor: "magenta",
-    position: "middle-left",
-  },
-  {
-    id: "vision",
-    title: "توليد الصور",
-    description: "تحليل وتوليد الصور بتقنية الذكاء الاصطناعي",
-    icon: "Eye",
-    route: "/chat?mode=vision",
-    glowColor: "magenta",
-    position: "middle-right",
-  },
-  // Bottom row
-  {
-    id: "assistant",
-    title: "المساعد العلمي",
-    description: "مساعد ذكي للأبحاث العلمية",
-    icon: "Cpu",
-    route: "/chat?mode=assistant",
-    glowColor: "green",
-    position: "bottom-left",
-  },
-  {
-    id: "khedive",
-    title: "الخديوي",
-    description: "مستشار استراتيجي متقدم",
-    icon: "Brain",
-    route: "/chat?persona=khedive",
-    glowColor: "yellow",
-    position: "bottom-center",
-  },
-  {
-    id: "sync",
-    title: "التزامن",
-    description: "مزامنة سريعة للبيانات والإجابات",
-    icon: "Rss",
-    route: "/chat?mode=sync",
-    glowColor: "cyan",
-    position: "bottom-right",
-  },
+const featureKeys = [
+  { id: "chat", titleKey: "feature.chat", icon: "MessageSquare", route: "/chat", glowColor: "cyan" },
+  { id: "quick", titleKey: "feature.quick", icon: "Lightbulb", route: "/chat?mode=quick", glowColor: "cyan" },
+  { id: "docs", titleKey: "feature.docs", icon: "FileText", route: "/chat?mode=docs", glowColor: "purple" },
+  { id: "doctor", titleKey: "feature.tests", icon: "Stethoscope", route: "/chat?persona=doctor", glowColor: "magenta" },
+  { id: "vision", titleKey: "feature.image", icon: "Eye", route: "/chat?mode=vision", glowColor: "magenta" },
+  { id: "assistant", titleKey: "feature.assistant", icon: "Cpu", route: "/chat?mode=assistant", glowColor: "green" },
+  { id: "khedive", titleKey: "feature.khedive", icon: "Brain", route: "/chat?persona=khedive", glowColor: "yellow" },
+  { id: "sync", titleKey: "feature.sync", icon: "Rss", route: "/chat?mode=sync", glowColor: "cyan" },
 ];
 
 const iconMap: Record<string, typeof MessageSquare> = {
@@ -139,8 +74,20 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
 }
 
 export default function Hub() {
+  const { language } = useAppContext();
+  
+  const features: FeatureCard[] = featureKeys.map(key => ({
+    id: key.id,
+    title: t(key.titleKey, language),
+    description: "",
+    icon: key.icon as any,
+    route: key.route,
+    glowColor: key.glowColor as any,
+    position: "top-left",
+  }));
+
   return (
-    <div className="min-h-screen bg-background cyber-grid" dir="rtl">
+    <div className="min-h-screen bg-background cyber-grid" dir={language === "ar" ? "rtl" : "ltr"}>
       <div className="relative z-10">
         <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
           <div className="max-w-6xl mx-auto px-6 py-4">
@@ -148,16 +95,16 @@ export default function Hub() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 px-3 py-1 rounded border border-primary/30 bg-primary/5">
                   <span className="w-2 h-2 rounded-full bg-green-400" />
-                  <span className="text-xs text-muted-foreground">النظام نشط</span>
+                  <span className="text-xs text-muted-foreground">{t("system.active", language)}</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div>
                   <h1 className="text-xl font-bold text-foreground">
-                    مركز الذكاء الاصطناعي
+                    {t("hub.title", language)}
                   </h1>
                   <p className="text-xs text-muted-foreground">
-                    جيميني 2.5 برو
+                    {t("hub.subtitle", language)}
                   </p>
                 </div>
                 <div className="w-8 h-8 rounded border border-primary/30 flex items-center justify-center">
@@ -168,13 +115,13 @@ export default function Hub() {
           </div>
         </header>
 
-        <main className="max-w-6xl mx-auto px-6 py-8" dir="rtl">
+        <main className="max-w-6xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2 text-foreground">
-              اختر الواجهة
+              {t("hub.select", language)}
             </h2>
             <p className="text-sm text-muted-foreground">
-              وحدات الذكاء الاصطناعي المتقدمة
+              {t("hub.description", language)}
             </p>
           </div>
 
@@ -190,8 +137,8 @@ export default function Hub() {
 
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground border border-border/30 rounded">
-              <span>مدعوم من</span>
-              <span className="font-semibold">جيميني 2.5</span>
+              <span>{t("hub.powered", language)}</span>
+              <span className="font-semibold">{t("hub.gemini", language)}</span>
             </div>
           </div>
         </main>
@@ -199,7 +146,7 @@ export default function Hub() {
         <footer className="border-t border-border/30 mt-8 py-4">
           <div className="max-w-6xl mx-auto px-6 text-center">
             <p className="text-xs text-muted-foreground/50">
-              نظام الواجهة العصبية
+              {t("hub.system", language)}
             </p>
           </div>
         </footer>

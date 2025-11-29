@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Globe } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useAppContext } from "@/App";
+import { t } from "@/lib/translations";
 
 interface Message {
   id: string;
@@ -55,6 +57,7 @@ export default function Chat() {
   const params = new URLSearchParams(searchParams.split("?")[1] || "");
   const persona = params.get("persona") || "";
   const mode = params.get("mode") || "";
+  const { language } = useAppContext();
 
   const personaInfo = getPersonaInfo(persona);
   const { toast } = useToast();
@@ -176,7 +179,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="min-h-screen bg-background cyber-grid flex flex-col" dir="rtl">
+    <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -201,9 +204,9 @@ export default function Chat() {
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="text-6xl mb-4 opacity-10">◆</div>
-              <p className="text-muted-foreground mb-2">لا توجد رسائل حتى الآن</p>
+              <p className="text-muted-foreground mb-2">{t("chat.no-messages", language)}</p>
               <p className="text-xs text-muted-foreground/50">
-                ارفع ملف أو أرسل رسالة لتبدأ المحادثة
+                {t("chat.start", language)}
               </p>
             </div>
           ) : (
@@ -250,7 +253,7 @@ export default function Chat() {
                         ></div>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">جاري التفكير...</p>
+                    <p className="text-sm text-muted-foreground">{t("chat.thinking", language)}</p>
                   </div>
                 </div>
               )}
@@ -306,7 +309,7 @@ export default function Chat() {
             </Button>
 
             <Input
-              placeholder="اكتب رسالتك..."
+              placeholder={t("chat.placeholder", language)}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
