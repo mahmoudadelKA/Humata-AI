@@ -59,17 +59,41 @@ export default function Chat() {
   const params = new URLSearchParams(searchParams.split("?")[1] || "");
   const persona = params.get("persona") || "";
   const mode = params.get("mode") || "";
+  const convId = params.get("convId") || ""; // Get conversation ID from Hub
   const { language, user, token } = useAppContext();
 
   const personaInfo = getPersonaInfo(persona);
   const { toast } = useToast();
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState<string>("");
+  const [conversationId, setConversationId] = useState<string>(convId);
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Load messages from the conversation if convId is provided
+    if (convId) {
+      const loadConversationMessages = async () => {
+        try {
+          const response = await fetch("/api/conversations", {
+            credentials: "include",
+          });
+          if (response.ok) {
+            const conversations = await response.json();
+            const conversation = conversations.find((c: any) => c.id === convId);
+            if (conversation && conversation.messages) {
+              setMessages(conversation.messages);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load conversation:", error);
+        }
+      };
+      loadConversationMessages();
+    }
+  }, [convId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -83,18 +83,23 @@ export default function Hub() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           message,
-          sessionId: "hub-preview",
           systemPrompt: undefined,
         }),
       });
       if (!response.ok) throw new Error("Failed to send message");
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setInputValue("");
-      setLocation("/chat");
+      // Pass the conversation ID to the chat page
+      if (data.conversationId) {
+        setLocation(`/chat?convId=${data.conversationId}`);
+      } else {
+        setLocation("/chat");
+      }
     },
   });
 
