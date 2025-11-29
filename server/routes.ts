@@ -171,7 +171,7 @@ export async function registerRoutes(
       const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType } = req.body;
       const userId = (req as any).userId;
 
-      console.log(`[Routes] Chat request - message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}`);
+      console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}`);
 
       if (!message || typeof message !== "string") {
         res.status(400).json({ error: "Message is required" });
@@ -217,16 +217,22 @@ export async function registerRoutes(
 
       // Save to conversation if user is authenticated
       if (userId) {
+        console.log(`[Routes] Saving conversation for userId: ${userId}`);
         if (!currentConversationId) {
           // Create new conversation on first AI response
           const firstUserMsg = message.substring(0, 50);
+          console.log(`[Routes] Creating new conversation with title: ${firstUserMsg}`);
           const newConv = await storage.createConversation(userId, firstUserMsg);
           currentConversationId = newConv.id;
           isFirstResponse = true;
+          console.log(`[Routes] New conversation created: ${currentConversationId}`);
         }
         
+        console.log(`[Routes] Adding user message to conversation ${currentConversationId}`);
         await storage.addMessageToConversation(currentConversationId, userMessage);
+        console.log(`[Routes] Adding assistant message to conversation ${currentConversationId}`);
         await storage.addMessageToConversation(currentConversationId, assistantMessage);
+        console.log(`[Routes] Conversation saved successfully`);
       } else {
         // Fallback to session for non-authenticated users
         let sessionId = conversationId;
