@@ -106,28 +106,29 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   return (
     <Link href={feature.route}>
       <div
-        className="group cursor-pointer flex flex-col items-center justify-center gap-1.5 w-20 h-20 p-2 border-2 rounded-none transition-all duration-150 hover:shadow-lg"
+        className="group cursor-pointer flex flex-col items-center justify-center gap-1 w-20 h-20 transition-all duration-150"
         style={{
-          borderColor: `${colorMap.border} / 0.4`,
-          backgroundColor: "hsl(248 55% 14% / 0.5)",
-          boxShadow: `inset 0 0 0 1px ${colorMap.border} / 0.2, 0 0 4px ${colorMap.border} / 0.1`,
+          borderRadius: "0",
+          border: `2px solid ${colorMap.border}80`,
+          backgroundColor: "hsl(248 55% 14% / 0.6)",
+          boxShadow: `inset 0 0 0 1px ${colorMap.border}40, inset 1px 1px 2px ${colorMap.border}20, inset -1px -1px 2px hsl(0 0% 0% / 0.8), 0 0 3px ${colorMap.border}30, 0 0 6px ${colorMap.border}15`,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = `${colorMap.border} / 0.8`;
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border} / 0.4, 0 0 8px ${colorMap.border} / 0.3`;
+          e.currentTarget.style.borderColor = `${colorMap.border}`;
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border}80, inset 1px 1px 3px ${colorMap.border}40, inset -1px -1px 3px hsl(0 0% 0% / 0.9), 0 0 6px ${colorMap.border}60, 0 0 12px ${colorMap.border}40`;
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = `${colorMap.border} / 0.4`;
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border} / 0.2, 0 0 4px ${colorMap.border} / 0.1`;
+          e.currentTarget.style.borderColor = `${colorMap.border}80`;
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border}40, inset 1px 1px 2px ${colorMap.border}20, inset -1px -1px 2px hsl(0 0% 0% / 0.8), 0 0 3px ${colorMap.border}30, 0 0 6px ${colorMap.border}15`;
         }}
         data-testid={`card-feature-${feature.id}`}
       >
         <IconComponent 
-          className={`w-7 h-7 ${colorMap.glow} transition-transform duration-150 group-hover:scale-110`}
+          className={`w-6 h-6 ${colorMap.glow} transition-transform duration-150 group-hover:scale-110`}
           style={{ color: colorMap.icon }}
           strokeWidth={1.5}
         />
-        <h3 className="text-[10px] font-bold text-center leading-tight text-foreground" style={{ maxWidth: "80px" }}>
+        <h3 className="text-[9px] font-bold text-center leading-tight text-foreground overflow-hidden">
           {feature.title}
         </h3>
       </div>
@@ -176,8 +177,9 @@ export default function Hub() {
           </div>
 
           <div 
-            className="flex flex-wrap justify-center items-center gap-6"
+            className="flex flex-wrap justify-center items-start gap-3"
             data-testid="feature-grid"
+            style={{ maxWidth: "400px", margin: "0 auto" }}
           >
             {features.map((feature) => (
               <FeatureCardComponent key={feature.id} feature={feature} />
