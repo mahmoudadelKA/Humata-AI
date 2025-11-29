@@ -388,21 +388,5 @@ export async function registerRoutes(
     });
   });
 
-  app.get("/api/proxy-iframe", async (req: Request, res: Response) => {
-    try {
-      const targetUrl = "https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend";
-      res.setHeader("Content-Type", "text/html; charset=utf-8");
-      res.setHeader("X-Frame-Options", "ALLOWALL");
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      
-      const response = await fetch(targetUrl);
-      const html = await response.text();
-      res.send(html);
-    } catch (error) {
-      console.error("[Routes] Proxy error:", error);
-      res.status(500).json({ error: "Failed to load content" });
-    }
-  });
-
   return httpServer;
 }

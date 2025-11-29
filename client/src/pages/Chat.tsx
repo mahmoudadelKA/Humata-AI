@@ -291,21 +291,25 @@ export default function Chat() {
             </Link>
           </div>
         </header>
-        <main className="flex-1 overflow-hidden w-full">
-          <iframe
-            src="/api/proxy-iframe"
-            style={{
-              width: "100%",
-              height: "100%",
-              border: "none",
-              borderRadius: "0",
-              backgroundColor: "transparent",
-            }}
-            title="Kiira AI Images"
-            data-testid="embedded-iframe"
-            allow="accelerometer; camera; geolocation; gyroscope; magnetometer; microphone; payment; usb"
-            allowFullScreen
-          />
+        <main className="flex-1 overflow-hidden w-full flex items-center justify-center">
+          <div className="text-center">
+            <p className={`text-foreground mb-6 ${language === "ar" ? "text-lg" : ""}`}>
+              {language === "ar" ? "انقر على الزر أدناه للوصول إلى محرك البحث عن الصور" : "Click the button below to access the image search engine"}
+            </p>
+            <a 
+              href="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button 
+                size="lg"
+                data-testid="open-kiira-images"
+                className="px-8"
+              >
+                {language === "ar" ? "فتح محرك البحث" : "Open Image Search"}
+              </Button>
+            </a>
+          </div>
         </main>
       </div>
     );
