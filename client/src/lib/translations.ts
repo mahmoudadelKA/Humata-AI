@@ -3,8 +3,8 @@ export type Language = "ar" | "en";
 export const translations: Record<Language, Record<string, string>> = {
   ar: {
     "system.active": "النظام نشط",
-    "hub.welcome": "مرحباً بك في HUMATA AI",
-    "hub.description": "محادثة ذكية متقدمة مع Gemini 2.5 Pro",
+    "hub.select": "اختر قسماً",
+    "hub.description": "وحدات الذكاء الاصطناعي المتقدمة",
     "hub.powered": "مدعوم من",
     "hub.system": "المبرمج محمود عادل",
     "chat.no-messages": "لا توجد رسائل حتى الآن",
@@ -17,8 +17,8 @@ export const translations: Record<Language, Record<string, string>> = {
   },
   en: {
     "system.active": "System Active",
-    "hub.welcome": "Welcome to HUMATA AI",
-    "hub.description": "Advanced smart chat with Gemini 2.5 Pro",
+    "hub.select": "Select Interface",
+    "hub.description": "Advanced AI Modules",
     "hub.powered": "Powered by",
     "hub.system": "Programmer: Mahmoud Adel",
     "chat.no-messages": "No messages yet",
