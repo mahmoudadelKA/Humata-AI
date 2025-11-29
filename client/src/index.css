@@ -335,8 +335,8 @@
       /* Diagonal accent lines for complexity */
       linear-gradient(45deg, transparent 48%, rgba(0, 240, 255, 0.05) 49%, rgba(0, 240, 255, 0.05) 51%, transparent 52%),
       linear-gradient(-45deg, transparent 48%, rgba(255, 0, 110, 0.04) 49%, rgba(255, 0, 110, 0.04) 51%, transparent 52%),
-      /* Complex background texture image */
-      url('https://f.top4top.io/p_3620nlgq21.png');
+      /* Complex background texture image - optimized JPEG */
+      url('https://4up4.com/uploads/file_2025-11-29_213242.jpg');
     background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px, 40px 40px, 80px 80px, 80px 80px, cover;
     background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, center;
     background-attachment: fixed;
