@@ -118,26 +118,10 @@ export default function Hub() {
       <div className="relative z-10">
         <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
           <div className="max-w-6xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1 rounded border border-primary/30 bg-primary/5">
-                  <span className="w-2 h-2 rounded-full bg-green-400" />
-                  <span className={`text-xs text-muted-foreground ${language === "ar" ? "font-bold" : ""}`}>{t("system.active", language)}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div>
-                  <h1 className={`text-xl font-bold text-foreground ${language === "ar" ? "text-2xl" : ""}`}>
-                    {t("hub.title", language)}
-                  </h1>
-                  <p className={`text-xs text-muted-foreground ${language === "ar" ? "text-sm" : ""}`}>
-                    {t("hub.subtitle", language)}
-                  </p>
-                </div>
-                <div className="w-8 h-8 rounded border border-primary/30 flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-primary" />
-                </div>
-              </div>
+            <div className="flex items-center justify-center">
+              <h1 className={`text-3xl font-bold text-primary ${language === "ar" ? "text-4xl" : ""}`}>
+                HUMATA AI
+              </h1>
             </div>
           </div>
         </header>
@@ -185,12 +169,6 @@ export default function Hub() {
             ))}
           </div>
 
-          <div className="mt-12 text-center">
-            <div className={`inline-flex items-center gap-3 px-5 py-3 text-sm text-muted-foreground border border-border/30 rounded ${language === "ar" ? "text-base font-bold" : ""}`}>
-              <span>{t("hub.powered", language)}</span>
-              <span className="font-semibold">{t("hub.gemini", language)}</span>
-            </div>
-          </div>
         </main>
 
         <footer className="border-t border-border/30 mt-12 py-6">
