@@ -24,7 +24,9 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
   const { data: conversations = [] } = useQuery({
     queryKey: ["/api/conversations"],
     queryFn: async () => {
-      const response = await fetch("/api/conversations");
+      const response = await fetch("/api/conversations", {
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Failed to fetch conversations");
       return response.json();
     },
@@ -33,7 +35,10 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/conversations/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/conversations/${id}`, { 
+        method: "DELETE",
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Failed to delete");
       return response.json();
     },
@@ -48,6 +53,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: newTitle }),
+        credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to rename");
       return response.json();

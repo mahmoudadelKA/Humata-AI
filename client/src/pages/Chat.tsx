@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
+import { ConversationsSidebar } from "@/components/ConversationsSidebar";
 
 interface Message {
   id: string;
@@ -186,7 +187,7 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
               {personaInfo.title}
@@ -205,8 +206,15 @@ export default function Chat() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto flex flex-col">
-        <div className="max-w-3xl w-full mx-auto px-6 py-8 space-y-6 flex-1">
+      <main className="flex-1 overflow-hidden flex flex-row">
+        {user && (
+          <ConversationsSidebar 
+            onSelectConversation={(id) => setConversationId(id)}
+            currentConversationId={conversationId}
+          />
+        )}
+        <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8">
+          <div className="max-w-3xl w-full mx-auto space-y-6 flex-1">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="text-6xl mb-4 opacity-10">◆</div>
@@ -268,6 +276,7 @@ export default function Chat() {
             </>
           )}
           <div ref={messagesEndRef} />
+          </div>
         </div>
       </main>
 
