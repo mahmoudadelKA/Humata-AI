@@ -95,40 +95,33 @@ const iconMap: Record<string, typeof MessageSquare> = {
 function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   const IconComponent = iconMap[feature.icon];
   
-  const colorMap = {
-    cyan: { border: "hsl(180 100% 50%)", icon: "hsl(180,100%,50%)", glow: "neon-icon-simple-cyan" },
-    magenta: { border: "hsl(328 100% 50%)", icon: "hsl(328,100%,50%)", glow: "neon-icon-simple-magenta" },
-    purple: { border: "hsl(270 100% 60%)", icon: "hsl(270,100%,60%)", glow: "neon-icon-simple-purple" },
-    green: { border: "hsl(120 100% 50%)", icon: "hsl(120,100%,50%)", glow: "neon-icon-simple-green" },
-    yellow: { border: "hsl(45 100% 50%)", icon: "hsl(45,100%,50%)", glow: "neon-icon-simple-yellow" },
-  }[feature.glowColor];
+  const colorMap: Record<string, { gradient: string; icon: string }> = {
+    cyan: { gradient: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)", icon: "#ffffff" },
+    magenta: { gradient: "linear-gradient(135deg, #be185d 0%, #ec4899 100%)", icon: "#ffffff" },
+    purple: { gradient: "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)", icon: "#ffffff" },
+    green: { gradient: "linear-gradient(135deg, #059669 0%, #10b981 100%)", icon: "#ffffff" },
+    yellow: { gradient: "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)", icon: "#ffffff" },
+  };
+
+  const colors = colorMap[feature.glowColor] || colorMap.cyan;
 
   return (
     <Link href={feature.route}>
       <div
-        className="group cursor-pointer flex flex-col items-center justify-center gap-1 w-20 h-20 transition-all duration-150"
+        className="group cursor-pointer flex flex-col items-center justify-center gap-2 w-24 h-24 transition-all duration-200 hover:scale-110 hover:shadow-xl"
         style={{
-          borderRadius: "0",
-          border: `2px solid ${colorMap.border}80`,
-          backgroundColor: "hsl(248 55% 14% / 0.6)",
-          boxShadow: `inset 0 0 0 1px ${colorMap.border}40, inset 1px 1px 2px ${colorMap.border}20, inset -1px -1px 2px hsl(0 0% 0% / 0.8), 0 0 3px ${colorMap.border}30, 0 0 6px ${colorMap.border}15`,
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = `${colorMap.border}`;
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border}80, inset 1px 1px 3px ${colorMap.border}40, inset -1px -1px 3px hsl(0 0% 0% / 0.9), 0 0 6px ${colorMap.border}60, 0 0 12px ${colorMap.border}40`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = `${colorMap.border}80`;
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colorMap.border}40, inset 1px 1px 2px ${colorMap.border}20, inset -1px -1px 2px hsl(0 0% 0% / 0.8), 0 0 3px ${colorMap.border}30, 0 0 6px ${colorMap.border}15`;
+          borderRadius: "16px",
+          background: colors.gradient,
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
         }}
         data-testid={`card-feature-${feature.id}`}
       >
         <IconComponent 
-          className={`w-6 h-6 ${colorMap.glow} transition-transform duration-150 group-hover:scale-110`}
-          style={{ color: colorMap.icon }}
+          className="w-8 h-8 transition-transform duration-200"
+          style={{ color: colors.icon }}
           strokeWidth={1.5}
         />
-        <h3 className="text-[9px] font-bold text-center leading-tight text-foreground overflow-hidden">
+        <h3 className="text-[11px] font-bold text-center leading-tight" style={{ color: colors.icon }}>
           {feature.title}
         </h3>
       </div>
@@ -177,9 +170,9 @@ export default function Hub() {
           </div>
 
           <div 
-            className="flex flex-wrap justify-center items-start gap-3"
+            className="flex flex-wrap justify-center items-center gap-6"
             data-testid="feature-grid"
-            style={{ maxWidth: "400px", margin: "0 auto" }}
+            style={{ maxWidth: "600px", margin: "0 auto" }}
           >
             {features.map((feature) => (
               <FeatureCardComponent key={feature.id} feature={feature} />
