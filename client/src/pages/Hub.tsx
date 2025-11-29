@@ -78,34 +78,12 @@ export default function Hub() {
   const [, setLocation] = useLocation();
   const [inputValue, setInputValue] = useState("");
 
-  const sendMessageMutation = useMutation({
-    mutationFn: async (message: string) => {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          message,
-          systemPrompt: undefined,
-        }),
-      });
-      if (!response.ok) throw new Error("Failed to send message");
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setInputValue("");
-      // Pass the conversation ID to the chat page
-      if (data.conversationId) {
-        setLocation(`/chat?convId=${data.conversationId}`);
-      } else {
-        setLocation("/chat");
-      }
-    },
-  });
-
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
-    sendMessageMutation.mutate(inputValue);
+    const message = inputValue;
+    setInputValue("");
+    // Navigate immediately with the message, don't wait for AI response
+    setLocation(`/chat?initialMessage=${encodeURIComponent(message)}`);
   };
   
   const features: FeatureCard[] = featureKeys.map(key => ({
@@ -143,14 +121,14 @@ export default function Hub() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                  disabled={sendMessageMutation.isPending}
                   className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1"
                 />
                 <Button
                   onClick={handleSendMessage}
-                  disabled={!inputValue.trim() || sendMessageMutation.isPending}
+                  disabled={!inputValue.trim()}
                   size="icon"
                   className="h-8 w-8 rounded-full"
+                  data-testid="button-send-hub"
                 >
                   <Send className="w-4 h-4" />
                 </Button>

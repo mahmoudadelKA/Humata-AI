@@ -60,6 +60,7 @@ export default function Chat() {
   const persona = params.get("persona") || "";
   const mode = params.get("mode") || "";
   const convId = params.get("convId") || ""; // Get conversation ID from Hub
+  const initialMessage = params.get("initialMessage") || ""; // Message from Hub search box
   const { language, user, token } = useAppContext();
 
   const personaInfo = getPersonaInfo(persona);
@@ -93,6 +94,27 @@ export default function Chat() {
       loadConversationMessages();
     }
   }, [convId]);
+
+  // Auto-send initial message from Hub
+  const sendMessageMutationRef = useRef<any>(null);
+  
+  useEffect(() => {
+    if (initialMessage && sendMessageMutationRef.current) {
+      const userMessage = {
+        id: Date.now().toString(),
+        role: "user" as const,
+        content: initialMessage,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMessage]);
+      setInputValue("");
+      
+      // Send the message
+      sendMessageMutationRef.current.mutate({
+        message: initialMessage,
+      });
+    }
+  }, [initialMessage]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -176,6 +198,11 @@ export default function Chat() {
       });
     },
   });
+
+  // Store mutation ref for auto-send
+  useEffect(() => {
+    sendMessageMutationRef.current = sendMessageMutation;
+  }, [sendMessageMutation]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() && !uploadedFileInfo) {
