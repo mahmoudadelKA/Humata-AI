@@ -297,8 +297,11 @@ export default function Chat() {
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center">
               <div className="text-6xl mb-4 opacity-10">◆</div>
-              <p className="text-muted-foreground mb-2">{t("chat.no-messages", language)}</p>
-              <p className="text-xs text-muted-foreground/50">
+              <p className={`text-foreground mb-2 font-semibold ${language === "ar" ? "text-lg" : ""}`}>{personaInfo.title}</p>
+              <p className={`text-muted-foreground/70 max-w-md ${language === "ar" ? "text-lg" : "text-sm"}`}>
+                {personaInfo.description}
+              </p>
+              <p className="text-xs text-muted-foreground/50 mt-4">
                 {t("chat.start", language)}
               </p>
             </div>
