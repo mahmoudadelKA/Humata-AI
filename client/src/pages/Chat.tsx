@@ -183,7 +183,7 @@ export default function Chat() {
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h2 className="text-lg font-bold text-foreground">
+            <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
               {personaInfo.title}
             </h2>
           </div>

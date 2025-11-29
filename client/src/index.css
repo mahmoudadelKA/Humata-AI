@@ -283,12 +283,42 @@
   }
 }
 
+/* Arabic global styling */
+html[lang="ar"] {
+  font-family: 'Cairo', sans-serif;
+}
+
+html[lang="ar"] * {
+  font-family: 'Cairo', sans-serif;
+}
+
 /* Arabic message styling */
 html[lang="ar"] .ai-message {
   font-family: 'Cairo', sans-serif;
   font-weight: 700;
   font-size: 1.125rem;
   line-height: 1.8;
+}
+
+/* Arabic headings and titles */
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4,
+html[lang="ar"] h5,
+html[lang="ar"] h6 {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+/* Arabic buttons and interactive elements */
+html[lang="ar"] button,
+html[lang="ar"] [role="button"],
+html[lang="ar"] input,
+html[lang="ar"] textarea,
+html[lang="ar"] select {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
 }
 
 /**

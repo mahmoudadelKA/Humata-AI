@@ -95,15 +95,15 @@ export default function Hub() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 px-3 py-1 rounded border border-primary/30 bg-primary/5">
                   <span className="w-2 h-2 rounded-full bg-green-400" />
-                  <span className="text-xs text-muted-foreground">{t("system.active", language)}</span>
+                  <span className={`text-xs text-muted-foreground ${language === "ar" ? "font-bold" : ""}`}>{t("system.active", language)}</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div>
-                  <h1 className="text-xl font-bold text-foreground">
+                  <h1 className={`text-xl font-bold text-foreground ${language === "ar" ? "text-2xl" : ""}`}>
                     {t("hub.title", language)}
                   </h1>
-                  <p className="text-xs text-muted-foreground">
+                  <p className={`text-xs text-muted-foreground ${language === "ar" ? "text-sm" : ""}`}>
                     {t("hub.subtitle", language)}
                   </p>
                 </div>
@@ -117,10 +117,10 @@ export default function Hub() {
 
         <main className="max-w-6xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2 text-foreground">
+            <h2 className={`text-3xl font-bold mb-2 text-foreground ${language === "ar" ? "text-4xl" : ""}`}>
               {t("hub.select", language)}
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className={`text-sm text-muted-foreground ${language === "ar" ? "text-base" : ""}`}>
               {t("hub.description", language)}
             </p>
           </div>
@@ -136,7 +136,7 @@ export default function Hub() {
           </div>
 
           <div className="mt-8 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground border border-border/30 rounded">
+            <div className={`inline-flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground border border-border/30 rounded ${language === "ar" ? "text-sm font-bold" : ""}`}>
               <span>{t("hub.powered", language)}</span>
               <span className="font-semibold">{t("hub.gemini", language)}</span>
             </div>
@@ -145,7 +145,7 @@ export default function Hub() {
 
         <footer className="border-t border-border/30 mt-8 py-4">
           <div className="max-w-6xl mx-auto px-6 text-center">
-            <p className="text-xs text-muted-foreground/50">
+            <p className={`text-xs text-muted-foreground/50 ${language === "ar" ? "text-sm" : ""}`}>
               {t("hub.system", language)}
             </p>
           </div>
