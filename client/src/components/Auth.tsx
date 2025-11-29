@@ -169,16 +169,8 @@ export function Auth() {
       </div>
 
       {showAuthModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]" onClick={() => setShowAuthModal(false)}>
-          <div className="relative bg-card border border-border rounded-lg p-8 max-w-md w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground text-xl font-bold"
-              data-testid="button-close-modal"
-            >
-              ✕
-            </button>
-
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-card border border-border rounded-lg p-8 max-w-md w-full mx-4 shadow-xl">
             <h2 className={`text-2xl font-bold mb-6 text-foreground ${language === "ar" ? "text-3xl" : ""}`}>
               {isLogin ? (language === "ar" ? "تسجيل الدخول" : "Login") : (language === "ar" ? "إنشاء حساب" : "Create Account")}
             </h2>
@@ -232,6 +224,14 @@ export function Auth() {
                 {isLogin ? (language === "ar" ? "لا تملك حساب؟ سجل الآن" : "Don't have an account? Sign up") : (language === "ar" ? "لديك حساب بالفعل؟ سجل الدخول" : "Already have an account? Login")}
               </button>
             </div>
+
+            <button
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+              data-testid="button-close-modal"
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}
