@@ -5,6 +5,8 @@ import fs from "fs";
 import { storage } from "./storage";
 import { sendChatMessage, uploadFileToGemini } from "./gemini";
 import { randomUUID } from "crypto";
+import { signupSchema, loginSchema, type SignupInput, type LoginInput, type User } from "@shared/schema";
+import crypto from "crypto";
 
 const uploadDir = "/tmp/uploads";
 if (!fs.existsSync(uploadDir)) {
@@ -50,10 +52,87 @@ const upload = multer({
   },
 });
 
+const hashPassword = (password: string): string => {
+  return crypto.createHash("sha256").update(password).digest("hex");
+};
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  
+  app.post("/api/auth/signup", async (req: Request, res: Response) => {
+    try {
+      const validation = signupSchema.safeParse(req.body);
+      if (!validation.success) {
+        res.status(400).json({ success: false, error: validation.error.errors[0].message });
+        return;
+      }
+
+      const { name, email, password } = validation.data;
+      const existingUser = await storage.getUserByEmail(email);
+      
+      if (existingUser) {
+        res.status(400).json({ success: false, error: "البريد الإلكتروني مستخدم بالفعل" });
+        return;
+      }
+
+      const user: User = {
+        id: randomUUID(),
+        name,
+        email,
+        password: hashPassword(password),
+        createdAt: new Date(),
+      };
+
+      await storage.createUser(user);
+      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email }, token: user.id });
+    } catch (error) {
+      res.status(500).json({ success: false, error: "خطأ في التسجيل" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    try {
+      const validation = loginSchema.safeParse(req.body);
+      if (!validation.success) {
+        res.status(400).json({ success: false, error: validation.error.errors[0].message });
+        return;
+      }
+
+      const { email, password } = validation.data;
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user || user.password !== hashPassword(password)) {
+        res.status(401).json({ success: false, error: "البريد أو كلمة المرور غير صحيحة" });
+        return;
+      }
+
+      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email }, token: user.id });
+    } catch (error) {
+      res.status(500).json({ success: false, error: "خطأ في تسجيل الدخول" });
+    }
+  });
+
+  app.post("/api/auth/verify", async (req: Request, res: Response) => {
+    try {
+      const { token } = req.body;
+      if (!token) {
+        res.status(400).json({ success: false });
+        return;
+      }
+
+      const user = await storage.getUserById(token);
+      if (!user) {
+        res.status(401).json({ success: false });
+        return;
+      }
+
+      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
+    } catch (error) {
+      res.status(500).json({ success: false });
+    }
+  });
   
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
