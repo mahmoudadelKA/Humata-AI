@@ -319,22 +319,34 @@
     inset: -1px;
   }
 
-  /* Cyberpunk Grid Pattern Background */
+  /* Cyberpunk Grid Pattern Background - Enhanced Circuit Board Texture */
   .cyber-grid {
     background-image: 
-      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-position: center center;
+      /* Fine horizontal lines */
+      linear-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px),
+      /* Fine vertical lines */
+      linear-gradient(90deg, rgba(0, 240, 255, 0.08) 1px, transparent 1px),
+      /* Medium grid lines */
+      linear-gradient(rgba(255, 0, 110, 0.04) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255, 0, 110, 0.04) 2px, transparent 2px),
+      /* Circuit nodes */
+      radial-gradient(circle at 20px 20px, rgba(0, 240, 255, 0.12) 1.5px, transparent 1.5px),
+      /* Diagonal accent lines for complexity */
+      linear-gradient(45deg, transparent 48%, rgba(0, 240, 255, 0.05) 49%, rgba(0, 240, 255, 0.05) 51%, transparent 52%),
+      linear-gradient(-45deg, transparent 48%, rgba(255, 0, 110, 0.04) 49%, rgba(255, 0, 110, 0.04) 51%, transparent 52%);
+    background-size: 40px 40px, 40px 40px, 80px 80px, 80px 80px, 40px 40px, 80px 80px, 80px 80px;
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
   }
 
   /* Circuit pattern for more tech feel */
   .circuit-pattern {
     background-image: 
-      linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-      radial-gradient(circle at 20px 20px, rgba(0, 240, 255, 0.08) 2px, transparent 2px);
-    background-size: 40px 40px, 40px 40px, 40px 40px;
+      linear-gradient(rgba(0, 240, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(rgba(255, 0, 110, 0.04) 1px, transparent 1px),
+      radial-gradient(circle at 20px 20px, rgba(0, 240, 255, 0.1) 2px, transparent 2px),
+      radial-gradient(circle at 0 0, rgba(255, 0, 110, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 80px 80px, 40px 40px, 40px 40px;
   }
 
   /* Neon glow effects */
@@ -404,19 +416,54 @@
       inset 0 0 30px hsl(248 50% 5% / 0.5);
   }
 
-  /* Neon text glow */
+  /* Neon text glow - Enhanced 3D Layered Effect */
   .text-glow-cyan {
     text-shadow: 
-      0 0 5px hsl(180 100% 50% / 0.8),
-      0 0 10px hsl(180 100% 50% / 0.6),
-      0 0 20px hsl(180 100% 50% / 0.4);
+      0 0 2px hsl(180 100% 50% / 0.9),
+      0 0 5px hsl(180 100% 50% / 0.9),
+      0 0 10px hsl(180 100% 50% / 0.8),
+      0 0 15px hsl(180 100% 50% / 0.7),
+      0 0 25px hsl(180 100% 50% / 0.6),
+      0 0 40px hsl(180 100% 50% / 0.5),
+      0 0 60px hsl(180 100% 50% / 0.3),
+      0 2px 10px hsl(180 100% 40% / 0.5);
   }
 
   .text-glow-magenta {
     text-shadow: 
-      0 0 5px hsl(328 100% 50% / 0.8),
-      0 0 10px hsl(328 100% 50% / 0.6),
-      0 0 20px hsl(328 100% 50% / 0.4);
+      0 0 2px hsl(328 100% 50% / 0.9),
+      0 0 5px hsl(328 100% 50% / 0.9),
+      0 0 10px hsl(328 100% 50% / 0.8),
+      0 0 15px hsl(328 100% 50% / 0.7),
+      0 0 25px hsl(328 100% 50% / 0.6),
+      0 0 40px hsl(328 100% 50% / 0.5),
+      0 0 60px hsl(328 100% 50% / 0.3),
+      0 2px 10px hsl(328 100% 40% / 0.5);
+  }
+
+  /* Enhanced 3D icon glow for feature cards */
+  .icon-glow-3d {
+    filter: drop-shadow(0 0 2px hsl(180 100% 50% / 0.9))
+            drop-shadow(0 0 5px hsl(180 100% 50% / 0.8))
+            drop-shadow(0 0 10px hsl(180 100% 50% / 0.7))
+            drop-shadow(0 0 15px hsl(180 100% 50% / 0.6))
+            drop-shadow(0 2px 8px hsl(180 100% 40% / 0.4));
+  }
+
+  .icon-glow-3d.magenta {
+    filter: drop-shadow(0 0 2px hsl(328 100% 50% / 0.9))
+            drop-shadow(0 0 5px hsl(328 100% 50% / 0.8))
+            drop-shadow(0 0 10px hsl(328 100% 50% / 0.7))
+            drop-shadow(0 0 15px hsl(328 100% 50% / 0.6))
+            drop-shadow(0 2px 8px hsl(328 100% 40% / 0.4));
+  }
+
+  .icon-glow-3d.purple {
+    filter: drop-shadow(0 0 2px hsl(270 100% 60% / 0.9))
+            drop-shadow(0 0 5px hsl(270 100% 60% / 0.8))
+            drop-shadow(0 0 10px hsl(270 100% 60% / 0.7))
+            drop-shadow(0 0 15px hsl(270 100% 60% / 0.6))
+            drop-shadow(0 2px 8px hsl(270 100% 50% / 0.4));
   }
 
   /* Console/terminal style input */

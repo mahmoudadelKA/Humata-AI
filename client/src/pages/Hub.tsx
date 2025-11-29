@@ -85,7 +85,7 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
       >
         <div className="mb-6">
           <IconComponent 
-            className={`w-12 h-12 ${iconGlow} transition-all duration-300 group-hover:scale-110`} 
+            className={`w-12 h-12 ${iconGlow} icon-glow-3d ${feature.glowColor === 'magenta' ? 'magenta' : feature.glowColor === 'purple' ? 'purple' : ''} transition-all duration-300 group-hover:scale-110`} 
             strokeWidth={1.5}
           />
         </div>
@@ -106,16 +106,16 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
 
 export default function Hub() {
   return (
-    <div className="min-h-screen bg-background cyber-grid">
+    <div className="min-h-screen bg-background cyber-grid" dir="auto">
       <div className="relative z-10">
         <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
           <div className="max-w-7xl mx-auto px-6 py-6">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between gap-4 rtl:flex-row-reverse">
+              <div className="flex items-center gap-4 rtl:flex-row-reverse">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center neon-glow-cyan">
-                  <Zap className="w-5 h-5 text-primary" />
+                  <Zap className="w-5 h-5 text-primary icon-glow-3d" />
                 </div>
-                <div>
+                <div dir="auto">
                   <h1 className="text-2xl font-bold tracking-wider text-glow-cyan text-foreground">
                     NEON AI HUB
                   </h1>
@@ -124,8 +124,8 @@ export default function Hub() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-primary/30 bg-primary/5">
+              <div className="flex items-center gap-3 rtl:flex-row-reverse">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-primary/30 bg-primary/5 rtl:flex-row-reverse">
                   <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                   <span className="text-xs text-muted-foreground tracking-wider">SYSTEM ACTIVE</span>
                 </div>
@@ -134,9 +134,9 @@ export default function Hub() {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-6 py-16">
+        <main className="max-w-7xl mx-auto px-6 py-16" dir="auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-glow-cyan">
               <span className="text-foreground">SELECT </span>
               <span className="text-glow-cyan text-primary">INTERFACE</span>
             </h2>
