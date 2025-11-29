@@ -1,92 +1,11 @@
-import { Link, useLocation } from "wouter";
-import { MessageSquare, Brain, CheckCircle, Wand2, FileText, Zap, Lightbulb, Users, RefreshCw, Send, HelpCircle, Search, Crown, Sparkles, Lightbulb as LightbulbIcon } from "lucide-react";
+import { useLocation } from "wouter";
+import { Send, Search } from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useMutation } from "@tanstack/react-query";
-import type { FeatureCard } from "@shared/schema";
 
-const featureKeys = [
-  { id: "chat", titleKey: "feature.chat", icon: "MessageSquare", route: "/chat", glowColor: "cyan" },
-  { id: "ask", titleKey: "feature.ask", icon: "HelpCircle", route: "/chat?persona=ask", glowColor: "magenta" },
-  { id: "research", titleKey: "feature.research", icon: "Search", route: "/chat?persona=research", glowColor: "purple" },
-  { id: "tests", titleKey: "feature.tests", icon: "CheckCircle", route: "/chat?persona=tests", glowColor: "green" },
-  { id: "images", titleKey: "feature.images", icon: "Wand2", route: "/chat?persona=google-images", glowColor: "yellow" },
-  { id: "doctor", titleKey: "feature.doctor", icon: "Lightbulb", route: "/chat?persona=doctor", glowColor: "cyan" },
-  { id: "scientist", titleKey: "feature.scientist", icon: "Brain", route: "/chat?persona=scientist", glowColor: "magenta" },
-  { id: "khedive", titleKey: "feature.khedive", icon: "Crown", route: "/chat?persona=khedive", glowColor: "purple" },
-  { id: "ai-images", titleKey: "feature.ai-images", icon: "Zap", route: "/chat?persona=images", glowColor: "yellow" },
-];
-
-const iconMap: Record<string, typeof MessageSquare> = {
-  MessageSquare,
-  Brain,
-  CheckCircle,
-  Wand2,
-  FileText,
-  Zap,
-  Lightbulb,
-  Users,
-  RefreshCw,
-  HelpCircle,
-  Search,
-  Crown,
-};
-
-function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
-  const IconComponent = iconMap[feature.icon];
-  
-  const colorMap: Record<string, { border: string; glow: string; icon: string; shadow: string }> = {
-    cyan: { border: "hsl(180 100% 50%)", glow: "neon-icon-simple-cyan", icon: "hsl(180 100% 50%)", shadow: "0 0 12px hsl(180 100% 50% / 0.4), 0 0 24px hsl(180 100% 50% / 0.2)" },
-    magenta: { border: "hsl(328 100% 50%)", glow: "neon-icon-simple-magenta", icon: "hsl(328 100% 50%)", shadow: "0 0 12px hsl(328 100% 50% / 0.4), 0 0 24px hsl(328 100% 50% / 0.2)" },
-    purple: { border: "hsl(270 100% 60%)", glow: "neon-icon-simple-purple", icon: "hsl(270 100% 60%)", shadow: "0 0 12px hsl(270 100% 60% / 0.4), 0 0 24px hsl(270 100% 60% / 0.2)" },
-    green: { border: "hsl(120 100% 50%)", glow: "neon-icon-simple-green", icon: "hsl(120 100% 50%)", shadow: "0 0 12px hsl(120 100% 50% / 0.4), 0 0 24px hsl(120 100% 50% / 0.2)" },
-    yellow: { border: "hsl(45 100% 50%)", glow: "neon-icon-simple-yellow", icon: "hsl(45 100% 50%)", shadow: "0 0 12px hsl(45 100% 50% / 0.4), 0 0 24px hsl(45 100% 50% / 0.2)" },
-  };
-
-  const colors = colorMap[feature.glowColor] || colorMap.cyan;
-
-  const card = (
-    <div
-      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 transition-all duration-150"
-      style={{
-        borderRadius: "0",
-        border: `2px solid ${colors.border}`,
-        backgroundColor: "hsl(248 55% 14% / 0.7)",
-        boxShadow: `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`,
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
-        e.currentTarget.style.borderColor = `${colors.border}`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
-        e.currentTarget.style.borderColor = `${colors.border}`;
-      }}
-      data-testid={`card-feature-${feature.id}`}
-    >
-      <IconComponent 
-        className={`w-14 h-14 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
-        style={{ color: colors.icon }}
-        strokeWidth={2}
-      />
-      <div className="flex flex-col items-center justify-center gap-2 px-3">
-        <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
-          {feature.title}
-        </h3>
-        {feature.description && (
-          <p className="text-xs text-muted-foreground text-center leading-tight" style={{ maxWidth: "130px" }}>
-            {feature.description}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-
-  return <Link href={feature.route}>{card}</Link>;
-}
 
 export default function Hub() {
   const { language } = useAppContext();
@@ -97,34 +16,8 @@ export default function Hub() {
     if (!inputValue.trim()) return;
     const message = inputValue;
     setInputValue("");
-    // Navigate immediately with the message, don't wait for AI response
     setLocation(`/chat?initialMessage=${encodeURIComponent(message)}`);
   };
-  
-  const getDescriptionByPersona = (id: string): string => {
-    const descriptions: Record<string, string> = {
-      chat: language === "ar" ? "محادثة ذكية متقدمة" : "Advanced smart chat",
-      ask: language === "ar" ? "رفع ملف + بحث جوجل + ذكاء فقط" : "File upload + Google Search + AI Only",
-      research: language === "ar" ? "مصادر: PubMed, Google Scholar, ResearchGate, ScienceDirect, IEEE Xplore" : "Sources: PubMed, Google Scholar, ResearchGate, ScienceDirect, IEEE Xplore",
-      tests: language === "ar" ? "رفع ملف + إدخال URL + إعدادات" : "File upload + URL input + Settings",
-      images: language === "ar" ? "البحث من Google Images" : "Search from Google Images",
-      doctor: language === "ar" ? "مصادر: Mayo Clinic, WHO, Medline Plus" : "Sources: Mayo Clinic, WHO, Medline Plus",
-      scientist: language === "ar" ? "رياضيات، فيزياء، كيمياء، لغة عربية" : "Math, Physics, Chemistry, Arabic Language",
-      khedive: language === "ar" ? "تحليل استراتيجي متقدم" : "Advanced strategic analysis",
-      "ai-images": language === "ar" ? "محرك Kiira AI للصور" : "Kiira AI image engine",
-    };
-    return descriptions[id] || "";
-  };
-
-  const features: FeatureCard[] = featureKeys.map(key => ({
-    id: key.id,
-    title: t(key.titleKey, language),
-    description: getDescriptionByPersona(key.id),
-    icon: key.icon as any,
-    route: key.route,
-    glowColor: key.glowColor as any,
-    position: "top-left",
-  }));
 
   return (
     <div className="min-h-screen bg-background cyber-grid" dir={language === "ar" ? "rtl" : "ltr"}>
@@ -143,31 +36,28 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-6 py-8">
-          <div className="text-center mb-12">
-            <div className="max-w-2xl mx-auto mb-12">
-              <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-2 border border-primary/40 shadow-lg">
-                <Search className="w-4 h-4 text-muted-foreground/60" />
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center max-w-2xl">
+              <h2 className={`text-4xl font-bold mb-4 text-primary ${language === "ar" ? "text-3xl" : ""}`}>
+                {t("hub.welcome", language)}
+              </h2>
+              <p className={`text-lg text-muted-foreground mb-8 ${language === "ar" ? "text-base" : ""}`}>
+                {t("hub.description", language)}
+              </p>
+              <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-3 border border-primary/40 shadow-lg hover:shadow-xl transition-shadow">
+                <Search className="w-5 h-5 text-muted-foreground/60" />
                 <Input
                   placeholder={t("hub.chat.input", language)}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                  className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1"
+                  className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1 text-base"
                 />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6"
-                  data-testid="button-quick-search"
-                  title={language === "ar" ? "بحث سريع" : "Quick Search"}
-                >
-                  <Sparkles className="w-4 h-4 text-primary" />
-                </Button>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim()}
                   size="icon"
-                  className="h-8 w-8 rounded-full"
+                  className="h-9 w-9 rounded-full"
                   data-testid="button-send-hub"
                 >
                   <Send className="w-4 h-4" />
@@ -175,26 +65,6 @@ export default function Hub() {
               </div>
             </div>
           </div>
-
-          <div className="text-center mb-16">
-            <h2 className={`text-3xl font-bold mb-4 text-foreground ${language === "ar" ? "text-lg font-semibold" : ""}`}>
-              {t("hub.select", language)}
-            </h2>
-            <p className={`text-base text-muted-foreground ${language === "ar" ? "text-lg font-semibold" : ""}`}>
-              {t("hub.description", language)}
-            </p>
-          </div>
-
-          <div 
-            className="flex flex-wrap justify-center items-center gap-8"
-            data-testid="feature-grid"
-            style={{ maxWidth: "1000px", margin: "0 auto" }}
-          >
-            {features.map((feature) => (
-              <FeatureCardComponent key={feature.id} feature={feature} />
-            ))}
-          </div>
-
         </main>
       </div>
     </div>

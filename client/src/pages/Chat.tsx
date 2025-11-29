@@ -30,118 +30,12 @@ interface UploadedFileInfo {
 }
 
 const getPersonaInfo = (persona?: string) => {
-  const personas: Record<
-    string,
-    { title: string; description: string; systemPrompt: string; controlIcons?: string[] }
-  > = {
-    ask: {
-      title: "اسأل",
-      description: "أسئلة سريعة وذكية - 3 أيقونات تحكم",
-      systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم متخصص في الإجابة على الأسئلة. قدم إجابات دقيقة وشاملة ومفيدة. الرد بصيغة عربية سليمة.
-      
-      التحكم:
-      1. 📤 رفع ملف - لإضافة مصدر للرد عليه
-      2. 🔍 بحث جوجل - للبحث عن معلومات من الإنترنت
-      3. 🤖 ذكاء فقط - استخدام الذكاء الاصطناعي بدون بحث`,
-      controlIcons: ["upload", "search", "ai-only"],
-    },
-    research: {
-      title: "البحث العلمي",
-      description: "بحث أكاديمي متقدم مع مصادر موثوقة",
-      systemPrompt: `أنت باحث أكاديمي متقدم متخصص. قدم تحليلات عميقة، استشهادات موثوقة، وبحثاً شاملاً.
-      
-      المصادر الموثوقة:
-      ✓ PubMed - قاعدة بيانات البحث الطبي
-      ✓ Google Scholar - البحث الأكاديمي
-      ✓ ResearchGate - منصة الباحثين
-      ✓ ScienceDirect - المجلات العلمية
-      ✓ IEEE Xplore - البحث الهندسي والتكنولوجي
-      
-      التحكم:
-      1. 🔍 بحث عبر المصادر
-      2. 📥 تحميل البحث كملف
-      
-      الرد بصيغة عربية أكاديمية.`,
-      controlIcons: ["search", "download"],
-    },
-    tests: {
-      title: "الاختبارات",
-      description: "إنشاء واختبار المعرفة - 3 أيقونات تحكم",
-      systemPrompt: `أنت خبير في إنشاء الاختبارات والتقييمات التعليمية.
-      
-      التحكم:
-      1. 📤 رفع ملف - لاستخدام مصدر معين لإنشاء الأسئلة
-      2. 🔗 إدخال رابط - لتحديد موضوع البحث
-      3. ⚙️ إعدادات - (الصعوبة، عدد الأسئلة، نوع السؤال)
-      
-      أنشئ أسئلة دقيقة ومناسبة للمستوى المطلوب. الرد بصيغة عربية واضحة.`,
-      controlIcons: ["upload", "link", "settings"],
-    },
-    doctor: {
-      title: "الدكتور - مستشار صحي",
-      description: "معلومات طبية من مصادر موثوقة عالمية",
-      systemPrompt: `أنت طبيب متخصص وباحث طبي. توفر معلومات طبية تعليمية دقيقة.
-      
-      المصادر الموثوقة:
-      ✓ Mayo Clinic - الرعاية الطبية المتقدمة
-      ✓ WHO - منظمة الصحة العالمية
-      ✓ Medline Plus - معلومات صحية شاملة
-      
-      التحكم:
-      1. 📤 رفع ملف - تقارير طبية أو معلومات
-      2. 🔍 بحث عبر المصادر الطبية
-      
-      تحذير مهم: تذكر دائماً أن المستخدمين يجب عليهم استشارة متخصصي الرعاية الصحية المؤهلين.
-      الرد بصيغة عربية طبية.`,
-      controlIcons: ["upload", "search"],
-    },
-    scientist: {
-      title: "المساعد العلمي",
-      description: "حل مسائل رياضية وفيزيائية وكيميائية",
-      systemPrompt: `أنت باحث ومساعد أكاديمي متخصص في:
-      
-      📐 الرياضيات - الجبر والهندسة والتحليل
-      ⚛️ الفيزياء - الميكانيكا والكهرومغناطيسية والديناميكا الحرارية
-      🧪 الكيمياء - الكيمياء العضوية وغير العضوية
-      📝 اللغة العربية - النحو والصرف والبلاغة
-      
-      التحكم:
-      1. 📤 رفع ملف - مسائل أو نصوص للتحليل
-      2. 🔍 بحث عبر المصادر التعليمية
-      
-      توفر حلولاً دقيقة وشروحات تفصيلية.
-      الرد بصيغة عربية أكاديمية واضحة.`,
-      controlIcons: ["upload", "search"],
-    },
-    khedive: {
-      title: "الخديوي - المستشار الاستراتيجي",
-      description: "تحليل استراتيجي متقدم واتخاذ القرارات",
-      systemPrompt: `أنت الخديوي، مستشار استراتيجي متقدم. توفر تحليل عميق، رؤى استراتيجية وإرشادات مدروسة حول القرارات المعقدة. استجاباتك شاملة، استراتيجية وموجهة لمساعدة المستخدمين في التغلب على التحديات بثقة.`,
-      controlIcons: ["upload", "search"],
-    },
-    "google-images": {
-      title: "توليد الصور",
-      description: "البحث عن الصور من Google Images",
-      systemPrompt: "",
-      controlIcons: [],
-      isEmbedded: true,
-    },
-    images: {
-      title: "صور ذكاء اصطناعي",
-      description: "محرك البحث عن الصور من Kiira AI",
-      systemPrompt: "",
-      controlIcons: [],
-      isEmbedded: true,
-    },
+  return {
+    title: "الدردشة",
+    description: "محادثة ذكية متقدمة مع Gemini 2.5 Pro",
+    systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم. قدم إجابات مفيدة وصحيحة ومدروسة على استفسارات المستخدمين. الرد بصيغة عربية سليمة.`,
+    controlIcons: ["upload"],
   };
-  return (
-    personas[persona || ""] || {
-      title: "الدردشة",
-      description: "محادثة ذكية متقدمة",
-      systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم. قدم إجابات مفيدة وصحيحة ومدروسة على استفسارات المستخدمين. الرد بصيغة عربية سليمة.`,
-      controlIcons: ["upload", "search"],
-    }
-  );
 };
 
 export default function Chat() {
@@ -160,11 +54,6 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState<string>(convId);
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
-  const [enableGrounding, setEnableGrounding] = useState(["research", "doctor", "scientist"].includes(persona));
-  const [showUrlModal, setShowUrlModal] = useState(false);
-  const [urlInput, setUrlInput] = useState("");
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [quizSettings, setQuizSettings] = useState({ difficulty: "medium", questions: 10, type: "multiple" });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -260,7 +149,7 @@ export default function Chat() {
     },
     onSuccess: (data) => {
       setMessages((prev) => [...prev, data.message]);
-      setConversationId(data.conversationId);
+      setConversationId(data.sessionId);
       setUploadedFileInfo(null);
       // Refresh conversations list when a new message is sent
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
@@ -551,21 +440,6 @@ export default function Chat() {
             </div>
           )}
 
-          {(personaInfo.controlIcons?.length || 0) > 0 && (
-            <div className="px-4 py-2 bg-muted/20 rounded-lg border border-border/10">
-              <div className="flex flex-wrap gap-2 items-center">
-                <span className={`text-xs font-semibold text-muted-foreground ${language === "ar" ? "text-sm" : ""}`}>
-                  {language === "ar" ? "الأدوات المتاحة:" : "Available Tools:"}
-                </span>
-                {personaInfo.controlIcons?.includes("upload") && <span className="text-xs px-2 py-1 bg-primary/20 rounded">📤 {language === "ar" ? "رفع ملف" : "Upload"}</span>}
-                {personaInfo.controlIcons?.includes("search") && <span className="text-xs px-2 py-1 bg-accent/20 rounded">🔍 {language === "ar" ? "بحث" : "Search"}</span>}
-                {personaInfo.controlIcons?.includes("ai-only") && <span className="text-xs px-2 py-1 bg-primary/20 rounded">🤖 {language === "ar" ? "ذكاء فقط" : "AI Only"}</span>}
-                {personaInfo.controlIcons?.includes("link") && <span className="text-xs px-2 py-1 bg-accent/20 rounded">🔗 {language === "ar" ? "رابط" : "URL"}</span>}
-                {personaInfo.controlIcons?.includes("settings") && <span className="text-xs px-2 py-1 bg-primary/20 rounded">⚙️ {language === "ar" ? "إعدادات" : "Settings"}</span>}
-                {personaInfo.controlIcons?.includes("download") && <span className="text-xs px-2 py-1 bg-accent/20 rounded">📥 {language === "ar" ? "تحميل" : "Download"}</span>}
-              </div>
-            </div>
-          )}
 
           <div className="flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20 focus-within:outline-none focus-within:ring-0">
             <Input
@@ -595,78 +469,6 @@ export default function Chat() {
               </Button>
             )}
 
-            {personaInfo.controlIcons?.includes("search") && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setEnableGrounding(!enableGrounding)}
-                data-testid="button-grounding"
-                className={`h-8 w-8 ${enableGrounding ? "text-primary" : ""}`}
-                title={t("chat.google-search", language)}
-              >
-                <Search className="w-4 h-4" />
-              </Button>
-            )}
-
-            {personaInfo.controlIcons?.includes("ai-only") && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setEnableGrounding(false)}
-                data-testid="button-ai-only"
-                className={`h-8 w-8 ${!enableGrounding ? "text-primary" : ""}`}
-                title={t("chat.ai-only", language)}
-              >
-                <Radio className="w-4 h-4" />
-              </Button>
-            )}
-
-            {personaInfo.controlIcons?.includes("link") && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowUrlModal(true)}
-                data-testid="button-url"
-                className="h-8 w-8"
-                title={t("chat.url-input", language)}
-              >
-                <Link2 className="w-4 h-4" />
-              </Button>
-            )}
-
-            {personaInfo.controlIcons?.includes("settings") && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSettingsModal(true)}
-                data-testid="button-settings"
-                className="h-8 w-8"
-                title={t("chat.settings", language)}
-              >
-                <Settings className="w-4 h-4" />
-              </Button>
-            )}
-
-            {personaInfo.controlIcons?.includes("download") && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  const text = messages.map(m => `${m.role === "assistant" ? "AI" : "User"}: ${m.content}`).join("\n\n");
-                  const blob = new Blob([text], { type: "text/plain" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `research-${Date.now()}.txt`;
-                  a.click();
-                }}
-                data-testid="button-download"
-                className="h-8 w-8"
-                title={t("chat.download", language)}
-              >
-                <Download className="w-4 h-4" />
-              </Button>
-            )}
 
             <Input
               placeholder={t("chat.placeholder", language)}
@@ -697,57 +499,6 @@ export default function Chat() {
             </Button>
           </div>
 
-          {showUrlModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-              <div className="bg-card p-6 rounded-lg w-96 shadow-lg">
-                <h3 className="font-bold mb-4">{t("chat.url-input", language)}</h3>
-                <Input
-                  placeholder="https://example.com"
-                  value={urlInput}
-                  onChange={(e) => setUrlInput(e.target.value)}
-                  className="mb-4"
-                />
-                <div className="flex gap-2">
-                  <Button onClick={() => setShowUrlModal(false)} variant="outline" className="flex-1">{language === "ar" ? "إلغاء" : "Cancel"}</Button>
-                  <Button onClick={() => { setUrlInput(""); setShowUrlModal(false); }} className="flex-1">{language === "ar" ? "تم" : "Done"}</Button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {showSettingsModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-              <div className="bg-card p-6 rounded-lg w-96 shadow-lg">
-                <h3 className="font-bold mb-4">{t("chat.settings", language)}</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm mb-2 block">{language === "ar" ? "المستوى" : "Difficulty"}</label>
-                    <select value={quizSettings.difficulty} onChange={(e) => setQuizSettings({...quizSettings, difficulty: e.target.value})} className="w-full p-2 border rounded">
-                      <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
-                      <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
-                      <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-sm mb-2 block">{language === "ar" ? "عدد الأسئلة" : "Questions"}</label>
-                    <Input type="number" value={quizSettings.questions} onChange={(e) => setQuizSettings({...quizSettings, questions: parseInt(e.target.value)})} min="1" max="50" />
-                  </div>
-                  <div>
-                    <label className="text-sm mb-2 block">{language === "ar" ? "نوع السؤال" : "Type"}</label>
-                    <select value={quizSettings.type} onChange={(e) => setQuizSettings({...quizSettings, type: e.target.value})} className="w-full p-2 border rounded">
-                      <option value="multiple">{language === "ar" ? "خيارات متعددة" : "Multiple Choice"}</option>
-                      <option value="short">{language === "ar" ? "إجابة قصيرة" : "Short Answer"}</option>
-                      <option value="essay">{language === "ar" ? "مقالة" : "Essay"}</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex gap-2 mt-4">
-                  <Button onClick={() => setShowSettingsModal(false)} variant="outline" className="flex-1">{language === "ar" ? "إلغاء" : "Cancel"}</Button>
-                  <Button onClick={() => setShowSettingsModal(false)} className="flex-1">{language === "ar" ? "تم" : "Done"}</Button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </footer>
     </div>
