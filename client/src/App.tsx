@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -6,27 +6,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe } from "lucide-react";
+import { AppContext, useAppContext } from "@/lib/appContext";
+import type { Language, Theme, AppContextType } from "@/lib/appContext";
 import Hub from "@/pages/Hub";
 import Chat from "@/pages/Chat";
 import NotFound from "@/pages/not-found";
-
-type Language = "ar" | "en";
-type Theme = "light" | "dark";
-
-interface AppContextType {
-  language: Language;
-  theme: Theme;
-  setLanguage: (lang: Language) => void;
-  setTheme: (theme: Theme) => void;
-}
-
-export const AppContext = createContext<AppContextType | undefined>(undefined);
-
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (!context) throw new Error("useAppContext must be used within AppProvider");
-  return context;
-};
 
 function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();

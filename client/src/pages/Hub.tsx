@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { MessageSquare, Brain, Stethoscope, Eye, FileText, Zap, Lightbulb, Cpu, Rss } from "lucide-react";
-import { useAppContext } from "@/App";
+import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import type { FeatureCard } from "@shared/schema";
 

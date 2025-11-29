@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Upload, Send, ArrowLeft, Loader2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { useAppContext } from "@/App";
+import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 
 interface Message {
