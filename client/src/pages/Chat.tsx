@@ -69,7 +69,7 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);

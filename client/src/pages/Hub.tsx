@@ -68,7 +68,12 @@ export default function Hub() {
     setLocation(`/chat?initialMessage=${encodeURIComponent(message)}`);
   };
 
-  const features = featureKeys.map(key => ({
+  const allFeatures = [
+    { id: "chat", titleKey: "feature.chat", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
+    { id: "ask", titleKey: "feature.ask", icon: HelpCircle, route: "/chat?persona=ask", glowColor: "magenta" },
+  ];
+
+  const features = allFeatures.map(key => ({
     id: key.id,
     title: t(key.titleKey, language),
     icon: key.icon,
