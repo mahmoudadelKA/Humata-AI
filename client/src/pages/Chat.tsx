@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import { ConversationsSidebar } from "@/components/ConversationsSidebar";
+import { queryClient } from "@/lib/queryClient";
 
 interface Message {
   id: string;
@@ -141,6 +142,8 @@ export default function Chat() {
       setMessages((prev) => [...prev, data.message]);
       setConversationId(data.conversationId);
       setUploadedFileInfo(null);
+      // Refresh conversations list when a new message is sent
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
     },
     onError: (error: any) => {
       toast({
