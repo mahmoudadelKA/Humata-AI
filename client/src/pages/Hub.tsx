@@ -72,9 +72,16 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
         style={{ color: colors.icon }}
         strokeWidth={2}
       />
-      <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
-        {feature.title}
-      </h3>
+      <div className="flex flex-col items-center justify-center gap-2 px-3">
+        <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
+          {feature.title}
+        </h3>
+        {feature.description && (
+          <p className="text-xs text-muted-foreground text-center leading-tight" style={{ maxWidth: "130px" }}>
+            {feature.description}
+          </p>
+        )}
+      </div>
     </div>
   );
 
@@ -94,10 +101,25 @@ export default function Hub() {
     setLocation(`/chat?initialMessage=${encodeURIComponent(message)}`);
   };
   
+  const getDescriptionByPersona = (id: string): string => {
+    const descriptions: Record<string, string> = {
+      chat: language === "ar" ? "محادثة ذكية متقدمة" : "Advanced smart chat",
+      ask: language === "ar" ? "رفع ملف + بحث جوجل + ذكاء فقط" : "File upload + Google Search + AI Only",
+      research: language === "ar" ? "مصادر: PubMed, Google Scholar, ResearchGate, ScienceDirect, IEEE Xplore" : "Sources: PubMed, Google Scholar, ResearchGate, ScienceDirect, IEEE Xplore",
+      tests: language === "ar" ? "رفع ملف + إدخال URL + إعدادات" : "File upload + URL input + Settings",
+      images: language === "ar" ? "البحث من Google Images" : "Search from Google Images",
+      doctor: language === "ar" ? "مصادر: Mayo Clinic, WHO, Medline Plus" : "Sources: Mayo Clinic, WHO, Medline Plus",
+      scientist: language === "ar" ? "رياضيات، فيزياء، كيمياء، لغة عربية" : "Math, Physics, Chemistry, Arabic Language",
+      khedive: language === "ar" ? "تحليل استراتيجي متقدم" : "Advanced strategic analysis",
+      "ai-images": language === "ar" ? "محرك Kiira AI للصور" : "Kiira AI image engine",
+    };
+    return descriptions[id] || "";
+  };
+
   const features: FeatureCard[] = featureKeys.map(key => ({
     id: key.id,
     title: t(key.titleKey, language),
-    description: "",
+    description: getDescriptionByPersona(key.id),
     icon: key.icon as any,
     route: key.route,
     glowColor: key.glowColor as any,
