@@ -70,15 +70,16 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState<string>(convId);
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
+  const [hasAutoSent, setHasAutoSent] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Load messages when conversationId changes
   useEffect(() => {
-    // Load messages from the conversation if convId is provided
-    if (convId) {
+    if (conversationId) {
       const loadConversationMessages = async () => {
         try {
-          const response = await fetch(`/api/conversations/${convId}`, {
+          const response = await fetch(`/api/conversations/${conversationId}`, {
             credentials: "include",
           });
           if (response.ok) {
@@ -93,7 +94,7 @@ export default function Chat() {
       };
       loadConversationMessages();
     }
-  }, [convId]);
+  }, [conversationId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -180,7 +181,8 @@ export default function Chat() {
 
   // Auto-send initial message from Hub
   useEffect(() => {
-    if (initialMessage && sendMessageMutation) {
+    if (initialMessage && !hasAutoSent && sendMessageMutation) {
+      setHasAutoSent(true);
       const userMessage = {
         id: Date.now().toString(),
         role: "user" as const,
@@ -191,11 +193,13 @@ export default function Chat() {
       setInputValue("");
       
       // Send the message to AI
-      sendMessageMutation.mutate({
-        message: initialMessage,
-      });
+      setTimeout(() => {
+        sendMessageMutation.mutate({
+          message: initialMessage,
+        });
+      }, 100);
     }
-  }, [initialMessage, sendMessageMutation]);
+  }, [initialMessage]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() && !uploadedFileInfo) {
