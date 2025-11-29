@@ -95,12 +95,12 @@ const iconMap: Record<string, typeof MessageSquare> = {
 function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   const IconComponent = iconMap[feature.icon];
   
-  const colorMap: Record<string, { gradient: string; icon: string }> = {
-    cyan: { gradient: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)", icon: "#ffffff" },
-    magenta: { gradient: "linear-gradient(135deg, #be185d 0%, #ec4899 100%)", icon: "#ffffff" },
-    purple: { gradient: "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)", icon: "#ffffff" },
-    green: { gradient: "linear-gradient(135deg, #059669 0%, #10b981 100%)", icon: "#ffffff" },
-    yellow: { gradient: "linear-gradient(135deg, #d97706 0%, #f59e0b 100%)", icon: "#ffffff" },
+  const colorMap: Record<string, { border: string; glow: string; icon: string; shadow: string }> = {
+    cyan: { border: "hsl(180 100% 50%)", glow: "neon-icon-simple-cyan", icon: "hsl(180 100% 50%)", shadow: "0 0 12px hsl(180 100% 50% / 0.4), 0 0 24px hsl(180 100% 50% / 0.2)" },
+    magenta: { border: "hsl(328 100% 50%)", glow: "neon-icon-simple-magenta", icon: "hsl(328 100% 50%)", shadow: "0 0 12px hsl(328 100% 50% / 0.4), 0 0 24px hsl(328 100% 50% / 0.2)" },
+    purple: { border: "hsl(270 100% 60%)", glow: "neon-icon-simple-purple", icon: "hsl(270 100% 60%)", shadow: "0 0 12px hsl(270 100% 60% / 0.4), 0 0 24px hsl(270 100% 60% / 0.2)" },
+    green: { border: "hsl(120 100% 50%)", glow: "neon-icon-simple-green", icon: "hsl(120 100% 50%)", shadow: "0 0 12px hsl(120 100% 50% / 0.4), 0 0 24px hsl(120 100% 50% / 0.2)" },
+    yellow: { border: "hsl(45 100% 50%)", glow: "neon-icon-simple-yellow", icon: "hsl(45 100% 50%)", shadow: "0 0 12px hsl(45 100% 50% / 0.4), 0 0 24px hsl(45 100% 50% / 0.2)" },
   };
 
   const colors = colorMap[feature.glowColor] || colorMap.cyan;
@@ -108,20 +108,29 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   return (
     <Link href={feature.route}>
       <div
-        className="group cursor-pointer flex flex-col items-center justify-center gap-2 w-24 h-24 transition-all duration-200 hover:scale-110 hover:shadow-xl"
+        className="group cursor-pointer flex flex-col items-center justify-center gap-1.5 w-20 h-20 transition-all duration-150"
         style={{
-          borderRadius: "16px",
-          background: colors.gradient,
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+          borderRadius: "0",
+          border: `2px solid ${colors.border}`,
+          backgroundColor: "hsl(248 55% 14% / 0.7)",
+          boxShadow: `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
+          e.currentTarget.style.borderColor = `${colors.border}`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
+          e.currentTarget.style.borderColor = `${colors.border}`;
         }}
         data-testid={`card-feature-${feature.id}`}
       >
         <IconComponent 
-          className="w-8 h-8 transition-transform duration-200"
+          className={`w-6 h-6 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
           style={{ color: colors.icon }}
-          strokeWidth={1.5}
+          strokeWidth={2}
         />
-        <h3 className="text-[11px] font-bold text-center leading-tight" style={{ color: colors.icon }}>
+        <h3 className="text-[8px] font-bold text-center leading-tight text-foreground" style={{ maxWidth: "75px" }}>
           {feature.title}
         </h3>
       </div>
@@ -170,9 +179,9 @@ export default function Hub() {
           </div>
 
           <div 
-            className="flex flex-wrap justify-center items-center gap-6"
+            className="flex flex-wrap justify-center items-center gap-3"
             data-testid="feature-grid"
-            style={{ maxWidth: "600px", margin: "0 auto" }}
+            style={{ maxWidth: "380px", margin: "0 auto" }}
           >
             {features.map((feature) => (
               <FeatureCardComponent key={feature.id} feature={feature} />

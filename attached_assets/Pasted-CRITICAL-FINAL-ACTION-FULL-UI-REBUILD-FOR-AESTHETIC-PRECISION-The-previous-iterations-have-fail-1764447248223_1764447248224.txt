@@ -1,0 +1,21 @@
+CRITICAL FINAL ACTION: FULL UI REBUILD FOR AESTHETIC PRECISION.
+
+The previous iterations have failed to accurately replicate the user's desired feature card and icon aesthetic. A complete rebuild of the frontend UI is necessary to achieve this precision.
+
+Please perform the following actions:
+
+1.  **COMPLETE FRONTEND DELETION:** Delete all existing files and folders within the `public/` directory (or the main client-side source directory).
+2.  **REBUILD UI FROM SCRATCH:** Generate a completely new frontend UI (HTML, CSS, Client-side JS) within the `public/` directory, adhering strictly to these aesthetic requirements:
+    - **Background:** Use the already optimized background image URL: `url('https://4up4.com/uploads/file_2025-11-29_213242.jpg')`.
+    - **Feature Card Design (CRITICAL):**
+        - Each card MUST be a **perfect square**.
+        - Each card MUST have **sharp, 0-radius corners**.
+        - Each card MUST feature the **complex, multi-layered, glowing, double-lined frame** that resembles an embedded electronic chip slot, as seen in the user's reference image (0.webp). This is the top visual priority.
+        - The cards should be small and dense, organized in a clean, responsive grid.
+    - **Icon Design (CRITICAL):**
+        - The icons inside the cards MUST be **thick, glowing, and distinctly neon**, mirroring the robust visual style of the reference image. Apply heavy `text-shadow` or use custom SVG if generated.
+    - **Performance:** Ensure the CSS is highly optimized to prevent lag, using minimal glow layers and efficient styling.
+    - **RTL Support:** Ensure all text and layout elements are correctly aligned for Arabic (Right-to-Left) reading.
+    - **Functionality Reintegration:** Ensure all previously implemented backend API routes (for Chat, Doc Scanner, Khedive AI) are correctly integrated into this new frontend.
+
+**Action: Erase and rebuild the entire frontend UI from scratch to perfectly match the user's precise Cyberpunk aesthetic for cards and icons, with performance and RTL support.**
