@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2 } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Globe } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
@@ -207,29 +207,54 @@ export default function Chat() {
               </p>
             </div>
           ) : (
-            messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex w-full ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
-                data-testid={`message-${msg.id}`}
-              >
+            <>
+              {messages.map((msg) => (
                 <div
-                  className={`max-w-2xl px-5 py-3 rounded-2xl ${
-                    msg.role === "assistant"
-                      ? "bg-muted/40 text-foreground"
-                      : "bg-primary/30 text-foreground"
-                  }`}
+                  key={msg.id}
+                  className={`flex w-full ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
+                  data-testid={`message-${msg.id}`}
                 >
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                  {msg.fileInfo && (
-                    <div className="mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground flex items-center gap-2">
-                      <Upload className="w-3 h-3" />
-                      {msg.fileInfo.name}
-                    </div>
-                  )}
+                  <div
+                    className={`max-w-2xl px-5 py-3 rounded-2xl ${
+                      msg.role === "assistant"
+                        ? "bg-muted/40 text-foreground"
+                        : "bg-primary/30 text-foreground"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    {msg.fileInfo && (
+                      <div className="mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground flex items-center gap-2">
+                        <Upload className="w-3 h-3" />
+                        {msg.fileInfo.name}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {sendMessageMutation.isPending && (
+                <div className="flex w-full justify-start">
+                  <div className="max-w-2xl px-5 py-3 rounded-2xl bg-muted/40 text-foreground flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <div
+                          className="w-2 h-2 rounded-full bg-primary animate-bounce"
+                          style={{ animationDelay: "0ms" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 rounded-full bg-accent animate-bounce"
+                          style={{ animationDelay: "150ms" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 rounded-full bg-primary animate-bounce"
+                          style={{ animationDelay: "300ms" }}
+                        ></div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">جاري التفكير...</p>
+                  </div>
+                </div>
+              )}
+            </>
           )}
           <div ref={messagesEndRef} />
         </div>

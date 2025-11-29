@@ -235,6 +235,16 @@
     @apply hidden;
   }
 
+  /* Fix input focus artifact - remove white background/outline */
+  input:focus {
+    outline: none;
+    background-color: transparent;
+  }
+
+  input:focus-visible {
+    outline: none;
+  }
+
   /* Placeholder styling for contentEditable div */
   [contenteditable][data-placeholder]:empty::before {
     content: attr(data-placeholder);
