@@ -6,11 +6,6 @@ import { t } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const featureKeys = [
-  { id: "chat", titleKey: "feature.chat", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
-  { id: "ask", titleKey: "feature.ask", icon: HelpCircle, route: "/chat?persona=ask", glowColor: "magenta" },
-];
-
 function FeatureCardComponent({ feature }: any) {
   const IconComponent = feature.icon;
   
@@ -68,12 +63,12 @@ export default function Hub() {
     setLocation(`/chat?initialMessage=${encodeURIComponent(message)}`);
   };
 
-  const allFeatures = [
+  const featureKeys = [
     { id: "chat", titleKey: "feature.chat", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
     { id: "ask", titleKey: "feature.ask", icon: HelpCircle, route: "/chat?persona=ask", glowColor: "magenta" },
   ];
 
-  const features = allFeatures.map(key => ({
+  const features = featureKeys.map(key => ({
     id: key.id,
     title: t(key.titleKey, language),
     icon: key.icon,
