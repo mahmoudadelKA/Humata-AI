@@ -108,7 +108,7 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   return (
     <Link href={feature.route}>
       <div
-        className="group cursor-pointer flex flex-col items-center justify-center gap-1.5 w-20 h-20 transition-all duration-150"
+        className="group cursor-pointer flex flex-col items-center justify-center gap-2 w-32 h-32 transition-all duration-150"
         style={{
           borderRadius: "0",
           border: `2px solid ${colors.border}`,
@@ -126,11 +126,11 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
         data-testid={`card-feature-${feature.id}`}
       >
         <IconComponent 
-          className={`w-6 h-6 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
+          className={`w-10 h-10 ${colors.glow} transition-transform duration-150 group-hover:scale-110`}
           style={{ color: colors.icon }}
           strokeWidth={2}
         />
-        <h3 className="text-[8px] font-bold text-center leading-tight text-foreground" style={{ maxWidth: "75px" }}>
+        <h3 className="text-[11px] font-bold text-center leading-tight text-foreground" style={{ maxWidth: "120px" }}>
           {feature.title}
         </h3>
       </div>
@@ -179,9 +179,9 @@ export default function Hub() {
           </div>
 
           <div 
-            className="flex flex-wrap justify-center items-center gap-3"
+            className="flex flex-wrap justify-center items-center gap-6"
             data-testid="feature-grid"
-            style={{ maxWidth: "380px", margin: "0 auto" }}
+            style={{ maxWidth: "900px", margin: "0 auto" }}
           >
             {features.map((feature) => (
               <FeatureCardComponent key={feature.id} feature={feature} />
