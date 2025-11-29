@@ -58,12 +58,20 @@ export async function sendChatMessage(
 
     const config: any = {};
 
+    // Build system instruction with technical transparency override
+    const technicalTransparencyInstruction = `You are an AI assistant that is fully transparent about its technical specifications. If the user asks for your specific model name, model ID, or what model you are running (e.g., 'What is your model ID?', 'What model are you?', 'What's your name?'), you MUST respond with your exact current model ID: "${MODEL_NAME}". Do not evade the question with generic responses like 'I am a large language model...' - be direct and provide the exact model identifier.`;
+
+    let finalSystemInstruction = technicalTransparencyInstruction;
+    
     if (options.systemPrompt) {
-      config.systemInstruction = options.systemPrompt;
+      // Prepend technical transparency instruction to ensure it takes priority
+      finalSystemInstruction = `${technicalTransparencyInstruction}\n\n${options.systemPrompt}`;
     }
 
+    config.systemInstruction = finalSystemInstruction;
+
     console.log(
-      `[Gemini] Sending generateContent - items: ${contents.length}, hasFile: ${!!options.base64Data}`
+      `[Gemini] Sending generateContent - items: ${contents.length}, hasFile: ${!!options.base64Data}, modelId: ${MODEL_NAME}`
     );
 
     const response = await ai.models.generateContent({
