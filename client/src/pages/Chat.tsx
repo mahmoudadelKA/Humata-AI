@@ -1,18 +1,23 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation, Link } from "wouter";
-import { useMutation } from "@tanstack/react-query";
-import { ArrowLeft, Send, Paperclip, X, Loader2, Bot, User, Image, FileText, Zap } from "lucide-react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Upload, Send, ArrowLeft, Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import type { ChatMessage, ChatResponse, UploadResponse } from "@shared/schema";
 
-interface FilePreview {
-  file: File;
-  preview?: string;
-  type: "image" | "pdf" | "other";
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+  fileInfo?: { name: string; type: string };
+}
+
+interface ChatResponse {
+  message: Message;
+  sessionId: string;
 }
 
 interface UploadedFileInfo {
@@ -21,72 +26,91 @@ interface UploadedFileInfo {
   mimeType: string;
 }
 
-function getPersonaInfo(persona: string | null) {
-  switch (persona) {
-    case "khedive":
-      return {
-        name: "KHEDIVE AI",
-        description: "Strategic Advisor",
-        systemPrompt: "You are Khedive, an advanced strategic advisor AI. You excel at analyzing complex situations, providing strategic guidance, and helping with decision-making. Be thoughtful, analytical, and provide structured advice.",
-      };
-    case "doctor":
-      return {
-        name: "MED CONSUL",
-        description: "Medical Assistant",
-        systemPrompt: "You are a medical information assistant. Provide helpful health-related information while always recommending users consult with healthcare professionals for medical decisions. Be informative yet cautious.",
-      };
-    default:
-      return {
-        name: "NEURAL CHAT",
-        description: "General Assistant",
-        systemPrompt: "You are a helpful AI assistant with advanced capabilities. Be concise, helpful, and engaging.",
-      };
-  }
-}
-
-function getModeInfo(mode: string | null) {
-  switch (mode) {
-    case "vision":
-      return { title: "VISION CORE", icon: Image };
-    case "docs":
-      return { title: "DOC SCANNER", icon: FileText };
-    case "quick":
-      return { title: "QUICK SYNC", icon: Zap };
-    default:
-      return { title: null, icon: null };
-  }
-}
+const getPersonaInfo = (persona?: string) => {
+  const personas: Record<
+    string,
+    { title: string; description: string; systemPrompt: string }
+  > = {
+    khedive: {
+      title: "KHEDIVE AI - Strategic Advisor",
+      description: "Advanced strategic reasoning and decision analysis",
+      systemPrompt: `You are KHEDIVE AI, a strategic advisor powered by advanced reasoning. You provide deep analysis, strategic insights, and thoughtful guidance on complex decisions. Your responses are comprehensive, strategic, and focused on helping users navigate challenges with confidence.`,
+    },
+    doctor: {
+      title: "MED CONSUL - Medical Assistant",
+      description: "Medical information and health insights",
+      systemPrompt: `You are MED CONSUL, a medical information assistant. You provide educational information about health topics. IMPORTANT: Always remind users that you are not a substitute for professional medical advice and they should consult with qualified healthcare providers for diagnosis and treatment.`,
+    },
+  };
+  return (
+    personas[persona || ""] || {
+      title: "NEURAL CHAT",
+      description: "Advanced AI conversation",
+      systemPrompt: `You are an advanced AI assistant. Provide helpful, accurate, and thoughtful responses to user queries.`,
+    }
+  );
+};
 
 export default function Chat() {
-  const [location] = useLocation();
-  const params = new URLSearchParams(location.split("?")[1] || "");
-  const persona = params.get("persona");
-  const mode = params.get("mode");
-  
+  const [searchParams] = useLocation();
+  const params = new URLSearchParams(searchParams.split("?")[1] || "");
+  const persona = params.get("persona") || "";
+  const mode = params.get("mode") || "";
+
   const personaInfo = getPersonaInfo(persona);
-  const modeInfo = getModeInfo(mode);
-  
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [attachedFile, setAttachedFile] = useState<FilePreview | null>(null);
-  const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [sessionId, setSessionId] = useState<string>("");
+  const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
+  const [inputValue, setInputValue] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const uploadFileMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Upload failed");
+      }
+
+      return response.json() as Promise<UploadedFileInfo>;
+    },
+    onSuccess: (data) => {
+      setUploadedFileInfo(data);
+      toast({
+        title: "File uploaded",
+        description: `${data.fileName} ready for analysis`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Upload failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const sendMessageMutation = useMutation({
-    mutationFn: async (data: { message: string; base64Data?: string; fileName?: string; mimeType?: string }) => {
+    mutationFn: async (data: {
+      message: string;
+      base64Data?: string;
+      fileName?: string;
+      mimeType?: string;
+    }) => {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,12 +124,12 @@ export default function Chat() {
           mimeType: data.mimeType,
         }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || "Failed to send message");
       }
-      
+
       return response.json() as Promise<ChatResponse>;
     },
     onSuccess: (data) => {
@@ -113,355 +137,177 @@ export default function Chat() {
       setSessionId(data.sessionId);
       setUploadedFileInfo(null);
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to send message",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const uploadFileMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to upload file");
-      }
-      
-      return response.json() as Promise<UploadResponse>;
-    },
-    onSuccess: (data) => {
-      if (data.success && data.base64Data) {
-        setUploadedFileInfo({
-          base64Data: data.base64Data,
-          fileName: data.fileName || "file",
-          mimeType: data.mimeType || "unknown",
-        });
-        toast({
-          title: "File uploaded",
-          description: `${data.fileName} ready for analysis`,
-        });
-      }
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Upload failed",
+        title: "Message failed",
         description: error.message,
         variant: "destructive",
       });
-      setAttachedFile(null);
     },
   });
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const isImage = file.type.startsWith("image/");
-    const isPdf = file.type === "application/pdf";
-    
-    if (!isImage && !isPdf) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload an image or PDF file",
-        variant: "destructive",
-      });
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() && !uploadedFileInfo) {
       return;
     }
 
-    const fileType = isImage ? "image" : isPdf ? "pdf" : "other";
-    const preview = isImage ? URL.createObjectURL(file) : undefined;
-    
-    setAttachedFile({ file, preview, type: fileType });
-    uploadFileMutation.mutate(file);
-  };
-
-  const handleRemoveFile = () => {
-    if (attachedFile?.preview) {
-      URL.revokeObjectURL(attachedFile.preview);
-    }
-    setAttachedFile(null);
-    setUploadedFileInfo(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const handleSubmit = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    
-    const trimmedInput = input.trim();
-    if (!trimmedInput && !uploadedFileInfo) return;
-
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: trimmedInput || "Analyze this file",
+    const userMessage = {
+      id: Date.now().toString(),
+      role: "user" as const,
+      content: inputValue || (uploadedFileInfo ? "Analyze this file" : ""),
       timestamp: new Date(),
-      fileInfo: attachedFile ? {
-        name: attachedFile.file.name,
-        type: attachedFile.file.type,
-      } : undefined,
+      fileInfo: uploadedFileInfo
+        ? { name: uploadedFileInfo.fileName, type: uploadedFileInfo.mimeType }
+        : undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    
+    setInputValue("");
+
     sendMessageMutation.mutate({
-      message: trimmedInput || "Please analyze this file and describe what you see.",
+      message: userMessage.content,
       base64Data: uploadedFileInfo?.base64Data,
       fileName: uploadedFileInfo?.fileName,
       mimeType: uploadedFileInfo?.mimeType,
     });
-    
-    handleRemoveFile();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
+  const handleFileSelect = async (file: File) => {
+    uploadFileMutation.mutate(file);
   };
-
-  const isLoading = sendMessageMutation.isPending || uploadFileMutation.isPending;
 
   return (
     <div className="min-h-screen bg-background cyber-grid flex flex-col">
-      <header className="border-b border-border/30 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="icon" data-testid="button-back">
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
-              </Link>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center neon-glow-cyan">
-                  <Bot className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold tracking-wider text-foreground">
-                    {modeInfo.title || personaInfo.name}
-                  </h1>
-                  <p className="text-xs text-muted-foreground tracking-wider">
-                    {personaInfo.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded border border-primary/30 bg-primary/5">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-muted-foreground tracking-wider">CONNECTED</span>
+      <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => (window.location.href = "/")}
+              data-testid="button-back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div>
+              <h2 className="text-xl font-bold text-glow-cyan text-foreground">
+                {personaInfo.title}
+              </h2>
+              <p className="text-xs text-muted-foreground uppercase tracking-widest">
+                {personaInfo.description}
+              </p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-6 flex flex-col">
-        <ScrollArea className="flex-1 pr-4">
-          <div className="space-y-6 pb-4">
-            {messages.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-6 neon-glow-cyan">
-                  <Bot className="w-10 h-10 text-primary" />
-                </div>
-                <h2 className="text-2xl font-bold mb-2 text-foreground">
-                  {personaInfo.name}
-                </h2>
-                <p className="text-muted-foreground max-w-md mb-8">
-                  {persona === "khedive" 
-                    ? "Ready to assist with strategic analysis and decision-making."
-                    : persona === "doctor"
-                    ? "Here to provide helpful health information and guidance."
-                    : "Ready to assist you. Type a message or upload a file to begin."}
-                </p>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  {[
-                    mode === "vision" ? "Describe this image" : "Hello, who are you?",
-                    mode === "docs" ? "Summarize this document" : "What can you do?",
-                    "Help me with a task",
-                  ].map((suggestion, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setInput(suggestion)}
-                      className="px-4 py-2 rounded-lg border border-border/50 bg-card/50 text-sm text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all"
-                      data-testid={`button-suggestion-${i}`}
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {messages.filter((msg) => msg && msg.role && msg.id).map((message) => (
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto px-6 py-8 space-y-4">
+          {messages.length === 0 ? (
+            <div className="h-64 flex flex-col items-center justify-center text-center">
+              <div className="text-6xl mb-4 opacity-10">◆</div>
+              <p className="text-muted-foreground mb-2">No messages yet</p>
+              <p className="text-xs text-muted-foreground/50">
+                Upload a file or send a message to begin
+              </p>
+            </div>
+          ) : (
+            messages.map((msg) => (
               <div
-                key={message.id}
-                className={`flex gap-4 ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                data-testid={`message-${message.role}-${message.id}`}
+                key={msg.id}
+                className={`flex ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
+                data-testid={`message-${msg.id}`}
               >
-                {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-4 h-4 text-accent" />
-                  </div>
-                )}
-                <div
-                  className={`max-w-[80%] px-4 py-3 ${
-                    message.role === "user" ? "message-user" : "message-ai"
+                <Card
+                  className={`max-w-2xl p-4 ${
+                    msg.role === "assistant"
+                      ? "bg-accent/10 border-accent/20"
+                      : "bg-primary/10 border-primary/20"
                   }`}
                 >
-                  {message.fileInfo && (
-                    <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
-                      {message.fileInfo.type.startsWith("image") ? (
-                        <Image className="w-4 h-4" />
-                      ) : (
-                        <FileText className="w-4 h-4" />
-                      )}
-                      <span>{message.fileInfo.name}</span>
+                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  {msg.fileInfo && (
+                    <div className="mt-2 pt-2 border-t border-border/20 text-xs text-muted-foreground">
+                      📎 {msg.fileInfo.name}
                     </div>
                   )}
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                    {message.content}
-                  </p>
-                </div>
-                {message.role === "user" && (
-                  <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 text-primary" />
-                  </div>
-                )}
+                </Card>
               </div>
-            ))}
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </main>
 
-            {sendMessageMutation.isPending && (
-              <div className="flex gap-4 justify-start">
-                <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-accent" />
-                </div>
-                <div className="message-ai px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-accent" />
-                    <span className="text-sm text-muted-foreground">Processing...</span>
-                  </div>
-                </div>
+      <footer className="border-t border-border/30 bg-background/95 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto px-6 py-6 space-y-4">
+          {uploadedFileInfo && (
+            <div className="p-3 bg-accent/5 border border-accent/20 rounded-lg text-xs">
+              <div className="flex items-center justify-between">
+                <span>📎 {uploadedFileInfo.fileName}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setUploadedFileInfo(null)}
+                  data-testid="button-clear-file"
+                >
+                  ✕
+                </Button>
               </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-
-        <div className="pt-4 border-t border-border/30">
-          {attachedFile && (
-            <div className="mb-3 flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50">
-              {attachedFile.type === "image" && attachedFile.preview && (
-                <img
-                  src={attachedFile.preview}
-                  alt="Preview"
-                  className="w-16 h-16 object-cover rounded border border-border/50"
-                />
-              )}
-              {attachedFile.type === "pdf" && (
-                <div className="w-16 h-16 rounded border border-border/50 bg-muted/20 flex items-center justify-center">
-                  <FileText className="w-8 h-8 text-muted-foreground" />
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate text-foreground">
-                  {attachedFile.file.name}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {uploadFileMutation.isPending ? (
-                    <span className="flex items-center gap-1">
-                      <Loader2 className="w-3 h-3 animate-spin" /> Uploading...
-                    </span>
-                  ) : uploadedFileInfo ? (
-                    "Ready for analysis"
-                  ) : (
-                    "Preparing..."
-                  )}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleRemoveFile}
-                disabled={isLoading}
-                data-testid="button-remove-file"
-              >
-                <X className="w-4 h-4" />
-              </Button>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex gap-3">
-            <input
+          <div className="flex gap-2">
+            <Input
               ref={fileInputRef}
               type="file"
-              accept="image/*,application/pdf"
-              onChange={handleFileSelect}
+              accept=".pdf,.jpg,.jpeg,.png,.gif,.webp"
+              onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
               className="hidden"
               data-testid="input-file"
             />
-            
+
             <Button
-              type="button"
               variant="outline"
               size="icon"
               onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading || !!attachedFile}
-              className="flex-shrink-0 border-border/50 hover:border-primary/50"
-              data-testid="button-attach"
+              disabled={uploadFileMutation.isPending || sendMessageMutation.isPending}
+              data-testid="button-upload-file"
             >
-              <Paperclip className="w-5 h-5" />
-            </Button>
-
-            <div className="flex-1 relative">
-              <Textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={
-                  attachedFile
-                    ? "Describe what you want to know about this file..."
-                    : "Type your message..."
-                }
-                className="min-h-[52px] max-h-[200px] resize-none console-input rounded-lg pr-4"
-                disabled={isLoading}
-                data-testid="input-message"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isLoading || (!input.trim() && !uploadedFileInfo)}
-              className="flex-shrink-0 neon-glow-cyan"
-              data-testid="button-send"
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+              {uploadFileMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <Send className="w-5 h-5" />
+                <Upload className="w-4 h-4" />
               )}
             </Button>
-          </form>
 
-          <p className="text-center text-xs text-muted-foreground/50 mt-4 tracking-wider">
-            NEURAL INTERFACE // GEMINI 3 PRO PREVIEW
-          </p>
+            <Input
+              placeholder="Type your message..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+              disabled={sendMessageMutation.isPending}
+              data-testid="input-message"
+            />
+
+            <Button
+              onClick={handleSendMessage}
+              disabled={
+                !inputValue.trim() &&
+                !uploadedFileInfo &&
+                sendMessageMutation.isPending
+              }
+              data-testid="button-send"
+            >
+              {sendMessageMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </div>
-      </main>
+      </footer>
     </div>
   );
 }
