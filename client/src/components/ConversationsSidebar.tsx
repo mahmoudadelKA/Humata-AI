@@ -119,7 +119,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                 </Button>
               </div>
             ) : (
-              <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute left-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => setOpenMenu(openMenu === conv.id ? null : conv.id)}
                   className="p-1 hover:bg-muted/60 rounded text-muted-foreground hover:text-foreground"
@@ -129,7 +129,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                 </button>
 
                 {openMenu === conv.id && (
-                  <div className={`absolute top-8 ${language === "ar" ? "left-0" : "right-0"} bg-card border border-border rounded-lg shadow-lg z-50 w-32`}>
+                  <div className="absolute top-8 left-0 bg-card border border-border rounded-lg shadow-lg z-50 w-32">
                     <button
                       onClick={() => handleRename(conv.id, conv.title)}
                       className={`w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center gap-2 text-foreground/80 hover:text-foreground ${language === "ar" ? "flex-row-reverse" : ""}`}
