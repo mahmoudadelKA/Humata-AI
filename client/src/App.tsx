@@ -7,7 +7,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe } from "lucide-react";
 import { AppContext, useAppContext } from "@/lib/appContext";
-import type { Language, Theme, AppContextType } from "@/lib/appContext";
+import type { Language, Theme, AppContextType, User } from "@/lib/appContext";
+import { Auth } from "@/components/Auth";
 import Hub from "@/pages/Hub";
 import Chat from "@/pages/Chat";
 import NotFound from "@/pages/not-found";
@@ -16,7 +17,7 @@ function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
 
   return (
-    <div className={`fixed top-4 left-4 z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "font-bold" : ""}`}>
+    <div className={`fixed top-4 ${language === "ar" ? "right-4" : "left-4"} z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "font-bold" : ""}`}>
       <Button
         variant="ghost"
         size="icon"
@@ -60,6 +61,14 @@ function TopLeftControls() {
   );
 }
 
+function TopRightAuth() {
+  return (
+    <div className="fixed top-4 left-4 z-50">
+      <Auth />
+    </div>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -74,6 +83,7 @@ function AppContent() {
   return (
     <>
       <TopLeftControls />
+      <TopRightAuth />
       <Router />
     </>
   );
@@ -82,6 +92,8 @@ function AppContent() {
 function App() {
   const [language, setLanguage] = useState<Language>("ar");
   const [theme, setTheme] = useState<Theme>("dark");
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
@@ -107,8 +119,12 @@ function App() {
   const contextValue: AppContextType = {
     language,
     theme,
+    user,
+    token,
     setLanguage,
     setTheme,
+    setUser,
+    setToken,
   };
 
   return (
