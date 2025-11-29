@@ -70,9 +70,9 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState<string>(convId);
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
-  const [hasAutoSent, setHasAutoSent] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const autoSentRef = useRef(false);
 
   // Load messages when conversationId changes
   useEffect(() => {
@@ -181,8 +181,8 @@ export default function Chat() {
 
   // Auto-send initial message from Hub
   useEffect(() => {
-    if (initialMessage && !hasAutoSent && sendMessageMutation) {
-      setHasAutoSent(true);
+    if (initialMessage && !autoSentRef.current) {
+      autoSentRef.current = true;
       const userMessage = {
         id: Date.now().toString(),
         role: "user" as const,
@@ -192,14 +192,16 @@ export default function Chat() {
       setMessages((prev) => [...prev, userMessage]);
       setInputValue("");
       
-      // Send the message to AI
-      setTimeout(() => {
+      // Send the message to AI - using setTimeout to ensure mutation is ready
+      const timer = setTimeout(() => {
         sendMessageMutation.mutate({
           message: initialMessage,
         });
-      }, 100);
+      }, 50);
+      
+      return () => clearTimeout(timer);
     }
-  }, [initialMessage]);
+  }, [initialMessage, sendMessageMutation]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() && !uploadedFileInfo) {
