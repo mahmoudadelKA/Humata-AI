@@ -215,44 +215,34 @@ export async function registerRoutes(
         timestamp: new Date(),
       };
 
-      // Save to conversation if user is authenticated
-      if (userId) {
-        console.log(`[Routes] Saving conversation for userId: ${userId}`);
-        if (!currentConversationId) {
-          // Create new conversation on first AI response
-          const firstUserMsg = message.substring(0, 50);
-          console.log(`[Routes] Creating new conversation with title: ${firstUserMsg}`);
-          const newConv = await storage.createConversation(userId, firstUserMsg);
-          currentConversationId = newConv.id;
-          isFirstResponse = true;
-          console.log(`[Routes] New conversation created: ${currentConversationId}`);
-        } else {
-          // Verify conversation exists and belongs to user
-          const existingConv = await storage.getConversation(currentConversationId);
-          if (!existingConv || existingConv.userId !== userId) {
-            console.log(`[Routes] Conversation not found or unauthorized, creating new one`);
-            const firstUserMsg = message.substring(0, 50);
-            const newConv = await storage.createConversation(userId, firstUserMsg);
-            currentConversationId = newConv.id;
-          }
-        }
-        
-        console.log(`[Routes] Adding user message to conversation ${currentConversationId}`);
-        await storage.addMessageToConversation(currentConversationId, userMessage);
-        console.log(`[Routes] Adding assistant message to conversation ${currentConversationId}`);
-        await storage.addMessageToConversation(currentConversationId, assistantMessage);
-        console.log(`[Routes] Conversation saved successfully`);
+      // Save to conversation (works for both authenticated and unauthenticated users)
+      const effectiveUserId = userId || "anonymous";
+      console.log(`[Routes] Saving conversation for userId: ${effectiveUserId}`);
+      
+      if (!currentConversationId) {
+        // Create new conversation on first AI response
+        const firstUserMsg = message.substring(0, 50);
+        console.log(`[Routes] Creating new conversation with title: ${firstUserMsg}`);
+        const newConv = await storage.createConversation(effectiveUserId, firstUserMsg);
+        currentConversationId = newConv.id;
+        isFirstResponse = true;
+        console.log(`[Routes] New conversation created: ${currentConversationId}`);
       } else {
-        // Fallback to session for non-authenticated users
-        let sessionId = conversationId;
-        if (!sessionId) {
-          const session = await storage.createSession();
-          sessionId = session.id;
+        // Verify conversation exists
+        const existingConv = await storage.getConversation(currentConversationId);
+        if (!existingConv) {
+          console.log(`[Routes] Conversation not found, creating new one`);
+          const firstUserMsg = message.substring(0, 50);
+          const newConv = await storage.createConversation(effectiveUserId, firstUserMsg);
+          currentConversationId = newConv.id;
         }
-        await storage.addMessage(sessionId, userMessage);
-        await storage.addMessage(sessionId, assistantMessage);
-        currentConversationId = sessionId;
       }
+      
+      console.log(`[Routes] Adding user message to conversation ${currentConversationId}`);
+      await storage.addMessageToConversation(currentConversationId, userMessage);
+      console.log(`[Routes] Adding assistant message to conversation ${currentConversationId}`);
+      await storage.addMessageToConversation(currentConversationId, assistantMessage);
+      console.log(`[Routes] Conversation saved successfully`);
 
       console.log(`[Routes] Chat response sent successfully`);
 
