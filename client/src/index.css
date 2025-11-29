@@ -166,6 +166,10 @@
   --chart-3: 270 100% 50%;
   --chart-4: 45 100% 55%;
   --chart-5: 120 100% 45%;
+  
+  /* Light mode background override */
+  background-color: hsl(0 0% 98%);
+  color: hsl(0 0% 20%);
 }
 
 /* Dark mode is cyberpunk */
@@ -259,6 +263,18 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  html.light {
+    background-color: hsl(0 0% 98%);
+    color: hsl(0 0% 20%);
+  }
+  
+  html.dark,
+  html {
+    background-color: hsl(248 67% 11%);
+    color: hsl(180 100% 95%);
   }
 }
 
