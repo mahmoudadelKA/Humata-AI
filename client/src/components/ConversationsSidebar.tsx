@@ -91,12 +91,12 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
           <div key={conv.id} className="relative group">
             <button
               onClick={() => onSelectConversation(conv.id)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-muted/40 transition-colors text-foreground/80 hover:text-foreground truncate ${
+              className={`w-full flex items-center justify-center px-3 py-2 rounded-lg text-sm hover:bg-muted/40 transition-colors text-foreground/80 hover:text-foreground ${
                 currentConversationId === conv.id ? "bg-muted text-foreground" : ""
               }`}
               data-testid={`button-conversation-${conv.id}`}
             >
-              {conv.title}
+              <span className="truncate text-center">{conv.title}</span>
             </button>
 
             {renamingId === conv.id ? (
