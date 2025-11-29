@@ -7,6 +7,7 @@ import { sendChatMessage, uploadFileToGemini } from "./gemini";
 import { randomUUID } from "crypto";
 import { signupSchema, loginSchema, type SignupInput, type LoginInput, type User } from "@shared/schema";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 const uploadDir = "/tmp/uploads";
 if (!fs.existsSync(uploadDir)) {
@@ -56,6 +57,13 @@ const hashPassword = (password: string): string => {
   return crypto.createHash("sha256").update(password).digest("hex");
 };
 
+const JWT_SECRET = process.env.SESSION_SECRET || "fallback-secret-key";
+const JWT_EXPIRY = "7d";
+
+const generateJWT = (userId: string): string => {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+};
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -86,7 +94,16 @@ export async function registerRoutes(
       };
 
       await storage.createUser(user);
-      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email }, token: user.id });
+      const token = generateJWT(user.id);
+      
+      res.cookie("authToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email }, token });
     } catch (error) {
       res.status(500).json({ success: false, error: "خطأ في التسجيل" });
     }
@@ -108,7 +125,16 @@ export async function registerRoutes(
         return;
       }
 
-      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email }, token: user.id });
+      const token = generateJWT(user.id);
+      
+      res.cookie("authToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      res.json({ success: true, user: { id: user.id, name: user.name, email: user.email }, token });
     } catch (error) {
       res.status(500).json({ success: false, error: "خطأ في تسجيل الدخول" });
     }
@@ -116,13 +142,14 @@ export async function registerRoutes(
 
   app.post("/api/auth/verify", async (req: Request, res: Response) => {
     try {
-      const { token } = req.body;
+      const token = req.cookies.authToken;
       if (!token) {
-        res.status(400).json({ success: false });
+        res.status(401).json({ success: false });
         return;
       }
 
-      const user = await storage.getUserById(token);
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+      const user = await storage.getUserById(decoded.userId);
       if (!user) {
         res.status(401).json({ success: false });
         return;
@@ -130,8 +157,13 @@ export async function registerRoutes(
 
       res.json({ success: true, user: { id: user.id, name: user.name, email: user.email } });
     } catch (error) {
-      res.status(500).json({ success: false });
+      res.status(401).json({ success: false });
     }
+  });
+
+  app.post("/api/auth/logout", async (req: Request, res: Response) => {
+    res.clearCookie("authToken");
+    res.json({ success: true });
   });
   
   app.post("/api/chat", async (req: Request, res: Response) => {

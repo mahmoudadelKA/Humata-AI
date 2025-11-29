@@ -10,10 +10,8 @@ export function Auth() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      verifyTokenMutation.mutate(token);
-    }
+    // Check for existing session via cookie
+    verifyTokenMutation.mutate();
   }, []);
 
   useEffect(() => {
@@ -27,11 +25,11 @@ export function Auth() {
   }, []);
 
   const verifyTokenMutation = useMutation({
-    mutationFn: async (token: string) => {
+    mutationFn: async () => {
       const response = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        credentials: "include", // Send cookies with request
       });
       if (!response.ok) throw new Error("Verification failed");
       return response.json();
@@ -39,11 +37,10 @@ export function Auth() {
     onSuccess: (data) => {
       if (data.success && data.user) {
         setUser(data.user);
-        setToken(localStorage.getItem("authToken"));
+        setToken(data.user.id);
       }
     },
     onError: () => {
-      localStorage.removeItem("authToken");
       setUser(null);
       setToken(null);
     },

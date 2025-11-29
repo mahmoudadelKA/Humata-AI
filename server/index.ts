@@ -2,6 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const httpServer = createServer(app);
@@ -22,12 +24,20 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false, limit: "50mb" }));
+app.use(cookieParser());
 
 // Auth middleware
 app.use((req, res, next) => {
-  const token = req.headers.authorization?.replace("Bearer ", "");
+  const JWT_SECRET = process.env.SESSION_SECRET || "fallback-secret-key";
+  const token = req.cookies.authToken || req.headers.authorization?.replace("Bearer ", "");
+  
   if (token) {
-    (req as any).userId = token;
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+      (req as any).userId = decoded.userId;
+    } catch (e) {
+      // Token is invalid, continue without userId
+    }
   }
   next();
 });
