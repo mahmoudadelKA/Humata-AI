@@ -92,11 +92,11 @@ export async function uploadFileToGemini(
 
     // Upload file to Gemini File API
     // The Gemini API expects the raw bytes, not base64
-    const uploadResult = await ai.files.upload({
+    const uploadResult = await (ai.files as any).upload({
       file: {
         mimeType: mimeType,
         displayName: fileName,
-        data: fileBytes as any,
+        data: fileBytes,
       },
     });
 
