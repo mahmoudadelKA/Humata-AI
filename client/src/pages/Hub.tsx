@@ -66,38 +66,38 @@ function FeatureCardComponent({ feature }: { feature: FeatureCard }) {
   const IconComponent = iconMap[feature.icon];
   
   const glowClass = {
-    cyan: "neon-card group",
-    magenta: "neon-card-magenta group",
-    purple: "neon-card group",
+    cyan: "embedded-panel embedded-panel-cyan group",
+    magenta: "embedded-panel embedded-panel-magenta group",
+    purple: "embedded-panel embedded-panel-purple group",
   }[feature.glowColor];
 
   const iconGlow = {
-    cyan: "text-[hsl(180,100%,50%)] text-glow-cyan",
-    magenta: "text-[hsl(328,100%,50%)] text-glow-magenta",
-    purple: "text-[hsl(270,100%,60%)] text-glow-cyan",
+    cyan: "text-[hsl(180,100%,50%)] neon-icon-heavy-cyan",
+    magenta: "text-[hsl(328,100%,50%)] neon-icon-heavy-magenta",
+    purple: "text-[hsl(270,100%,60%)] neon-icon-heavy-purple",
   }[feature.glowColor];
 
   return (
     <Link href={feature.route}>
       <div
-        className={`${glowClass} rounded-lg p-8 cursor-pointer h-full flex flex-col`}
+        className={`${glowClass} p-6 cursor-pointer h-full flex flex-col aspect-square`}
         data-testid={`card-feature-${feature.id}`}
       >
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-center">
           <IconComponent 
-            className={`w-12 h-12 ${iconGlow} icon-glow-3d ${feature.glowColor === 'magenta' ? 'magenta' : feature.glowColor === 'purple' ? 'purple' : ''} transition-all duration-300 group-hover:scale-110`} 
-            strokeWidth={1.5}
+            className={`w-16 h-16 ${iconGlow} transition-all duration-300 group-hover:scale-105`} 
+            strokeWidth={2.5}
           />
         </div>
-        <h3 className="text-xl font-bold mb-3 tracking-wider text-foreground">
+        <h3 className="text-lg font-bold mb-2 tracking-wider text-foreground text-center">
           {feature.title}
         </h3>
-        <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+        <p className="text-muted-foreground text-xs leading-relaxed flex-1 text-center">
           {feature.description}
         </p>
-        <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground/70 uppercase tracking-widest">
+        <div className="mt-auto flex items-center justify-center gap-2 text-xs text-muted-foreground/70 uppercase tracking-widest">
           <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
-          <span>ONLINE</span>
+          <span>ACTIVE</span>
         </div>
       </div>
     </Link>
