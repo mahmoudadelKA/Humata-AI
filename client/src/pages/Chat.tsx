@@ -45,7 +45,7 @@ const getPersonaInfo = (persona?: string) => {
   };
   return (
     personas[persona || ""] || {
-      title: "الحدثة",
+      title: "الدردشة",
       description: "محادثة ذكية متقدمة",
       systemPrompt: `أنت مساعد ذكاء اصطناعي متقدم. قدم إجابات مفيدة وصحيحة ومدروسة على استفسارات المستخدمين. الرد بصيغة عربية سليمة.`,
     }
