@@ -11,11 +11,9 @@ const MODEL_NAME = "gemini-2.5-flash";
 
 export interface GeminiChatOptions {
   systemPrompt?: string;
-  fileData?: {
-    base64: string;
-    mimeType: string;
-    fileName: string;
-  };
+  fileUri?: string;
+  mimeType?: string;
+  fileName?: string;
 }
 
 export async function sendChatMessage(
@@ -26,6 +24,7 @@ export async function sendChatMessage(
   try {
     const contents: any[] = [];
     
+    // Add message history
     for (const msg of history) {
       contents.push({
         role: msg.role === "assistant" ? "model" : "user",
@@ -33,19 +32,21 @@ export async function sendChatMessage(
       });
     }
 
+    // Build user message with optional file reference
     const userParts: any[] = [];
     
-    // Add file as inline data if provided
-    if (options.fileData) {
-      console.log(`[Gemini] Adding file to request: ${options.fileData.fileName}, type: ${options.fileData.mimeType}`);
+    // Add file data if URI is provided
+    if (options.fileUri && options.mimeType) {
+      console.log(`[Gemini] Adding file reference to message - URI: ${options.fileUri}, type: ${options.mimeType}`);
       userParts.push({
-        inlineData: {
-          data: options.fileData.base64,
-          mimeType: options.fileData.mimeType,
+        fileData: {
+          mimeType: options.mimeType,
+          fileUri: options.fileUri,
         },
       });
     }
     
+    // Add the user's text message
     userParts.push({ text: message });
     
     contents.push({
@@ -59,7 +60,7 @@ export async function sendChatMessage(
       config.systemInstruction = options.systemPrompt;
     }
 
-    console.log(`[Gemini] Sending request with ${contents.length} messages, hasFile: ${!!options.fileData}`);
+    console.log(`[Gemini] Sending generateContent request - contents: ${contents.length} items, hasFile: ${!!options.fileUri}`);
 
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
@@ -75,54 +76,60 @@ export async function sendChatMessage(
   }
 }
 
-export async function processUploadedFile(
+export async function uploadFileToGemini(
   filePath: string,
   mimeType: string,
   fileName: string
-): Promise<{ base64: string; mimeType: string; fileName: string }> {
+): Promise<{ fileUri: string; mimeType: string; fileName: string }> {
   try {
-    console.log(`[Gemini] Processing file: ${fileName}, path: ${filePath}, type: ${mimeType}`);
+    console.log(`[Gemini] Uploading file to Gemini - file: ${fileName}, type: ${mimeType}`);
     
     const fileBytes = fs.readFileSync(filePath);
-    const base64Data = fileBytes.toString("base64");
     
-    console.log(`[Gemini] File processed successfully, base64 length: ${base64Data.length}`);
-    
+    // Upload file to Gemini File API
+    const uploadResult = await ai.files.upload({
+      file: {
+        mimeType: mimeType,
+        displayName: fileName,
+        data: fileBytes.toString("base64"),
+      },
+    });
+
+    if (!uploadResult.uri) {
+      throw new Error("File upload failed - no URI returned from Gemini");
+    }
+
+    console.log(`[Gemini] File uploaded successfully - URI: ${uploadResult.uri}`);
+
+    // Wait for file processing to complete
+    let file = uploadResult;
+    let attempts = 0;
+    while (file.state === "PROCESSING" && attempts < 30) {
+      console.log(`[Gemini] Waiting for file processing... (attempt ${attempts + 1}/30)`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      const getResult = await ai.files.get({ name: file.name! });
+      file = getResult;
+      attempts++;
+    }
+
+    if (file.state === "FAILED") {
+      throw new Error("File processing failed in Gemini API");
+    }
+
+    if (file.state === "PROCESSING") {
+      throw new Error("File processing timeout - took too long");
+    }
+
+    console.log(`[Gemini] File ready for use - state: ${file.state}, URI: ${file.uri}`);
+
     return {
-      base64: base64Data,
-      mimeType: mimeType,
+      fileUri: file.uri!,
+      mimeType: file.mimeType!,
       fileName: fileName,
     };
   } catch (error: any) {
-    console.error("[Gemini] File processing error:", error);
-    throw new Error(error.message || "Failed to process file");
-  }
-}
-
-export async function analyzeImage(
-  base64Data: string,
-  mimeType: string,
-  prompt: string = "Analyze this image in detail and describe its key elements, context, and any notable aspects."
-): Promise<string> {
-  try {
-    const contents = [
-      {
-        inlineData: {
-          data: base64Data,
-          mimeType,
-        },
-      },
-      prompt,
-    ];
-
-    const response = await ai.models.generateContent({
-      model: MODEL_NAME,
-      contents,
-    });
-
-    return response.text || "Unable to analyze the image.";
-  } catch (error: any) {
-    console.error("[Gemini] Image analysis error:", error);
-    throw new Error(error.message || "Failed to analyze image");
+    console.error("[Gemini] File upload error:", error);
+    throw new Error(error.message || "Failed to upload file to Gemini");
   }
 }
