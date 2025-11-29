@@ -9,21 +9,6 @@ export function Auth() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Check for existing session via cookie
-    verifyTokenMutation.mutate();
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowUserMenu(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const verifyTokenMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch("/api/auth/verify", {
@@ -46,11 +31,41 @@ export function Auth() {
     },
   });
 
+  useEffect(() => {
+    // Check for existing session via cookie
+    verifyTokenMutation.mutate();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Logout failed");
+      return response.json();
+    },
+  });
+
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setUser(null);
-    setToken(null);
-    setShowUserMenu(false);
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        setUser(null);
+        setToken(null);
+        setShowUserMenu(false);
+      },
+    });
   };
 
   if (user) {

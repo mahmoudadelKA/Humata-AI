@@ -82,6 +82,7 @@ export default function Chat() {
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
+        credentials: "include", // Send cookies
       });
 
       if (!response.ok) {
@@ -114,14 +115,10 @@ export default function Chat() {
       fileName?: string;
       mimeType?: string;
     }) => {
-      const headers: any = { "Content-Type": "application/json" };
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Send cookies (JWT) automatically
         body: JSON.stringify({
           message: data.message,
           conversationId,
