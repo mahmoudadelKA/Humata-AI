@@ -73,18 +73,7 @@ const getPersonaInfo = (persona: string | null) => {
     "google-images": {
       title: "توليد الصور",
       description: "بحث وعرض أفضل الصور",
-      systemPrompt: `You are a specialized Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find relevant images. 
-
-Your response MUST include:
-1. A brief description of the search results
-2. Direct URL links to the top 3-5 images found (using markdown image syntax: ![alt](url))
-
-Format your response like this:
-وصف موجز عن الصور المتعلقة بـ [الموضوع]
-
-![صورة 1](https://image-url-1.jpg)
-![صورة 2](https://image-url-2.jpg)
-![صورة 3](https://image-url-3.jpg)`,
+      systemPrompt: `أنت متخصص في البحث عن الصور. عندما يطلب المستخدم صوراً عن أي موضوع، ابحث وقدم الصور المطابقة.`,
       controlIcons: ["search"],
     },
   };
@@ -113,7 +102,7 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "google-images" ? true : false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);

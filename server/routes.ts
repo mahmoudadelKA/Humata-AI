@@ -193,20 +193,42 @@ export async function registerRoutes(
         }
       }
 
-      // For image search, use Google Search grounding
-      let effectiveEnableGrounding = enableGrounding || false;
+      let aiResponse: string;
+      
+      // Handle image search with direct API (bypass Gemini quotas)
       if (persona === "google-images") {
-        effectiveEnableGrounding = true;
-        console.log(`[Routes] Image search persona detected - enabling Google Search grounding`);
+        const query = encodeURIComponent(message);
+        const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=9&client_id=a_O3jJDskbr--1TxXuHqaG6nMPj6WxMq0Wfo3LjXXY0`;
+        
+        try {
+          const imageRes = await fetch(unsplashUrl);
+          const imageData = await imageRes.json();
+          
+          if (imageData.results && imageData.results.length > 0) {
+            // Format as markdown image links for frontend parsing
+            const imageLinks = imageData.results
+              .slice(0, 5)
+              .map((img: any) => `![${img.alt_description || "صورة"}](${img.urls.regular})`)
+              .join('\n');
+            
+            aiResponse = `نتائج البحث عن "${message}":\n\n${imageLinks}`;
+          } else {
+            aiResponse = `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`;
+          }
+        } catch (error) {
+          console.error("Image search error:", error);
+          aiResponse = `حدث خطأ في البحث عن الصور. يرجى المحاولة لاحقاً.`;
+        }
+      } else {
+        const effectiveEnableGrounding = enableGrounding || (persona === "ask" || persona === "research");
+        aiResponse = await sendChatMessage(message, history, {
+          systemPrompt: systemPrompt || undefined,
+          base64Data: base64Data || undefined,
+          mimeType: mimeType || undefined,
+          fileName: fileName || undefined,
+          enableGrounding: effectiveEnableGrounding,
+        });
       }
-
-      const aiResponse = await sendChatMessage(message, history, {
-        systemPrompt: systemPrompt || undefined,
-        base64Data: base64Data || undefined,
-        mimeType: mimeType || undefined,
-        fileName: fileName || undefined,
-        enableGrounding: effectiveEnableGrounding,
-      });
 
       const userMessage = {
         id: randomUUID(),
