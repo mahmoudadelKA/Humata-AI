@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { MessageSquare, HelpCircle, Send, Search, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark } from "lucide-react";
+import { MessageSquare, HelpCircle, Send, Search, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, Sun, Moon, Globe } from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
@@ -64,7 +64,7 @@ function FeatureCardComponent({ feature }: any) {
 }
 
 export default function Hub() {
-  const { language } = useAppContext();
+  const { language, theme, setLanguage, setTheme } = useAppContext();
   const [, setLocation] = useLocation();
   const [inputValue, setInputValue] = useState("");
 
@@ -155,6 +155,40 @@ export default function Hub() {
           </div>
 
         </main>
+
+        {/* Center-Bottom Controls - Hub Only */}
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40">
+          <div className={`flex items-center gap-3 bg-muted/40 border border-border/50 rounded-full px-5 py-3 backdrop-blur-md hover:bg-muted/60 transition-all ${language === "ar" ? "flex-row-reverse" : ""}`}>
+            {/* Theme Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              data-testid="button-theme-toggle-hub"
+              className="h-8 w-8 rounded-lg hover:bg-primary/10"
+              title={theme === "dark" ? "Light Mode" : "Dark Mode"}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-primary" />
+              ) : (
+                <Moon className="w-4 h-4 text-primary" />
+              )}
+            </Button>
+
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
+              data-testid="button-language-toggle-hub"
+              className="h-8 w-8 rounded-lg hover:bg-accent/10 flex items-center justify-center gap-1"
+              title={language === "ar" ? "English" : "العربية"}
+            >
+              <Globe className="w-4 h-4 text-accent" />
+              <span className="text-[10px] font-bold text-accent">{language.toUpperCase()}</span>
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
