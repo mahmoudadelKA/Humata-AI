@@ -219,12 +219,15 @@ export async function registerRoutes(
       const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType, enableGrounding, guestId } = req.body;
       let userId = (req as any).userId;
       
-      // Support guest users with guestId
-      if (!userId && guestId) {
-        userId = guestId;
-        res.cookie("guestId", guestId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
-      } else if (!userId) {
-        userId = "anonymous";
+      // Support guest users with unique guestId - NEVER use "anonymous"
+      if (!userId) {
+        if (guestId) {
+          userId = guestId;
+        } else {
+          // Generate new unique guestId if not provided
+          userId = randomUUID();
+        }
+        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
       }
 
       console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}, enableGrounding: ${enableGrounding}, persona: ${persona}`);
@@ -441,12 +444,13 @@ export async function registerRoutes(
   // Conversations API
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      // Use guestId from query param or cookies for anonymous users
-      const guestId = (req.query.guestId as string) || (req.cookies.guestId as string);
-      const userId = (req as any).userId || guestId || "anonymous";
+      // Use guestId from cookies for anonymous users - NEVER use "anonymous"
+      let userId = (req as any).userId || (req.cookies.guestId as string);
       
-      if (guestId && !req.cookies.guestId) {
-        res.cookie("guestId", guestId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+      if (!userId) {
+        // Generate new guestId if user doesn't have one yet
+        userId = randomUUID();
+        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
       }
       
       const conversations = await storage.getConversations(userId);
@@ -473,7 +477,11 @@ export async function registerRoutes(
 
   app.post("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).userId || "anonymous";
+      let userId = (req as any).userId || (req.cookies.guestId as string);
+      if (!userId) {
+        userId = randomUUID();
+        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+      }
       const { title } = req.body;
       const conversation = await storage.createConversation(userId, title || "New Conversation");
       res.json(conversation);

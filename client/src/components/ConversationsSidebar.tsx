@@ -32,7 +32,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
       if (!response.ok) throw new Error("Failed to fetch conversations");
       return response.json();
     },
-    enabled: !!user,
+    enabled: true,
   });
 
   const deleteMutation = useMutation({
