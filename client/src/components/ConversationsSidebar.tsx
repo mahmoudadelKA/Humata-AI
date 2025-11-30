@@ -97,7 +97,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         </h3>
       </div>
 
-      <div className="space-y-1 p-2 flex-1 overflow-y-auto">
+      <div className="space-y-1 p-2 flex-1 overflow-y-auto overflow-x-visible">
         {conversations.map((conv: Conversation) => (
           <div key={conv.id} className="relative group">
             {renamingId === conv.id ? (
@@ -121,7 +121,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors group">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors group relative">
                   <button
                     onClick={() => onSelectConversation(conv.id)}
                     className={`flex-1 text-left text-sm truncate text-foreground/80 group-hover:text-foreground ${
@@ -141,44 +141,40 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                   >
                     <MoreVertical className="w-4 h-4" />
                   </button>
-                </div>
 
-                {openMenu === conv.id && (
-                  <div className={`fixed bg-card rounded-md shadow-2xl flex gap-1 p-1 animate-in fade-in-50 duration-200`} style={{
-                    top: `${(conversations.indexOf(conv) * 45 + 140)}px`,
-                    [language === "ar" ? "right" : "left"]: "280px",
-                    zIndex: 99999
-                  }}>
-                    <button
-                      onClick={() => {
-                        setRenamingId(conv.id);
-                        setNewTitle(conv.title);
-                        setOpenMenu(null);
-                      }}
-                      className="p-1.5 hover:bg-muted/60 rounded transition-colors text-foreground/70 hover:text-foreground flex-shrink-0"
-                      title={language === "ar" ? "تعديل الاسم" : "Rename"}
-                      data-testid="button-rename"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleDownload(conv)}
-                      className="p-1.5 hover:bg-muted/60 rounded transition-colors text-foreground/70 hover:text-foreground flex-shrink-0"
-                      title={language === "ar" ? "تصدير" : "Export"}
-                      data-testid="button-download"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => deleteMutation.mutate(conv.id)}
-                      className="p-1.5 hover:bg-red-500/10 rounded transition-colors text-red-500 hover:text-red-600 flex-shrink-0"
-                      title={language === "ar" ? "حذف" : "Delete"}
-                      data-testid="button-delete"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
+                  {openMenu === conv.id && (
+                    <div className={`absolute ${language === "ar" ? "right-full mr-1" : "left-full ml-1"} top-0 bg-card rounded-md shadow-2xl flex gap-1 p-1 animate-in fade-in-50 duration-200 z-50`}>
+                      <button
+                        onClick={() => {
+                          setRenamingId(conv.id);
+                          setNewTitle(conv.title);
+                          setOpenMenu(null);
+                        }}
+                        className="p-1.5 hover:bg-muted/60 rounded transition-colors text-foreground/70 hover:text-foreground flex-shrink-0"
+                        title={language === "ar" ? "تعديل الاسم" : "Rename"}
+                        data-testid="button-rename"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDownload(conv)}
+                        className="p-1.5 hover:bg-muted/60 rounded transition-colors text-foreground/70 hover:text-foreground flex-shrink-0"
+                        title={language === "ar" ? "تصدير" : "Export"}
+                        data-testid="button-download"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => deleteMutation.mutate(conv.id)}
+                        className="p-1.5 hover:bg-red-500/10 rounded transition-colors text-red-500 hover:text-red-600 flex-shrink-0"
+                        title={language === "ar" ? "حذف" : "Delete"}
+                        data-testid="button-delete"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
