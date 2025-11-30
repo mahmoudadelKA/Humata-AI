@@ -34,20 +34,23 @@ export function FloatingNavBar() {
 
   return (
     <div 
-      className="fixed z-40 flex flex-col gap-2 transition-all duration-300"
+      className="fixed flex flex-col gap-2 transition-all duration-300"
       style={{
         top: "15%",
-        left: "20px"
+        left: "20px",
+        zIndex: 99999,
+        pointerEvents: "auto"
       }}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg"
+        className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer"
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.6)",
           border: "1px solid rgba(0, 240, 255, 0.3)",
-          boxShadow: "0 0 15px rgba(0, 240, 255, 0.4)"
+          boxShadow: "0 0 15px rgba(0, 240, 255, 0.4)",
+          pointerEvents: "auto"
         }}
         title={isExpanded ? "Hide modules" : "Show modules"}
         data-testid="button-floating-nav-toggle"
@@ -71,14 +74,15 @@ export function FloatingNavBar() {
                 key={module.id}
                 onClick={() => handleNavigate(module.route)}
                 title={t(module.titleKey, language)}
-                className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 ${
+                className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer ${
                   isActive ? "shadow-lg" : ""
                 }`}
                 style={{
                   backgroundColor: isActive ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.5)",
                   border: isActive ? "2px solid" : "1px solid rgba(0, 240, 255, 0.2)",
                   borderColor: isActive ? "currentColor" : undefined,
-                  boxShadow: isActive ? `0 0 15px ${module.color === "text-cyan-400" ? "rgb(0, 240, 255)" : module.color === "text-magenta-400" ? "rgb(255, 0, 110)" : module.color === "text-green-400" ? "rgb(0, 240, 150)" : "rgb(255, 200, 0)"}` : "0 0 10px rgba(0, 240, 255, 0.2)"
+                  boxShadow: isActive ? `0 0 15px ${module.color === "text-cyan-400" ? "rgb(0, 240, 255)" : module.color === "text-magenta-400" ? "rgb(255, 0, 110)" : module.color === "text-green-400" ? "rgb(0, 240, 150)" : "rgb(255, 200, 0)"}` : "0 0 10px rgba(0, 240, 255, 0.2)",
+                  pointerEvents: "auto"
                 }}
                 data-testid={`button-floating-nav-${module.id}`}
               >
