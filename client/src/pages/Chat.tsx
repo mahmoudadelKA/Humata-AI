@@ -449,7 +449,7 @@ export default function Chat() {
 
   if (persona === "ai-images") {
     return (
-      <div className="h-screen w-screen bg-background flex flex-col overflow-hidden" dir={language === "ar" ? "rtl" : "ltr"}>
+      <div className="h-screen w-screen flex flex-col overflow-hidden" dir={language === "ar" ? "rtl" : "ltr"}>
         <div className={`fixed ${language === "ar" ? "right-6" : "left-6"} top-6 z-50`}>
           <Link href="/">
             <Button
@@ -476,8 +476,8 @@ export default function Chat() {
   const PersonaIconComponent = getPersonaIcon(persona);
   
   return (
-    <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
-      <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
+    <div className="min-h-screen cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
+      <header className="border-b border-border/30 backdrop-blur-md bg-background/20 sticky top-0 z-40">
         <div className="px-6 py-4 flex items-center justify-center gap-4">
           <Link href="/">
             <Button
@@ -638,7 +638,7 @@ export default function Chat() {
         </div>
       </main>
 
-      <footer className="border-t border-border/30 bg-background/95 backdrop-blur-sm sticky bottom-0">
+      <footer className="border-t border-border/30 bg-background/20 backdrop-blur-md sticky bottom-0">
         <div className="max-w-3xl w-full mx-auto px-6 py-6 space-y-4">
           {uploadedFileInfo && (
             <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
