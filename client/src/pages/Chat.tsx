@@ -281,7 +281,7 @@ export default function Chat() {
   const { toast } = useToast();
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState<string>(convId);
+  const [conversationId, setConversationId] = useState<string>("");
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
@@ -298,6 +298,17 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
+
+  // Sync conversationId with convId when convId changes
+  useEffect(() => {
+    setConversationId(convId);
+  }, [convId]);
+
+  // Update enableGrounding when persona changes
+  useEffect(() => {
+    const shouldEnableGrounding = persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" || persona === "khedive";
+    setEnableGrounding(shouldEnableGrounding);
+  }, [persona]);
 
   // Load messages when conversationId changes
   useEffect(() => {
