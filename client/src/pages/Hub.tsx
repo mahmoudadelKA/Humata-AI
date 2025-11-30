@@ -8,11 +8,11 @@ function FeatureCardComponent({ feature }: any) {
   const IconComponent = feature.icon;
   const [, navigate] = useLocation();
   
-  const colorMap: Record<string, { border: string; shadow: string; icon: string }> = {
-    cyan: { border: "hsl(180 100% 50%)", icon: "hsl(180 100% 50%)", shadow: "0 0 12px hsl(180 100% 50% / 0.4), 0 0 24px hsl(180 100% 50% / 0.2)" },
-    magenta: { border: "hsl(328 100% 50%)", icon: "hsl(328 100% 50%)", shadow: "0 0 12px hsl(328 100% 50% / 0.4), 0 0 24px hsl(328 100% 50% / 0.2)" },
-    green: { border: "hsl(120 100% 50%)", icon: "hsl(120 100% 50%)", shadow: "0 0 12px hsl(120 100% 50% / 0.4), 0 0 24px hsl(120 100% 50% / 0.2)" },
-    yellow: { border: "hsl(60 100% 50%)", icon: "hsl(60 100% 50%)", shadow: "0 0 12px hsl(60 100% 50% / 0.4), 0 0 24px hsl(60 100% 50% / 0.2)" },
+  const colorMap: Record<string, { icon: string; glow: string }> = {
+    cyan: { icon: "#00F0FF", glow: "rgba(0, 240, 255, 0.6)" },
+    magenta: { icon: "#FF006E", glow: "rgba(255, 0, 110, 0.6)" },
+    green: { icon: "#00FF88", glow: "rgba(0, 255, 136, 0.6)" },
+    yellow: { icon: "#FFD700", glow: "rgba(255, 215, 0, 0.6)" },
   };
 
   const colors = colorMap[feature.glowColor] || colorMap.cyan;
@@ -20,44 +20,20 @@ function FeatureCardComponent({ feature }: any) {
   return (
     <div
       onClick={() => navigate(feature.route)}
-      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 sm:w-40 sm:h-40 md:w-48 md:h-48 smooth-hover animate-fade-in-up backdrop-blur-md"
-      style={{
-        borderRadius: "12px",
-        border: `1.5px solid ${colors.border}`,
-        backgroundColor: "rgba(248, 113, 113, 0.08)",
-        backdropFilter: "blur(10px)",
-        boxShadow: `0 0 20px ${colors.border}40, inset 0 1px 1px rgba(255, 255, 255, 0.1)`,
-        animationDelay: feature.delay,
-      }}
-      onMouseEnter={(e) => {
-        if (window.innerWidth >= 768) {
-          e.currentTarget.style.boxShadow = `0 0 30px ${colors.border}70, inset 0 1px 1px rgba(255, 255, 255, 0.15)`;
-          e.currentTarget.style.borderColor = `${colors.border}`;
-          e.currentTarget.style.transform = "scale(1.05)";
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (window.innerWidth >= 768) {
-          e.currentTarget.style.boxShadow = `0 0 20px ${colors.border}40, inset 0 1px 1px rgba(255, 255, 255, 0.1)`;
-          e.currentTarget.style.borderColor = `${colors.border}`;
-          e.currentTarget.style.transform = "scale(1)";
-        }
-      }}
+      className="group cursor-pointer flex flex-col items-center justify-center gap-4 animate-fade-in-up icon-3d-container"
+      style={{ animationDelay: feature.delay }}
       data-testid={`card-feature-${feature.id}`}
     >
-      <IconComponent 
-        className="w-14 h-14 transition-transform duration-150 group-hover:scale-110"
-        style={{ color: colors.icon }}
-        strokeWidth={2}
-      />
-      <div className="flex flex-col items-center justify-center gap-1 px-3">
-        <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
-          {feature.title}
-        </h3>
-        <p className="text-xs text-muted-foreground text-center leading-tight" style={{ maxWidth: "135px" }}>
-          {feature.description}
-        </p>
+      <div className="icon-3d-wrapper" style={{ "--icon-glow": colors.glow } as React.CSSProperties}>
+        <IconComponent 
+          className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 icon-3d"
+          style={{ color: colors.icon }}
+          strokeWidth={1.5}
+        />
       </div>
+      <h3 className="text-sm sm:text-base font-bold text-center leading-snug" style={{ color: colors.icon, maxWidth: "120px", textShadow: `0 0 10px ${colors.glow}` }}>
+        {feature.title}
+      </h3>
     </div>
   );
 }

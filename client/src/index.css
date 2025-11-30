@@ -247,6 +247,48 @@
   transition: all 0.3s ease;
 }
 
+/* ===== 3D FLOATING ICON EFFECTS ===== */
+
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateX(5deg) rotateY(5deg);
+  }
+}
+
+@keyframes icon3dGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px var(--icon-glow));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px var(--icon-glow));
+  }
+}
+
+.icon-3d-container {
+  perspective: 1000px;
+}
+
+.icon-3d-wrapper {
+  --icon-glow: rgba(0, 240, 255, 0.6);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+  animation: float3d 3s ease-in-out infinite, icon3dGlow 2s ease-in-out infinite;
+}
+
+.icon-3d-wrapper:hover {
+  animation: float3d 3s ease-in-out infinite, icon3dGlow 1s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px var(--icon-glow));
+  transform: scale(1.15) rotateX(-8deg) rotateY(8deg);
+}
+
+.icon-3d {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 12px var(--icon-glow));
+}
+
 /* ===== ANIMATED BACKGROUND ===== */
 
 /* Animated Gradient Background */
