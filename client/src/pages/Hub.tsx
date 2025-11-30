@@ -42,10 +42,13 @@ function FeatureCardComponent({ feature }: any) {
         style={{ color: colors.icon }}
         strokeWidth={2}
       />
-      <div className="flex flex-col items-center justify-center gap-2 px-3">
+      <div className="flex flex-col items-center justify-center gap-1 px-3">
         <h3 className="text-sm font-bold text-center leading-snug text-foreground" style={{ maxWidth: "140px" }}>
           {feature.title}
         </h3>
+        <p className="text-xs text-muted-foreground text-center leading-tight" style={{ maxWidth: "135px" }}>
+          {feature.description}
+        </p>
       </div>
     </div>
   );
@@ -66,20 +69,21 @@ export default function Hub() {
   };
 
   const featureKeys = [
-    { id: "chat", titleKey: "feature.chat", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
-    { id: "ask", titleKey: "feature.ask", icon: HelpCircle, route: "/chat?persona=ask", glowColor: "magenta" },
-    { id: "research", titleKey: "feature.research", icon: BookOpen, route: "/chat?persona=research", glowColor: "green" },
-    { id: "images", titleKey: "feature.images", icon: Image, route: "/chat?persona=google-images", glowColor: "yellow" },
-    { id: "quizzes", titleKey: "feature.quizzes", icon: CheckCircle, route: "/chat?persona=quizzes", glowColor: "cyan" },
-    { id: "ai-images", titleKey: "feature.ai-images", icon: Sparkles, route: "/chat?persona=ai-images", glowColor: "magenta" },
-    { id: "doctor", titleKey: "feature.doctor", icon: Stethoscope, route: "/chat?persona=doctor", glowColor: "green" },
-    { id: "scientific-assistant", titleKey: "feature.scientific-assistant", icon: Users, route: "/chat?persona=scientific-assistant", glowColor: "cyan" },
-    { id: "khedive", titleKey: "feature.khedive", icon: Landmark, route: "/chat?persona=khedive", glowColor: "yellow" },
+    { id: "chat", titleKey: "feature.chat", descKey: "feature.chat.desc", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
+    { id: "ask", titleKey: "feature.ask", descKey: "feature.ask.desc", icon: HelpCircle, route: "/chat?persona=ask", glowColor: "magenta" },
+    { id: "research", titleKey: "feature.research", descKey: "feature.research.desc", icon: BookOpen, route: "/chat?persona=research", glowColor: "green" },
+    { id: "images", titleKey: "feature.images", descKey: "feature.images.desc", icon: Image, route: "/chat?persona=google-images", glowColor: "yellow" },
+    { id: "quizzes", titleKey: "feature.quizzes", descKey: "feature.quizzes.desc", icon: CheckCircle, route: "/chat?persona=quizzes", glowColor: "cyan" },
+    { id: "ai-images", titleKey: "feature.ai-images", descKey: "feature.ai-images.desc", icon: Sparkles, route: "/chat?persona=ai-images", glowColor: "magenta" },
+    { id: "doctor", titleKey: "feature.doctor", descKey: "feature.doctor.desc", icon: Stethoscope, route: "/chat?persona=doctor", glowColor: "green" },
+    { id: "scientific-assistant", titleKey: "feature.scientific-assistant", descKey: "feature.scientific-assistant.desc", icon: Users, route: "/chat?persona=scientific-assistant", glowColor: "cyan" },
+    { id: "khedive", titleKey: "feature.khedive", descKey: "feature.khedive.desc", icon: Landmark, route: "/chat?persona=khedive", glowColor: "yellow" },
   ];
 
   const features = featureKeys.map(key => ({
     id: key.id,
     title: t(key.titleKey, language),
+    description: t(key.descKey, language),
     icon: key.icon,
     route: key.route,
     glowColor: key.glowColor,
