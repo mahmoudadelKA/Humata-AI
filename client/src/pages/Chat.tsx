@@ -476,7 +476,25 @@ export default function Chat() {
   const PersonaIconComponent = getPersonaIcon(persona);
   
   return (
-    <div className="min-h-screen cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
+    <div className="relative min-h-screen" dir={language === "ar" ? "rtl" : "ltr"}>
+      {/* Animated Background - same as Hub */}
+      <div className="animated-bg-container fixed inset-0 pointer-events-none">
+        {/* Floating Particles */}
+        <div className="floating-particle particle-cyan" style={{ width: '80px', height: '80px', top: '10%', left: '5%' }} />
+        <div className="floating-particle particle-magenta" style={{ width: '60px', height: '60px', top: '20%', right: '10%' }} />
+        <div className="floating-particle particle-purple" style={{ width: '100px', height: '100px', top: '40%', left: '15%' }} />
+        <div className="floating-particle particle-green" style={{ width: '70px', height: '70px', bottom: '20%', right: '15%' }} />
+        <div className="floating-particle particle-cyan" style={{ width: '90px', height: '90px', bottom: '10%', left: '20%' }} />
+        <div className="floating-particle particle-magenta" style={{ width: '65px', height: '65px', top: '50%', right: '5%' }} />
+
+        {/* Floating Orbs */}
+        <div className="floating-orb orb-1" style={{ top: '15%', left: '10%' }} />
+        <div className="floating-orb orb-2" style={{ top: '60%', right: '8%' }} />
+        <div className="floating-orb orb-3" style={{ bottom: '15%', left: '5%' }} />
+      </div>
+
+      {/* Chat Content */}
+      <div className="relative z-10 min-h-screen cyber-grid flex flex-col">
       <header className="border-b border-border/30 backdrop-blur-md bg-background/20 sticky top-0 z-40">
         <div className="px-6 py-4 flex items-center justify-center gap-4">
           <Link href="/">
@@ -950,6 +968,7 @@ export default function Chat() {
 
         </div>
       </footer>
+      </div>
     </div>
   );
 }
