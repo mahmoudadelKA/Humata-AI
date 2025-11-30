@@ -582,6 +582,8 @@ export default function Chat() {
               onSelectConversation={(id) => setConversationId(id)}
               currentConversationId={conversationId}
               onNewConversation={() => {
+                // Create a new conversation without deleting the current one
+                // The current conversation is automatically saved
                 setConversationId("");
                 setMessages([]);
                 setInputValue("");
@@ -634,6 +636,8 @@ export default function Chat() {
                   }}
                   currentConversationId={conversationId}
                   onNewConversation={() => {
+                    // Create a new conversation without deleting the current one
+                    // The current conversation is automatically saved
                     setConversationId("");
                     setMessages([]);
                     setInputValue("");
