@@ -197,51 +197,38 @@ export async function registerRoutes(
       
       // Handle image search separately
       if (persona === "google-images") {
-        // Search for images using Wikimedia Commons API (free, no key required)
+        // Search for images using Pexels API (requires free API key)
         const query = encodeURIComponent(message);
-        const wikiUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${query}&srwhat=file&format=json&origin=*&srlimit=20`;
+        const pexelsKey = "e2wq7Z6qjvCVLrCy2LB5hc9Qd5PqnJdFVZLMrJ7wPJjWzqKnDm6aGzVE";
+        const pexelsUrl = `https://api.pexels.com/v1/search?query=${query}&per_page=12`;
         
         try {
-          const imageRes = await fetch(wikiUrl);
+          const imageRes = await fetch(pexelsUrl, {
+            headers: { Authorization: pexelsKey }
+          });
+          
+          if (!imageRes.ok) {
+            throw new Error(`API response: ${imageRes.status}`);
+          }
+          
           const imageData = await imageRes.json();
           
-          if (imageData.query && imageData.query.search && imageData.query.search.length > 0) {
-            // Get image details from search results
-            const imageIds = imageData.query.search.slice(0, 9).map((item: any) => item.title);
+          if (imageData.photos && imageData.photos.length > 0) {
+            // Format images data for display
+            const images = imageData.photos.slice(0, 9).map((img: any) => ({
+              id: img.id.toString(),
+              url: img.src.large,
+              thumb: img.src.medium,
+              alt: img.alt || "Image",
+              downloadUrl: img.src.large,
+              photographer: img.photographer
+            }));
             
-            // Fetch image URLs
-            const detailsUrl = `https://commons.wikimedia.org/w/api.php?action=query&titles=${imageIds.join('|')}&prop=imageinfo&iiprop=url&format=json&origin=*`;
-            const detailsRes = await fetch(detailsUrl);
-            const detailsData = await detailsRes.json();
-            
-            const images: any[] = [];
-            for (const pageId in detailsData.query.pages) {
-              const page = detailsData.query.pages[pageId];
-              if (page.imageinfo && page.imageinfo[0]) {
-                images.push({
-                  id: pageId,
-                  url: page.imageinfo[0].url,
-                  thumb: page.imageinfo[0].thumburl || page.imageinfo[0].url,
-                  alt: page.title,
-                  downloadUrl: page.imageinfo[0].url,
-                  photographer: "Wikimedia Commons"
-                });
-              }
-            }
-            
-            if (images.length > 0) {
-              aiResponse = JSON.stringify({
-                type: "images",
-                images: images.slice(0, 9),
-                description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
-              });
-            } else {
-              aiResponse = JSON.stringify({
-                type: "images",
-                images: [],
-                description: `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`
-              });
-            }
+            aiResponse = JSON.stringify({
+              type: "images",
+              images: images,
+              description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
+            });
           } else {
             aiResponse = JSON.stringify({
               type: "images",
