@@ -494,8 +494,8 @@ export default function Chat() {
       </div>
 
       {/* Chat Content */}
-      <div className="relative z-10 min-h-screen cyber-grid flex flex-col">
-      <header className="border-b border-border/30 backdrop-blur-md bg-background/20 sticky top-0 z-40">
+      <div className="relative z-10 min-h-screen flex flex-col">
+      <header className="border-b border-border/30 backdrop-blur-md bg-background/10 sticky top-0 z-40">
         <div className="px-6 py-4 flex items-center justify-center gap-4">
           <Link href="/">
             <Button
@@ -522,7 +522,7 @@ export default function Chat() {
           onSelectConversation={(id) => setConversationId(id)}
           currentConversationId={conversationId}
         />
-        <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8">
+        <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8 bg-background/5 backdrop-blur-sm">
           <div className="max-w-3xl w-full mx-auto space-y-6 flex-1">
           {messages.length === 0 ? (
             <div className="h-full" />
@@ -654,7 +654,7 @@ export default function Chat() {
         </div>
       </main>
 
-      <footer className="border-t border-border/30 bg-background/20 backdrop-blur-md sticky bottom-0">
+      <footer className="border-t border-border/30 bg-background/10 backdrop-blur-md sticky bottom-0">
         <div className="max-w-3xl w-full mx-auto px-6 py-6 space-y-4">
           {uploadedFileInfo && (
             <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
