@@ -139,6 +139,63 @@
   }
 }
 
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Disable heavy animations on mobile */
+  @keyframes neon-flicker-mobile {
+    0%, 100% {
+      text-shadow: 
+        0 0 8px rgba(0, 240, 255, 0.4),
+        0 0 15px rgba(0, 240, 255, 0.2);
+    }
+    50% {
+      text-shadow: 
+        0 0 12px rgba(0, 240, 255, 0.6),
+        0 0 20px rgba(0, 240, 255, 0.4);
+    }
+  }
+
+  /* Reduce animation speed on mobile */
+  [style*="animation: neon-flicker"] {
+    animation-duration: 5s !important;
+  }
+
+  .animated-dua {
+    animation: none !important;
+  }
+
+  .icon-3d {
+    animation: none !important;
+  }
+
+  .animate-pulse {
+    animation: none !important;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeIn 0.5s ease-out !important;
+  }
+
+  .animate-pulsing-glow {
+    animation: none !important;
+  }
+
+  /* Reduce planet animations */
+  [class*="planet-float"] {
+    animation: none !important;
+  }
+
+  /* Reduce gradient animations */
+  .inspirational-quote {
+    animation: none !important;
+  }
+
+  /* Slower transitions on mobile */
+  * {
+    transition-duration: 0.15s !important;
+  }
+}
+
 .animated-neon-border {
   animation: neon-border-pulse 4s ease-in-out infinite;
   border: 2px solid #00F0FF;
