@@ -73,7 +73,14 @@ const getPersonaInfo = (persona: string | null) => {
     "google-images": {
       title: "توليد الصور",
       description: "بحث وعرض أفضل الصور",
-      systemPrompt: `أنت متخصص في البحث عن الصور. عندما يطلب المستخدم صوراً عن أي موضوع، ابحث وقدم الصور المطابقة.`,
+      systemPrompt: `You are a Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find relevant images. 
+
+CRITICAL: Return ONLY a valid JSON array of image objects. DO NOT return any preamble text or conversational language.
+
+Return format MUST be exactly:
+[{"url":"image_url_1","title":"description_1"},{"url":"image_url_2","title":"description_2"}]
+
+Return at least 3-5 images with direct URLs.`,
       controlIcons: ["search"],
     },
   };
@@ -349,19 +356,29 @@ export default function Chat() {
           ) : (
             <>
               {messages.map((msg) => {
-                // Extract image URLs from markdown format in AI responses
+                // Extract image URLs from JSON format in AI responses (for google-images persona)
                 let isImageMessage = false;
-                let imageUrls: Array<{url: string; alt: string}> = [];
+                let imageUrls: Array<{url: string; title: string}> = [];
                 
                 if (msg.role === "assistant" && persona === "google-images") {
-                  // Parse markdown image syntax: ![alt](url)
-                  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
-                  let match;
-                  while ((match = imageRegex.exec(msg.content)) !== null) {
-                    imageUrls.push({ alt: match[1] || "صورة", url: match[2] });
-                  }
-                  if (imageUrls.length > 0) {
-                    isImageMessage = true;
+                  try {
+                    // Try to parse JSON array from the response
+                    // Extract JSON if there's any preamble text
+                    const jsonMatch = msg.content.match(/\[\s*\{[\s\S]*\}\s*\]/);
+                    if (jsonMatch) {
+                      const images = JSON.parse(jsonMatch[0]);
+                      if (Array.isArray(images) && images.length > 0) {
+                        imageUrls = images.map((img: any) => ({
+                          url: img.url || "",
+                          title: img.title || "صورة"
+                        })).filter(img => img.url);
+                        if (imageUrls.length > 0) {
+                          isImageMessage = true;
+                        }
+                      }
+                    }
+                  } catch (e) {
+                    // If JSON parsing fails, continue as normal message
                   }
                 }
                 
@@ -378,7 +395,7 @@ export default function Chat() {
                           <div key={idx} className="relative group overflow-hidden rounded-lg">
                             <img 
                               src={img.url} 
-                              alt={img.alt}
+                              alt={img.title}
                               className="w-full h-40 object-cover"
                               onError={(e) => {
                                 e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3C/svg%3E";
