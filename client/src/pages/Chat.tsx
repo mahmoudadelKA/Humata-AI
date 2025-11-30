@@ -516,13 +516,10 @@ export default function Chat() {
   
   return (
     <div className="relative min-h-screen" dir={language === "ar" ? "rtl" : "ltr"}>
-      {/* Animated Planets Background */}
+      {/* Animated Planets Background - Reduced for Performance */}
       <div className="animated-bg-container fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="planet-container planet-1" style={{ top: '10%', left: '5%' }} />
-        <div className="planet-container planet-2" style={{ top: '20%', right: '10%' }} />
-        <div className="planet-container planet-3" style={{ top: '40%', left: '15%' }} />
-        <div className="planet-container planet-4" style={{ bottom: '20%', right: '15%' }} />
-        <div className="planet-container planet-5" style={{ bottom: '10%', left: '20%' }} />
+        <div className="planet-container planet-1" style={{ top: '15%', left: '5%' }} />
+        <div className="planet-container planet-2" style={{ bottom: '20%', right: '10%' }} />
       </div>
 
       {/* Floating Navigation Bar */}

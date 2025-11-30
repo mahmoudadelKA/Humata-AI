@@ -355,16 +355,8 @@
     transform: translate(0, 0) scale(1);
     opacity: 0.3;
   }
-  25% {
-    transform: translate(100px, -50px) scale(1.2);
-    opacity: 0.5;
-  }
   50% {
-    transform: translate(50px, -100px) scale(1);
-    opacity: 0.3;
-  }
-  75% {
-    transform: translate(-50px, -50px) scale(1.3);
+    transform: translate(50px, -60px) scale(1.1);
     opacity: 0.4;
   }
   100% {
@@ -378,13 +370,9 @@
     transform: translate(0, 0) scale(1.1);
     opacity: 0.4;
   }
-  33% {
-    transform: translate(-80px, 60px) scale(1.3);
-    opacity: 0.6;
-  }
-  66% {
-    transform: translate(80px, -80px) scale(0.9);
-    opacity: 0.3;
+  50% {
+    transform: translate(-60px, 50px) scale(1.2);
+    opacity: 0.5;
   }
   100% {
     transform: translate(0, 0) scale(1.1);
@@ -398,8 +386,8 @@
     opacity: 0.35;
   }
   50% {
-    transform: translate(60px, -120px) rotate(180deg) scale(1.4);
-    opacity: 0.5;
+    transform: translate(40px, -50px) rotate(180deg) scale(1.1);
+    opacity: 0.45;
   }
   100% {
     transform: translate(0, 0) rotate(360deg) scale(1);
@@ -446,13 +434,15 @@
     -45deg,
     hsl(248 67% 11%),
     hsl(270 80% 20%),
-    hsl(180 100% 35% / 0.1),
-    hsl(328 100% 35% / 0.1)
+    hsl(180 100% 35% / 0.05),
+    hsl(328 100% 35% / 0.05)
   );
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   pointer-events: none;
   z-index: 0;
+  will-change: background-position;
+  contain: layout style paint;
 }
 
 /* Floating Particles */
@@ -461,26 +451,23 @@
   border-radius: 50%;
   pointer-events: none;
   filter: blur(1px);
+  will-change: transform, opacity;
+  contain: layout style paint;
 }
 
 .particle-cyan {
-  background: radial-gradient(circle, hsl(180 100% 50% / 0.6), hsl(180 100% 50% / 0.1));
+  background: radial-gradient(circle, hsl(180 100% 50% / 0.5), hsl(180 100% 50% / 0.05));
   animation: floatParticle1 8s ease-in-out infinite;
 }
 
 .particle-magenta {
-  background: radial-gradient(circle, hsl(328 100% 50% / 0.6), hsl(328 100% 50% / 0.1));
+  background: radial-gradient(circle, hsl(328 100% 50% / 0.5), hsl(328 100% 50% / 0.05));
   animation: floatParticle2 10s ease-in-out infinite;
 }
 
 .particle-purple {
-  background: radial-gradient(circle, hsl(270 100% 50% / 0.5), hsl(270 100% 50% / 0.1));
+  background: radial-gradient(circle, hsl(270 100% 50% / 0.4), hsl(270 100% 50% / 0.05));
   animation: floatParticle3 12s ease-in-out infinite;
-}
-
-.particle-green {
-  background: radial-gradient(circle, hsl(120 100% 50% / 0.5), hsl(120 100% 50% / 0.1));
-  animation: floatParticle1 9s ease-in-out infinite reverse;
 }
 
 /* Floating Orbs */
@@ -534,6 +521,8 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
+  will-change: transform;
+  contain: layout style paint;
   backdrop-filter: blur(0.5px);
 }
 
