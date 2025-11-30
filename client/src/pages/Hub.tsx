@@ -122,7 +122,7 @@ export default function Hub() {
                 data-testid="info-hub-cloud-glass"
               >
                 <div className="relative z-10 space-y-3">
-                  <h2 className="text-xl sm:text-2xl font-bold text-cyan-300" style={{ textShadow: "0 0 10px rgba(0, 240, 255, 0.5)" }}>
+                  <h2 className="text-xl sm:text-2xl font-bold" style={{ color: "#00F0FF", textShadow: "0 0 15px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.5)" }}>
                     {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
                   </h2>
                   
