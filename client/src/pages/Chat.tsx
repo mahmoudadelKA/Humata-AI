@@ -80,10 +80,13 @@ CRITICAL REQUIREMENTS:
 2. Do NOT return links to web pages containing images
 3. Return ONLY direct image file URLs (ending in .jpg, .png, .webp, .gif)
 4. Return a MINIMUM of 10 direct image URLs (ten or more)
-5. DO NOT return any preamble text or conversational language
+5. ENFORCE EXTREME RELEVANCY - DO NOT include ANY irrelevant images (e.g., food for space queries, animals for weather queries)
+6. Only return images that STRICTLY MATCH the user's keywords and search intent
+7. Prioritize HIGH-RESOLUTION, HIGH-QUALITY image links
+8. DO NOT return any preamble text or conversational language
 
 Return format MUST be exactly:
-[{"url":"https://example.com/image.jpg","title":"description_1"},{"url":"https://example.com/photo.png","title":"description_2"},...] (minimum 10 objects with direct URLs)`,
+[{"url":"https://example.com/image.jpg","title":"description_1"},{"url":"https://example.com/photo.png","title":"description_2"},...] (minimum 10 objects with direct URLs, all strictly relevant)`,
       controlIcons: ["search"],
     },
   };
@@ -398,13 +401,17 @@ export default function Chat() {
                           // Use image proxy to bypass hotlinking restrictions
                           const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(img.url)}`;
                           return (
-                          <div key={idx} className="relative group overflow-hidden rounded-lg aspect-square">
+                          <div key={idx} className="relative group overflow-hidden rounded-lg aspect-square image-container">
                             <img 
                               src={proxyUrl} 
                               alt={img.title}
                               className="w-full h-full object-cover"
                               onError={(e) => {
-                                e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3C/svg%3E";
+                                // Hide the entire parent container on image load failure
+                                const container = e.currentTarget.closest('.image-container');
+                                if (container) {
+                                  container.style.display = 'none';
+                                }
                               }}
                             />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
