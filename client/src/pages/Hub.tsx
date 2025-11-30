@@ -181,7 +181,20 @@ export default function Hub() {
 
         {/* Footer - Programmer Credit */}
         <footer className="mt-auto py-8 px-3 text-center border-t border-foreground/10">
-          <p className="text-base sm:text-lg text-foreground/70" style={{ fontFamily: "'Cairo', sans-serif", fontWeight: 600 }}>
+          <p 
+            className="text-base sm:text-lg text-foreground/70 animate-neon-glow"
+            style={{ 
+              fontFamily: "'Cairo', sans-serif", 
+              fontWeight: 600,
+              textShadow: `
+                0 0 10px rgba(0, 240, 255, 0.5),
+                0 0 20px rgba(0, 240, 255, 0.3),
+                0 0 30px rgba(255, 0, 110, 0.3),
+                0 0 40px rgba(0, 240, 255, 0.2)
+              `,
+              animation: "neon-flicker 3s infinite"
+            }}
+          >
             {language === "ar" 
               ? "تمت برمجة هذا الموقع من قبل المبرمج محمود عادل"
               : "This website was programmed by Mahmoud Adel"

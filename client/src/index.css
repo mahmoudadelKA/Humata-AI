@@ -121,6 +121,24 @@
   }
 }
 
+/* Neon Flicker Animation for Text */
+@keyframes neon-flicker {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(0, 240, 255, 0.5),
+      0 0 20px rgba(0, 240, 255, 0.3),
+      0 0 30px rgba(255, 0, 110, 0.3),
+      0 0 40px rgba(0, 240, 255, 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(0, 240, 255, 0.8),
+      0 0 40px rgba(0, 240, 255, 0.6),
+      0 0 60px rgba(255, 0, 110, 0.5),
+      0 0 80px rgba(0, 240, 255, 0.4);
+  }
+}
+
 .animated-neon-border {
   animation: neon-border-pulse 4s ease-in-out infinite;
   border: 2px solid #00F0FF;
