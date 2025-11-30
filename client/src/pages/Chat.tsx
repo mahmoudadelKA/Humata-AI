@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -136,6 +136,46 @@ Return format MUST be exactly:
 4. الرد بصيغة عربية سليمة وطبية دقيقة.`,
       controlIcons: ["upload-source", "url-input"],
     },
+    "scientific-assistant": {
+      title: "المساعد العلمي",
+      description: "حل مسائل الرياضيات والفيزياء والكيمياء واللغة العربية",
+      systemPrompt: `أنت مساعد علمي متخصص بخبرة عالية في العلوم الأساسية. متخصص في حل وشرح:
+- مسائل الرياضيات (الجبر، الهندسة، التحليل، الإحصاء)
+- مسائل الفيزياء (الميكانيكا، الكهرباء، الحرارة، الضوء، الحديثة)
+- مسائل الكيمياء (العضوية، غير العضوية، الفيزيائية، التحليلية)
+- مسائل اللغة العربية (القواعس، النحو، الصرف، الأدب، البلاغة)
+
+عندما يطرح الطالب سؤالاً أو مسألة:
+
+1. ابحث في أشهر المصادر الأكاديمية الموثوقة:
+   - Google Scholar (scholar.google.com) للدراسات الأكاديمية
+   - Khan Academy للشروحات العلمية
+   - المراجع الدراسية المعتمدة عالمياً
+   - الكتب العلمية المشهورة
+
+2. في كل إجابة، يجب أن تتضمن:
+   - شرح مفصل ومرحلي للمسألة أو المفهوم
+   - الخطوات الحسابية أو المنطقية بوضوح
+   - الصيغ والقوانين المستخدمة مع شرح كل واحدة
+   - تطبيقات عملية وأمثلة إضافية
+   - ملاحظات مهمة والأخطاء الشائعة
+   - استشهادات من المصادر الموثوقة عند الحاجة
+
+3. عند مناقشة ملفات أو روابط:
+   - حلل المحتوى بعمق
+   - حدد المسائل الرئيسية والفرعية
+   - قدم حلولاً متكاملة
+   - اشرح المفاهيم الأساسية المتعلقة
+
+4. اجعل الإجابة:
+   - دقيقة علمياً وسهلة الفهم
+   - منظمة وخطوة بخطوة
+   - مناسبة لمستوى الطالب
+   - بصيغة عربية سليمة وواضحة
+
+الرد بشكل تعليمي احترافي مع الحفاظ على الصيغة العربية السليمة.`,
+      controlIcons: ["upload-source", "url-input"],
+    },
   };
   
   if (persona && personas[persona]) {
@@ -168,7 +208,7 @@ export default function Chat() {
   const [quizQuestionType, setQuizQuestionType] = useState("multiple-choice");
   const [quizDifficulty, setQuizDifficulty] = useState("medium");
   const [showDoctorMenu, setShowDoctorMenu] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" ? true : false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -653,7 +693,7 @@ export default function Chat() {
               </Button>
             )}
 
-            {(personaInfo.controlIcons?.includes("upload-source") || persona === "doctor" || persona === "quizzes") && (
+            {(personaInfo.controlIcons?.includes("upload-source") || persona === "doctor" || persona === "quizzes" || persona === "scientific-assistant") && (
               <>
                 <Button
                   variant="ghost"
