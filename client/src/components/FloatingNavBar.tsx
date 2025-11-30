@@ -26,6 +26,7 @@ export function FloatingNavBar() {
   ];
 
   const handleNavigate = (route: string) => {
+    console.log("[FloatingNavBar] Navigating to:", route);
     navigate(route);
   };
 
@@ -69,9 +70,18 @@ export function FloatingNavBar() {
         <div className="flex flex-col gap-2 animate-in fade-in-50 duration-200">
           {modules.map((module) => {
             const IconComponent = module.icon;
-            const isActive = location === module.route || 
-              (location === "/chat" && module.id === "chat") ||
-              (location.includes("persona=") && location.includes(module.route.split("=")[1]));
+            
+            // Determine if this button is active
+            let isActive = false;
+            if (module.id === "home" && location === "/") {
+              isActive = true;
+            } else if (module.id === "chat" && location === "/chat" && !window.location.search) {
+              isActive = true;
+            } else if (location === module.route) {
+              isActive = true;
+            } else if (location === "/chat" && window.location.search.includes(module.route.split("=")[1])) {
+              isActive = true;
+            }
             
             return (
               <button
