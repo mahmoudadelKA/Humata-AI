@@ -416,11 +416,7 @@ export async function registerRoutes(
   // Conversations API
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).userId;
-      if (!userId) {
-        res.status(401).json({ error: "Unauthorized" });
-        return;
-      }
+      const userId = (req as any).userId || "anonymous";
       const conversations = await storage.getConversations(userId);
       res.json(conversations.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
     } catch (error: any) {
@@ -445,11 +441,7 @@ export async function registerRoutes(
 
   app.post("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).userId;
-      if (!userId) {
-        res.status(401).json({ error: "Unauthorized" });
-        return;
-      }
+      const userId = (req as any).userId || "anonymous";
       const { title } = req.body;
       const conversation = await storage.createConversation(userId, title || "New Conversation");
       res.json(conversation);
