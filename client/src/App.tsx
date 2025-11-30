@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { AppContext, useAppContext } from "@/lib/appContext";
 import type { Language, Theme, AppContextType, User } from "@/lib/appContext";
+import { SpaceBackground } from "@/components/SpaceBackground";
 import Hub from "@/pages/Hub";
 import Chat from "@/pages/Chat";
 import NotFound from "@/pages/not-found";
@@ -32,8 +33,8 @@ function Router() {
 function AppContent() {
   return (
     <div className="relative min-h-screen">
-      {/* Minimal Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-[#0f0f1e] via-[#1a1a2e] to-[#16213e] pointer-events-none" />
+      {/* Animated Space Background */}
+      <SpaceBackground />
 
       {/* Content Layer */}
       <div className="relative z-10">
