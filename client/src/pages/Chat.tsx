@@ -558,7 +558,7 @@ export default function Chat() {
             />
             <div className="fixed left-0 top-0 h-full md:hidden z-40 animate-slide-in flex flex-col">
               {/* Sidebar Mode Toggle Tabs */}
-              <div className="flex gap-1 p-2 border-b border-border/30">
+              <div className="flex gap-1 p-2">
                 <button
                   onClick={() => setSidebarMode("conversations")}
                   className={`flex-1 px-3 py-2 text-xs font-semibold rounded transition-colors ${
@@ -742,7 +742,7 @@ export default function Chat() {
         </div>
       </main>
 
-      <footer className="border-t border-border/30 sticky bottom-0">
+      <footer className="sticky bottom-0">
         <div className="max-w-3xl w-full mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4">
           {uploadedFileInfo && (
             <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
