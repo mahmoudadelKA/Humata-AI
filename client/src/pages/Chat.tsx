@@ -492,11 +492,25 @@ export default function Chat() {
       </div>
 
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
-        <div className="px-6 py-4 flex items-center justify-center gap-3">
-          <PersonaIconComponent className="w-6 h-6 text-primary" />
-          <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
-            {personaInfo.title}
-          </h2>
+        <div className="px-6 py-4 flex items-center justify-between">
+          <Link href="/">
+            <Button
+              size="sm"
+              data-testid="button-header-home"
+              className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
+              title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-xs font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
+            </Button>
+          </Link>
+          <div className="flex items-center justify-center gap-3 flex-1">
+            <PersonaIconComponent className="w-6 h-6 text-primary" />
+            <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
+              {personaInfo.title}
+            </h2>
+          </div>
+          <div className="w-20" />
         </div>
       </header>
 

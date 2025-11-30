@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Trash2, Edit2, Share2, Home } from "lucide-react";
+import { MoreVertical, Trash2, Edit2, Share2 } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
-import { Link } from "wouter";
 
 interface Conversation {
   id: string;
@@ -166,18 +165,6 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         ))}
       </div>
 
-      <div className="flex-shrink-0 border-t border-border p-4 bg-muted/20">
-        <Link href="/">
-          <Button
-            className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50 w-full"
-            data-testid="button-sidebar-home"
-            title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
-          >
-            <Home className="w-4 h-4" />
-            <span className="text-sm font-semibold">{language === "ar" ? "الرئيسية" : "Home"}</span>
-          </Button>
-        </Link>
-      </div>
     </div>
   );
 }
