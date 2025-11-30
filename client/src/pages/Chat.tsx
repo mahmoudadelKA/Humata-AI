@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark, MessageSquare, CheckCircle, Image } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark, MessageSquare, CheckCircle, Image, Menu, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -268,6 +268,7 @@ export default function Chat() {
   const [quizDifficulty, setQuizDifficulty] = useState("medium");
   const [showDoctorMenu, setShowDoctorMenu] = useState(false);
   const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" || persona === "khedive" ? true : false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -496,7 +497,21 @@ export default function Chat() {
       {/* Chat Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
       <header className="border-b border-border/30 backdrop-blur-md bg-background/10 sticky top-0 z-40">
-        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
+        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between md:justify-center gap-2 sm:gap-4">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="md:hidden w-8 h-8"
+            data-testid="button-sidebar-toggle"
+            title={language === "ar" ? "المحادثات" : "Conversations"}
+          >
+            {isSidebarOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </Button>
           <Link href="/">
             <Button
               size="sm"
@@ -518,17 +533,32 @@ export default function Chat() {
       </header>
 
       <main className="flex-1 overflow-hidden flex flex-row">
-        <div className="hidden md:block">
-          <ConversationsSidebar 
-            onSelectConversation={(id) => setConversationId(id)}
-            currentConversationId={conversationId}
-            onNewConversation={() => {
-              setConversationId("");
-              setMessages([]);
-              setInputValue("");
-              setUploadedFileInfo(null);
-            }}
-          />
+        {/* Sidebar - Mobile overlay or desktop sidebar */}
+        <div className={`fixed md:relative inset-0 md:inset-auto transition-all duration-300 ease-in-out z-30 md:z-auto ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'} md:block`}>
+          {/* Mobile backdrop */}
+          {isSidebarOpen && (
+            <div 
+              className="absolute inset-0 bg-black/50 md:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+          {/* Sidebar content */}
+          <div className="relative h-full">
+            <ConversationsSidebar 
+              onSelectConversation={(id) => {
+                setConversationId(id);
+                setIsSidebarOpen(false);
+              }}
+              currentConversationId={conversationId}
+              onNewConversation={() => {
+                setConversationId("");
+                setMessages([]);
+                setInputValue("");
+                setUploadedFileInfo(null);
+                setIsSidebarOpen(false);
+              }}
+            />
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto flex flex-col px-3 sm:px-4 md:px-6 py-4 sm:py-8 bg-background/5 backdrop-blur-sm">
           <div className="max-w-3xl w-full mx-auto space-y-4 sm:space-y-6 flex-1">

@@ -1082,6 +1082,27 @@ html[lang="ar"] select {
   }
 }
 
+/* ===== SIDEBAR ANIMATION ===== */
+.sidebar-open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.sidebar-closed {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Sidebar animation for RTL */
+[dir="rtl"] .sidebar-open {
+  transform: translateX(0);
+}
+
+[dir="rtl"] .sidebar-closed {
+  transform: translateX(100%);
+}
+
 /* ===== RESPONSIVE DESIGN - MOBILE & TABLET ===== */
 @media (max-width: 768px) {
   /* Global typography adjustments */
@@ -1134,9 +1155,23 @@ html[lang="ar"] select {
     margin: 0 auto !important;
   }
 
-  /* Sidebar - hide on mobile */
-  .w-64 {
-    display: none;
+  /* Sidebar - fixed positioning on mobile */
+  .sidebar-open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+
+  .sidebar-closed {
+    transform: translateX(-100%) !important;
+    opacity: 0 !important;
+  }
+
+  [dir="rtl"] .sidebar-open {
+    transform: translateX(0) !important;
+  }
+
+  [dir="rtl"] .sidebar-closed {
+    transform: translateX(100%) !important;
   }
 
   /* Chat main area - full width */
