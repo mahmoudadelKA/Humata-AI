@@ -243,40 +243,47 @@ export async function registerRoutes(
 
       let aiResponse: string;
       
-      // Handle image search with Unsplash API directly
+      // Handle image search with DuckDuckGo Image Search (free, no API key required)
       if (persona === "google-images") {
         try {
           const query = encodeURIComponent(message);
-          const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=15&client_id=a_O3jJDskbr--1TxXuHqaG6nMPj6WxMq0Wfo3LjXXY0`;
+          // Using DuckDuckGo's image search API
+          const ddgUrl = `https://duckduckgo.com/?q=${query}&t=h_&iar=images&iax=images&ia=images&format=json`;
           
-          console.log(`[Unsplash] Fetching images for query: ${message}`);
-          console.log(`[Unsplash] URL: ${unsplashUrl}`);
+          console.log(`[ImageSearch] Fetching images for query: ${message}`);
           
-          const imageRes = await fetch(unsplashUrl);
-          console.log(`[Unsplash] Response status: ${imageRes.status}`);
+          const imageRes = await fetch(ddgUrl, {
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            }
+          });
+          
+          console.log(`[ImageSearch] Response status: ${imageRes.status}`);
           
           const imageData = await imageRes.json();
-          console.log(`[Unsplash] Response data:`, JSON.stringify(imageData).substring(0, 200));
           
-          if (imageData.results && imageData.results.length > 0) {
-            console.log(`[Unsplash] Found ${imageData.results.length} results`);
-            // Format as JSON array with direct URLs
-            const images = imageData.results
-              .slice(0, 12)
-              .map((img: any) => ({
-                url: img.urls?.regular || img.urls?.small || "",
-                title: img.alt_description || img.description || "صورة"
-              }))
-              .filter((img: any) => img.url); // Filter out images without URLs
+          // Extract image URLs from DuckDuckGo results
+          const results = imageData.results || [];
+          if (results.length > 0) {
+            console.log(`[ImageSearch] Found ${results.length} results`);
             
-            console.log(`[Unsplash] Formatted ${images.length} images`);
-            aiResponse = JSON.stringify(images);
+            // Format as JSON array with direct image URLs
+            const images = results
+              .slice(0, 15)
+              .map((img: any) => ({
+                url: img.image || "",
+                title: img.title || "صورة"
+              }))
+              .filter((img: any) => img.url && img.url.startsWith("http")); // Only valid image URLs
+            
+            console.log(`[ImageSearch] Formatted ${images.length} images`);
+            aiResponse = images.length > 0 ? JSON.stringify(images) : `[]`;
           } else {
-            console.log(`[Unsplash] No results found or error in response`);
+            console.log(`[ImageSearch] No results found`);
             aiResponse = `[]`;
           }
         } catch (error) {
-          console.error("[Unsplash] Image search error:", error);
+          console.error("[ImageSearch] Error:", error);
           aiResponse = `[]`;
         }
       } else {
