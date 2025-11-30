@@ -70,8 +70,6 @@ function Router() {
 }
 
 function AppContent() {
-  const { showAuthModal } = useAppContext();
-  
   return (
     <div className="relative min-h-screen">
       {/* Animated Background */}
@@ -102,10 +100,8 @@ function AppContent() {
 function App() {
   const [language, setLanguage] = useState<Language>("ar");
   const [theme, setTheme] = useState<Theme>("dark");
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [user, setUser] = useState<User | null>({ id: "anonymous", name: "مستخدم", email: "" });
+  const [token, setToken] = useState<string | null>("anonymous-token");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
@@ -144,10 +140,10 @@ function App() {
     setTheme,
     setUser,
     setToken,
-    showAuthModal,
-    setShowAuthModal,
-    isLogin,
-    setIsLogin,
+    showAuthModal: false,
+    setShowAuthModal: () => {},
+    isLogin: false,
+    setIsLogin: () => {},
   };
 
   return (
