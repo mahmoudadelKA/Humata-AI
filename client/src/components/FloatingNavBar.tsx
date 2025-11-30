@@ -35,7 +35,8 @@ export function FloatingNavBar() {
     e.preventDefault();
     e.stopPropagation();
     console.log("Navigating to:", route);
-    navigate(route);
+    // Use window.location.href to force full page reload with new persona
+    window.location.href = route;
   };
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
