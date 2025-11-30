@@ -675,7 +675,7 @@ export default function Chat() {
           )}
 
 
-          <div className="flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-border/20 focus-within:outline-none focus-within:ring-0">
+          <div className="neon-input-container flex items-center gap-3 bg-muted/30 rounded-full pl-5 pr-2 py-2 border border-primary/40 focus-within:outline-none focus-within:ring-0">
             <Input
               ref={fileInputRef}
               type="file"
