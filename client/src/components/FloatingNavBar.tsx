@@ -90,7 +90,12 @@ export function FloatingNavBar() {
                 key={module.id}
                 type="button"
                 onClick={(e) => handleNavigate(e, module.route)}
-                onTouchEnd={(e) => handleNavigate(e as any, module.route)}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log("Navigating to:", module.route);
+                  navigate(module.route);
+                }}
                 title={t(module.titleKey, language)}
                 className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer ${
                   isActive ? "shadow-lg" : ""
