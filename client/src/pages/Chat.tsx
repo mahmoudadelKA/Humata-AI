@@ -491,8 +491,8 @@ export default function Chat() {
             </Button>
           </Link>
           <div className="flex items-center justify-center gap-3">
-            <PersonaIconComponent className="w-6 h-6 text-primary" />
-            <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
+            <PersonaIconComponent className="w-6 h-6 text-primary smooth-transition" />
+            <h2 className={`text-lg font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-xl" : ""}`}>
               {personaInfo.title}
             </h2>
           </div>

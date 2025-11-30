@@ -20,20 +20,23 @@ function FeatureCardComponent({ feature }: any) {
 
   const card = (
     <div
-      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 transition-all duration-150"
+      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 smooth-hover animate-fade-in-up"
       style={{
         borderRadius: "0",
         border: `2px solid ${colors.border}`,
         backgroundColor: "hsl(248 55% 14% / 0.7)",
         boxShadow: `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`,
+        animationDelay: feature.delay,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
         e.currentTarget.style.borderColor = `${colors.border}`;
+        e.currentTarget.style.transform = "scale(1.05)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
         e.currentTarget.style.borderColor = `${colors.border}`;
+        e.currentTarget.style.transform = "scale(1)";
       }}
       data-testid={`card-feature-${feature.id}`}
     >
@@ -80,13 +83,14 @@ export default function Hub() {
     { id: "khedive", titleKey: "feature.khedive", descKey: "feature.khedive.desc", icon: Landmark, route: "/chat?persona=khedive", glowColor: "yellow" },
   ];
 
-  const features = featureKeys.map(key => ({
+  const features = featureKeys.map((key, index) => ({
     id: key.id,
     title: t(key.titleKey, language),
     description: t(key.descKey, language),
     icon: key.icon,
     route: key.route,
     glowColor: key.glowColor,
+    delay: `${index * 0.08}s`,
   }));
 
   return (
@@ -108,20 +112,20 @@ export default function Hub() {
         <main className="max-w-6xl mx-auto px-6 py-8">
           <div className="text-center mb-12">
             <div className="max-w-2xl mx-auto mb-12">
-              <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-3 border border-primary/40 shadow-lg">
-                <Search className="w-4 h-4 text-muted-foreground/60" />
+              <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-3 border border-primary/40 shadow-lg smooth-hover">
+                <Search className="w-4 h-4 text-muted-foreground/60 smooth-transition" />
                 <Input
                   placeholder={t("hub.chat.input", language)}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                  className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1"
+                  className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1 smooth-transition"
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim()}
                   size="icon"
-                  className="h-8 w-8 rounded-full"
+                  className="h-8 w-8 rounded-full smooth-hover"
                   data-testid="button-send-hub"
                 >
                   <Send className="w-4 h-4" />

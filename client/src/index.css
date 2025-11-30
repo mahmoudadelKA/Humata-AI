@@ -177,6 +177,63 @@
   color: hsl(0 0% 20%);
 }
 
+/* ===== CYBERPUNK ANIMATIONS ===== */
+
+/* Component Load Animation - Fade in + Slide up */
+@keyframes fadeInSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulsing Neon Glow - Cyberpunk Title Effect */
+@keyframes pulseNeonGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 8px hsl(180 100% 50% / 0.6),
+      0 0 16px hsl(180 100% 50% / 0.4),
+      0 0 24px hsl(180 100% 50% / 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 12px hsl(180 100% 50% / 0.9),
+      0 0 24px hsl(180 100% 50% / 0.6),
+      0 0 36px hsl(180 100% 50% / 0.3);
+  }
+}
+
+/* Subtle Scale Hover - Interactive elements */
+@keyframes scaleHover {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* Smooth Utility Classes */
+.animate-fade-in-up {
+  animation: fadeInSlideUp 0.6s ease-out;
+}
+
+.animate-pulsing-glow {
+  animation: pulseNeonGlow 3s ease-in-out infinite;
+}
+
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smooth-hover {
+  transition: all 0.3s ease;
+}
+
 /* Dark mode is cyberpunk */
 .dark {
   --button-outline: rgba(0, 240, 255, .15);
