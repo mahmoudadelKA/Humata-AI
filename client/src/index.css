@@ -412,6 +412,76 @@
   animation: floatOrb3 14s ease-in-out infinite;
 }
 
+/* Animated Planets - Glassmorphic Style */
+@keyframes planetFloat1 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-40px) translateX(30px); }
+  66% { transform: translateY(-20px) translateX(-20px); }
+}
+
+@keyframes planetFloat2 {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-35px) translateX(-25px); }
+  66% { transform: translateY(-15px) translateX(35px); }
+}
+
+@keyframes planetGlow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.3)) drop-shadow(0 0 40px rgba(0, 240, 255, 0.1)); }
+  50% { filter: drop-shadow(0 0 40px rgba(0, 240, 255, 0.6)) drop-shadow(0 0 80px rgba(0, 240, 255, 0.3)); }
+}
+
+.planet-container {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  backdrop-filter: blur(0.5px);
+}
+
+.planet-1 {
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at 35% 35%, hsl(200 100% 60%), hsl(200 80% 40%), hsl(200 90% 20%));
+  box-shadow: inset -25px -25px 50px rgba(0, 0, 0, 0.5), inset 15px 15px 30px rgba(255, 255, 255, 0.15), 
+              0 0 30px rgba(0, 240, 255, 0.4);
+  animation: planetFloat1 8s ease-in-out infinite, planetGlow 4s ease-in-out infinite;
+}
+
+.planet-2 {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle at 35% 35%, hsl(330 90% 55%), hsl(330 80% 40%), hsl(330 90% 20%));
+  box-shadow: inset -18px -18px 36px rgba(0, 0, 0, 0.5), inset 10px 10px 20px rgba(255, 255, 255, 0.15),
+              0 0 25px rgba(255, 0, 110, 0.4);
+  animation: planetFloat2 10s ease-in-out infinite 1s, planetGlow 5s ease-in-out infinite 1s;
+}
+
+.planet-3 {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at 40% 40%, hsl(270 85% 55%), hsl(270 75% 40%), hsl(270 85% 20%));
+  box-shadow: inset -22px -22px 44px rgba(0, 0, 0, 0.5), inset 12px 12px 24px rgba(255, 255, 255, 0.15),
+              0 0 28px rgba(160, 0, 255, 0.4);
+  animation: planetFloat1 9s ease-in-out infinite 2s reverse, planetGlow 4s ease-in-out infinite 2s;
+}
+
+.planet-4 {
+  width: 85px;
+  height: 85px;
+  background: radial-gradient(circle at 30% 30%, hsl(45 100% 60%), hsl(45 85% 40%), hsl(45 90% 20%));
+  box-shadow: inset -15px -15px 30px rgba(0, 0, 0, 0.5), inset 8px 8px 16px rgba(255, 255, 255, 0.15),
+              0 0 20px rgba(255, 200, 0, 0.4);
+  animation: planetFloat2 7s ease-in-out infinite 1.5s, planetGlow 4s ease-in-out infinite 1.5s;
+}
+
+.planet-5 {
+  width: 110px;
+  height: 110px;
+  background: radial-gradient(circle at 35% 35%, hsl(120 85% 50%), hsl(120 75% 35%), hsl(120 85% 15%));
+  box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.5), inset 10px 10px 20px rgba(255, 255, 255, 0.15),
+              0 0 25px rgba(0, 240, 150, 0.4);
+  animation: planetFloat1 11s ease-in-out infinite 0.5s reverse, planetGlow 5s ease-in-out infinite 0.5s;
+}
+
 /* Hub content with animated background */
 .hub-with-animated-bg {
   position: relative;
