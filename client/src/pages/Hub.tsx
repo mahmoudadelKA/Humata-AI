@@ -92,53 +92,48 @@ export default function Hub() {
     <div className="min-h-screen relative" dir={language === "ar" ? "rtl" : "ltr"}>
       <div className="relative z-10 hub-with-animated-bg">
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-          {/* Embossed Pharaonic/Ottoman Text-Only Info Hub */}
-          <div className="text-center mb-8 sm:mb-12 space-y-4">
-            <h2 
-              className="text-3xl sm:text-4xl md:text-5xl font-bold"
-              style={{ 
-                fontFamily: "'Lateef', serif",
-                color: "#D4AF37",
-                WebkitTextStroke: "1px rgba(255, 255, 255, 0.3)",
-                textShadow: `
-                  2px 2px 4px rgba(0, 0, 0, 0.8),
-                  4px 4px 8px rgba(0, 0, 0, 0.6),
-                  -1px -1px 2px rgba(255, 255, 255, 0.4),
-                  -2px -2px 4px rgba(255, 215, 0, 0.3),
-                  0 0 20px rgba(212, 175, 55, 0.5),
-                  0 8px 16px rgba(0, 0, 0, 0.7)
-                `,
-                letterSpacing: "0.05em",
-                filter: "drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.9))",
-              }}
-              data-testid="info-hub-pharaonic-text"
-            >
-              {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
-            </h2>
-            
-            <p 
-              className="text-lg sm:text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto"
-              style={{ 
-                fontFamily: "'Lateef', serif",
-                color: "#D4AF37",
-                WebkitTextStroke: "0.5px rgba(255, 255, 255, 0.2)",
-                textShadow: `
-                  1px 1px 3px rgba(0, 0, 0, 0.7),
-                  2px 2px 6px rgba(0, 0, 0, 0.5),
-                  -1px -1px 1px rgba(255, 255, 255, 0.3),
-                  0 0 15px rgba(212, 175, 55, 0.4),
-                  0 4px 8px rgba(0, 0, 0, 0.6)
-                `,
-                filter: "drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))",
-              }}
-            >
-              {language === "ar" 
-                ? "نظام ذكاء اصطناعي متقدم يجمع بين 9 تخصصات متميزة: الدردشة الحرة، البحث العميق، الاستشارات الطبية، المساعد العلمي، توليد الصور، الاختبارات التفاعلية والمزيد."
-                : "An advanced AI system combining 9 specialized domains: Free Chat, Deep Research, Medical Consultation, Scientific Assistant, Image Generation, Interactive Quizzes, and more."
-              }
-            </p>
+          {/* Embossed Pharaonic/Ottoman Text-Only Info Hub with Animated Neon Border */}
+          <div className="animated-neon-border mx-auto max-w-4xl">
+            <div className="text-center space-y-4">
+              <h2 
+                className="text-3xl sm:text-4xl md:text-5xl font-bold"
+                style={{ 
+                  fontFamily: "'Lateef', serif",
+                  color: "#00F0FF",
+                  textShadow: `
+                    0 0 20px rgba(0, 240, 255, 0.8),
+                    0 0 40px rgba(0, 240, 255, 0.6),
+                    0 0 60px rgba(0, 240, 255, 0.4),
+                    2px 2px 4px rgba(0, 0, 0, 0.8)
+                  `,
+                  letterSpacing: "0.05em",
+                  filter: "drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.9))",
+                }}
+                data-testid="info-hub-pharaonic-text"
+              >
+                {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
+              </h2>
+              
+              <p 
+                className="text-lg sm:text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto"
+                style={{ 
+                  fontFamily: "'Lateef', serif",
+                  color: "#00F0FF",
+                  textShadow: `
+                    0 0 15px rgba(0, 240, 255, 0.7),
+                    0 0 30px rgba(0, 240, 255, 0.5),
+                    1px 1px 3px rgba(0, 0, 0, 0.7)
+                  `,
+                  filter: "drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))",
+                }}
+              >
+                {language === "ar" 
+                  ? "نظام ذكاء اصطناعي متقدم يجمع بين 9 تخصصات متميزة: الدردشة الحرة، البحث العميق، الاستشارات الطبية، المساعد العلمي، توليد الصور، الاختبارات التفاعلية والمزيد."
+                  : "An advanced AI system combining 9 specialized domains: Free Chat, Deep Research, Medical Consultation, Scientific Assistant, Image Generation, Interactive Quizzes, and more."
+                }
+              </p>
 
-            <div className="flex flex-wrap justify-center gap-4 pt-2">
+              <div className="flex flex-wrap justify-center gap-4 pt-2">
               <span 
                 className="text-sm px-4 py-2 rounded-full border border-cyan-500/50"
                 style={{
@@ -173,6 +168,7 @@ export default function Hub() {
                 {language === "ar" ? "⚡ سريع وفعال" : "⚡ Fast & Efficient"}
               </span>
             </div>
+          </div>
           </div>
 
           <div className="text-center mb-8 sm:mb-12 md:mb-16 px-3">

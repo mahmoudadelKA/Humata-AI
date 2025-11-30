@@ -96,6 +96,39 @@
   --neon-cyan: 180 100% 50%;
   --neon-magenta: 328 100% 50%;
   --neon-purple: 270 100% 60%;
+}
+
+/* Animated Neon Border - Color Shifting */
+@keyframes neon-border-pulse {
+  0% {
+    border-color: #00F0FF;
+    box-shadow: 0 0 10px #00F0FF, 0 0 20px #00F0FF, inset 0 0 10px #00F0FF;
+  }
+  25% {
+    border-color: #FF006E;
+    box-shadow: 0 0 10px #FF006E, 0 0 20px #FF006E, inset 0 0 10px #FF006E;
+  }
+  50% {
+    border-color: #B366FF;
+    box-shadow: 0 0 10px #B366FF, 0 0 20px #B366FF, inset 0 0 10px #B366FF;
+  }
+  75% {
+    border-color: #00F0FF;
+    box-shadow: 0 0 10px #00F0FF, 0 0 20px #00F0FF, inset 0 0 10px #00F0FF;
+  }
+  100% {
+    border-color: #00F0FF;
+    box-shadow: 0 0 10px #00F0FF, 0 0 20px #00F0FF, inset 0 0 10px #00F0FF;
+  }
+}
+
+.animated-neon-border {
+  animation: neon-border-pulse 4s ease-in-out infinite;
+  border: 2px solid #00F0FF;
+  border-radius: 8px;
+  padding: 24px;
+  position: relative;
+}
   
   /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
