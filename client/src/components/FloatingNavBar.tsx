@@ -28,8 +28,18 @@ export function FloatingNavBar() {
 
   const currentPersona = getCurrentPersona();
 
-  const handleNavigate = (route: string) => {
+  const handleNavigate = (e: React.MouseEvent<HTMLButtonElement>, route: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Navigating to:", route);
     navigate(route);
+  };
+
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Toggling navbar");
+    setIsExpanded(!isExpanded);
   };
 
   return (
@@ -44,7 +54,9 @@ export function FloatingNavBar() {
     >
       {/* Toggle Button */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        type="button"
+        onClick={handleToggle}
+        onTouchEnd={handleToggle}
         className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer"
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -72,7 +84,9 @@ export function FloatingNavBar() {
             return (
               <button
                 key={module.id}
-                onClick={() => handleNavigate(module.route)}
+                type="button"
+                onClick={(e) => handleNavigate(e, module.route)}
+                onTouchEnd={(e) => handleNavigate(e as any, module.route)}
                 title={t(module.titleKey, language)}
                 className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer ${
                   isActive ? "shadow-lg" : ""
