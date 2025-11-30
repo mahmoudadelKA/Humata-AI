@@ -20,24 +20,25 @@ function FeatureCardComponent({ feature }: any) {
   return (
     <div
       onClick={() => navigate(feature.route)}
-      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 sm:w-40 sm:h-40 md:w-48 md:h-48 smooth-hover animate-fade-in-up"
+      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 sm:w-40 sm:h-40 md:w-48 md:h-48 smooth-hover animate-fade-in-up backdrop-blur-md"
       style={{
-        borderRadius: "0",
-        border: `2px solid ${colors.border}`,
-        backgroundColor: "hsl(248 55% 14% / 0.7)",
-        boxShadow: `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`,
+        borderRadius: "12px",
+        border: `1.5px solid ${colors.border}`,
+        backgroundColor: "rgba(248, 113, 113, 0.08)",
+        backdropFilter: "blur(10px)",
+        boxShadow: `0 0 20px ${colors.border}40, inset 0 1px 1px rgba(255, 255, 255, 0.1)`,
         animationDelay: feature.delay,
       }}
       onMouseEnter={(e) => {
         if (window.innerWidth >= 768) {
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
+          e.currentTarget.style.boxShadow = `0 0 30px ${colors.border}70, inset 0 1px 1px rgba(255, 255, 255, 0.15)`;
           e.currentTarget.style.borderColor = `${colors.border}`;
           e.currentTarget.style.transform = "scale(1.05)";
         }
       }}
       onMouseLeave={(e) => {
         if (window.innerWidth >= 768) {
-          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
+          e.currentTarget.style.boxShadow = `0 0 20px ${colors.border}40, inset 0 1px 1px rgba(255, 255, 255, 0.1)`;
           e.currentTarget.style.borderColor = `${colors.border}`;
           e.currentTarget.style.transform = "scale(1)";
         }
