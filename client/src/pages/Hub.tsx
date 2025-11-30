@@ -1,4 +1,4 @@
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { MessageSquare, HelpCircle, Send, Search, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, Sun, Moon, Globe } from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 
 function FeatureCardComponent({ feature }: any) {
   const IconComponent = feature.icon;
+  const [, navigate] = useLocation();
   
   const colorMap: Record<string, { border: string; shadow: string; icon: string }> = {
     cyan: { border: "hsl(180 100% 50%)", icon: "hsl(180 100% 50%)", shadow: "0 0 12px hsl(180 100% 50% / 0.4), 0 0 24px hsl(180 100% 50% / 0.2)" },
@@ -18,8 +19,9 @@ function FeatureCardComponent({ feature }: any) {
 
   const colors = colorMap[feature.glowColor] || colorMap.cyan;
 
-  const card = (
+  return (
     <div
+      onClick={() => navigate(feature.route)}
       className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 sm:w-40 sm:h-40 md:w-48 md:h-48 smooth-hover animate-fade-in-up"
       style={{
         borderRadius: "0",
@@ -59,8 +61,6 @@ function FeatureCardComponent({ feature }: any) {
       </div>
     </div>
   );
-
-  return <Link href={feature.route}>{card}</Link>;
 }
 
 export default function Hub() {
