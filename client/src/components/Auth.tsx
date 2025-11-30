@@ -11,9 +11,18 @@ export function Auth() {
 
   const verifyTokenMutation = useMutation({
     mutationFn: async () => {
+      const storedToken = localStorage.getItem("authToken");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      
+      // Add Authorization header if token exists
+      if (storedToken) {
+        headers["Authorization"] = `Bearer ${storedToken}`;
+        console.log("[Auth] Verifying with token from localStorage");
+      }
+      
       const response = await fetch("/api/auth/verify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         credentials: "include", // Send cookies with request
       });
       if (!response.ok) throw new Error("Verification failed");
@@ -21,18 +30,23 @@ export function Auth() {
     },
     onSuccess: (data) => {
       if (data.success && data.user) {
+        console.log("[Auth] Token verification successful");
         setUser(data.user);
         setToken(data.user.id);
       }
     },
-    onError: () => {
+    onError: (error) => {
+      console.log("[Auth] Token verification failed:", error);
       setUser(null);
       setToken(null);
+      // Clear invalid token from localStorage
+      localStorage.removeItem("authToken");
     },
   });
 
   useEffect(() => {
-    // Check for existing session via cookie
+    // Check for existing session via stored token or cookie
+    console.log("[Auth] Checking for existing session");
     verifyTokenMutation.mutate();
   }, []);
 

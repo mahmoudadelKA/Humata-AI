@@ -19,12 +19,16 @@ export function AuthModal() {
     },
     onSuccess: (data) => {
       if (data.success && data.user && data.token) {
+        console.log("[AuthModal] Signup successful, storing token");
         setUser(data.user);
         setToken(data.token);
         localStorage.setItem("authToken", data.token);
         setShowAuthModal(false);
         setFormData({ name: "", email: "", password: "" });
       }
+    },
+    onError: (error) => {
+      console.error("[AuthModal] Signup failed:", error);
     },
   });
 
@@ -40,12 +44,16 @@ export function AuthModal() {
     },
     onSuccess: (data) => {
       if (data.success && data.user && data.token) {
+        console.log("[AuthModal] Login successful, storing token");
         setUser(data.user);
         setToken(data.token);
         localStorage.setItem("authToken", data.token);
         setShowAuthModal(false);
         setFormData({ name: "", email: "", password: "" });
       }
+    },
+    onError: (error) => {
+      console.error("[AuthModal] Login failed:", error);
     },
   });
 

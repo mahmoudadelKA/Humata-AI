@@ -118,9 +118,16 @@ function App() {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     const savedLang = localStorage.getItem("language") as Language | null;
+    const savedToken = localStorage.getItem("authToken");
 
     if (savedTheme) setTheme(savedTheme);
     if (savedLang) setLanguage(savedLang);
+    
+    // Restore token from localStorage if available
+    if (savedToken) {
+      console.log("[App] Restoring token from localStorage");
+      setToken(savedToken);
+    }
   }, []);
 
   useEffect(() => {
