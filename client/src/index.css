@@ -234,6 +234,190 @@
   transition: all 0.3s ease;
 }
 
+/* ===== ANIMATED BACKGROUND ===== */
+
+/* Animated Gradient Background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating Particles Animation */
+@keyframes floatParticle1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(100px, -50px) scale(1.2);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(50px, -100px) scale(1);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translate(-50px, -50px) scale(1.3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes floatParticle2 {
+  0% {
+    transform: translate(0, 0) scale(1.1);
+    opacity: 0.4;
+  }
+  33% {
+    transform: translate(-80px, 60px) scale(1.3);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translate(80px, -80px) scale(0.9);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(0, 0) scale(1.1);
+    opacity: 0.4;
+  }
+}
+
+@keyframes floatParticle3 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(60px, -120px) rotate(180deg) scale(1.4);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(0, 0) rotate(360deg) scale(1);
+    opacity: 0.35;
+  }
+}
+
+/* Floating Light Orbs */
+@keyframes floatOrb1 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-30px) translateX(20px);
+  }
+}
+
+@keyframes floatOrb2 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-40px) translateX(-15px);
+  }
+}
+
+@keyframes floatOrb3 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-25px) translateX(25px);
+  }
+}
+
+/* Container for animated background */
+.animated-bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    -45deg,
+    hsl(248 67% 11%),
+    hsl(270 80% 20%),
+    hsl(180 100% 35% / 0.1),
+    hsl(328 100% 35% / 0.1)
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Floating Particles */
+.floating-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+}
+
+.particle-cyan {
+  background: radial-gradient(circle, hsl(180 100% 50% / 0.6), hsl(180 100% 50% / 0.1));
+  animation: floatParticle1 8s ease-in-out infinite;
+}
+
+.particle-magenta {
+  background: radial-gradient(circle, hsl(328 100% 50% / 0.6), hsl(328 100% 50% / 0.1));
+  animation: floatParticle2 10s ease-in-out infinite;
+}
+
+.particle-purple {
+  background: radial-gradient(circle, hsl(270 100% 50% / 0.5), hsl(270 100% 50% / 0.1));
+  animation: floatParticle3 12s ease-in-out infinite;
+}
+
+.particle-green {
+  background: radial-gradient(circle, hsl(120 100% 50% / 0.5), hsl(120 100% 50% / 0.1));
+  animation: floatParticle1 9s ease-in-out infinite reverse;
+}
+
+/* Floating Orbs */
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.orb-1 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, hsl(180 100% 50% / 0.15), transparent);
+  animation: floatOrb1 10s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, hsl(328 100% 50% / 0.12), transparent);
+  animation: floatOrb2 12s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, hsl(270 100% 50% / 0.1), transparent);
+  animation: floatOrb3 14s ease-in-out infinite;
+}
+
+/* Hub content with animated background */
+.hub-with-animated-bg {
+  position: relative;
+  z-index: 10;
+}
+
 /* Dark mode is cyberpunk */
 .dark {
   --button-outline: rgba(0, 240, 255, .15);
