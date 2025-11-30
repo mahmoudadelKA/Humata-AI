@@ -79,7 +79,76 @@ app.use((req, res, next) => {
   next();
 });
 
+// Initialize database schema on startup
+async function initializeDatabase() {
+  try {
+    const { Pool } = await import("pg");
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL?.includes("ssl") ? { rejectUnauthorized: false } : false,
+    });
+
+    console.log("[Database] Initializing schema...");
+
+    // Create users table if it doesn't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id VARCHAR PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        email VARCHAR UNIQUE NOT NULL,
+        password VARCHAR NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("[Database] Users table ready");
+
+    // Create conversations table WITHOUT foreign key constraint (guest support)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS conversations (
+        id VARCHAR PRIMARY KEY,
+        user_id VARCHAR,
+        title VARCHAR NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        share_token VARCHAR
+      )
+    `);
+    console.log("[Database] Conversations table ready");
+
+    // Create messages table if it doesn't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id VARCHAR PRIMARY KEY,
+        conversation_id VARCHAR NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+        role VARCHAR NOT NULL,
+        content TEXT NOT NULL,
+        file_info JSONB,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("[Database] Messages table ready");
+
+    // Create index for faster lookups
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations(user_id)
+    `);
+    
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id)
+    `);
+    
+    console.log("[Database] Schema initialization complete");
+    await pool.end();
+  } catch (error: any) {
+    console.error("[Database] Initialization error:", error.message);
+    // Continue anyway - tables might already exist
+  }
+}
+
 (async () => {
+  // Initialize database before starting server
+  await initializeDatabase();
+  
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

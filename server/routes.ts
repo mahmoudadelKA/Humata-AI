@@ -216,8 +216,16 @@ export async function registerRoutes(
   
   app.post("/api/chat", async (req: Request, res: Response) => {
     try {
-      const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType, enableGrounding } = req.body;
-      const userId = (req as any).userId;
+      const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType, enableGrounding, guestId } = req.body;
+      let userId = (req as any).userId;
+      
+      // Support guest users with guestId
+      if (!userId && guestId) {
+        userId = guestId;
+        res.cookie("guestId", guestId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+      } else if (!userId) {
+        userId = "anonymous";
+      }
 
       console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}, enableGrounding: ${enableGrounding}, persona: ${persona}`);
 
@@ -433,7 +441,14 @@ export async function registerRoutes(
   // Conversations API
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).userId || "anonymous";
+      // Use guestId from query param or cookies for anonymous users
+      const guestId = (req.query.guestId as string) || (req.cookies.guestId as string);
+      const userId = (req as any).userId || guestId || "anonymous";
+      
+      if (guestId && !req.cookies.guestId) {
+        res.cookie("guestId", guestId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+      }
+      
       const conversations = await storage.getConversations(userId);
       res.json(conversations.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
     } catch (error: any) {
