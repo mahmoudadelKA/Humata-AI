@@ -649,11 +649,16 @@ export default function Chat() {
           <div className="max-w-3xl w-full mx-auto space-y-4 sm:space-y-6 flex-1 flex flex-col">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center">
-              <div className="text-center">
+              <div className="text-center space-y-6">
                 <PersonaIconComponent className="w-16 sm:w-20 h-16 sm:h-20 text-primary smooth-transition mx-auto mb-4 animate-pulse" />
-                <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-2xl sm:text-3xl md:text-4xl" : ""}`}>
-                  {personaInfo.title}
-                </h2>
+                <div>
+                  <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-2xl sm:text-3xl md:text-4xl" : ""}`}>
+                    {personaInfo.title}
+                  </h2>
+                  <p className={`text-base sm:text-lg mt-4 text-foreground/80 max-w-xl mx-auto leading-relaxed ${language === "ar" ? "text-lg" : ""}`}>
+                    {personaInfo.description}
+                  </p>
+                </div>
               </div>
             </div>
           ) : (
