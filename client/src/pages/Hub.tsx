@@ -91,19 +91,6 @@ export default function Hub() {
   return (
     <div className="min-h-screen relative" dir={language === "ar" ? "rtl" : "ltr"}>
       <div className="relative z-10 hub-with-animated-bg">
-        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 px-2 sm:px-4 md:px-6">
-          <div className="max-w-6xl mx-auto py-3 sm:py-4">
-            <div className="flex items-center justify-center flex-col gap-1">
-              <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-primary ${language === "ar" ? "text-2xl sm:text-3xl" : ""}`}>
-                HUMATA AI
-              </h1>
-              <p className={`text-xs sm:text-sm text-muted-foreground/70 ${language === "ar" ? "text-xs sm:text-sm font-bold" : ""}`}>
-                {t("hub.system", language)}
-              </p>
-            </div>
-          </div>
-        </header>
-
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
           {/* Embossed Pharaonic/Ottoman Text-Only Info Hub */}
           <div className="text-center mb-8 sm:mb-12 space-y-4">
@@ -205,40 +192,6 @@ export default function Hub() {
           </div>
 
         </main>
-
-        {/* Left-Bottom Controls - Hub Only */}
-        <div className="fixed bottom-8 left-8 z-40">
-          <div className={`flex items-center gap-3 bg-muted/40 border border-border/50 rounded-full px-5 py-3 backdrop-blur-md hover:bg-muted/60 transition-all ${language === "ar" ? "flex-row-reverse" : ""}`}>
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              data-testid="button-theme-toggle-hub"
-              className="h-8 w-8 rounded-lg hover:bg-primary/10"
-              title={theme === "dark" ? "Light Mode" : "Dark Mode"}
-            >
-              {theme === "dark" ? (
-                <Sun className="w-4 h-4 text-primary" />
-              ) : (
-                <Moon className="w-4 h-4 text-primary" />
-              )}
-            </Button>
-
-            {/* Language Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setLanguage(language === "ar" ? "en" : "ar")}
-              data-testid="button-language-toggle-hub"
-              className="h-8 w-8 rounded-lg hover:bg-accent/10 flex items-center justify-center gap-1"
-              title={language === "ar" ? "English" : "العربية"}
-            >
-              <Globe className="w-4 h-4 text-accent" />
-              <span className="text-[10px] font-bold text-accent">{language.toUpperCase()}</span>
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );
