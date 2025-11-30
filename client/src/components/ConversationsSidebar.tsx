@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Trash2, Edit2, Share2 } from "lucide-react";
+import { MoreVertical, Trash2, Edit2, Share2, Home } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
+import { Link } from "wouter";
 
 interface Conversation {
   id: string;
@@ -82,14 +83,14 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
   if (!user) return null;
 
   return (
-    <div className={`w-64 border-r border-border bg-muted/20 overflow-y-auto ${language === "ar" ? "border-l border-r-0" : ""}`}>
+    <div className={`w-64 border-r border-border bg-muted/20 overflow-y-auto flex flex-col ${language === "ar" ? "border-l border-r-0" : ""}`}>
       <div className="p-4 border-b border-border">
         <h3 className={`text-sm font-bold text-foreground mb-3 ${language === "ar" ? "text-right" : ""}`}>
           {language === "ar" ? "المحادثات المحفوظة" : "Saved Conversations"}
         </h3>
       </div>
 
-      <div className="space-y-1 p-2">
+      <div className="space-y-1 p-2 flex-1 overflow-y-auto">
         {conversations.map((conv: Conversation) => (
           <div key={conv.id} className="relative group">
             <button
@@ -163,6 +164,19 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
             )}
           </div>
         ))}
+      </div>
+
+      <div className="border-t border-border p-3 mt-auto">
+        <Link href="/">
+          <Button
+            className="w-full gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
+            data-testid="button-sidebar-home"
+            title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
+          >
+            <Home className="w-4 h-4" />
+            <span className="text-sm font-semibold">{language === "ar" ? "الرئيسية" : "Home"}</span>
+          </Button>
+        </Link>
       </div>
     </div>
   );
