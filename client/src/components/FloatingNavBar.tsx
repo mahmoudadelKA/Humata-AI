@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import { MessageSquare, HelpCircle, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, ChevronUp, ChevronDown } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
-import { useLocation } from "wouter";
 
 export function FloatingNavBar() {
   const { language } = useAppContext();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isExpanded, setIsExpanded] = useState(true);
   
   const getCurrentPersona = () => {
@@ -28,6 +27,10 @@ export function FloatingNavBar() {
   ];
 
   const currentPersona = getCurrentPersona();
+
+  const handleNavigate = (route: string) => {
+    navigate(route);
+  };
 
   return (
     <div 
@@ -64,23 +67,23 @@ export function FloatingNavBar() {
             const isActive = currentPersona === module.id || (module.id === 'chat' && currentPersona === '');
             
             return (
-              <Link key={module.id} href={module.route}>
-                <button
-                  title={t(module.titleKey, language)}
-                  className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 ${
-                    isActive ? "shadow-lg" : ""
-                  }`}
-                  style={{
-                    backgroundColor: isActive ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.5)",
-                    border: isActive ? "2px solid" : "1px solid rgba(0, 240, 255, 0.2)",
-                    borderColor: isActive ? "currentColor" : undefined,
-                    boxShadow: isActive ? `0 0 15px ${module.color === "text-cyan-400" ? "rgb(0, 240, 255)" : module.color === "text-magenta-400" ? "rgb(255, 0, 110)" : module.color === "text-green-400" ? "rgb(0, 240, 150)" : "rgb(255, 200, 0)"}` : "0 0 10px rgba(0, 240, 255, 0.2)"
-                  }}
-                  data-testid={`button-floating-nav-${module.id}`}
-                >
-                  <IconComponent className={`w-6 h-6 ${module.color}`} />
-                </button>
-              </Link>
+              <button
+                key={module.id}
+                onClick={() => handleNavigate(module.route)}
+                title={t(module.titleKey, language)}
+                className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 ${
+                  isActive ? "shadow-lg" : ""
+                }`}
+                style={{
+                  backgroundColor: isActive ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.5)",
+                  border: isActive ? "2px solid" : "1px solid rgba(0, 240, 255, 0.2)",
+                  borderColor: isActive ? "currentColor" : undefined,
+                  boxShadow: isActive ? `0 0 15px ${module.color === "text-cyan-400" ? "rgb(0, 240, 255)" : module.color === "text-magenta-400" ? "rgb(255, 0, 110)" : module.color === "text-green-400" ? "rgb(0, 240, 150)" : "rgb(255, 200, 0)"}` : "0 0 10px rgba(0, 240, 255, 0.2)"
+                }}
+                data-testid={`button-floating-nav-${module.id}`}
+              >
+                <IconComponent className={`w-6 h-6 ${module.color}`} />
+              </button>
             );
           })}
         </div>
