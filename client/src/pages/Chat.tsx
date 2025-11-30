@@ -742,7 +742,7 @@ export default function Chat() {
         </div>
       </main>
 
-      <footer className="border-t border-border/30 bg-background/10 backdrop-blur-md sticky bottom-0">
+      <footer className="border-t border-border/30 sticky bottom-0">
         <div className="max-w-3xl w-full mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4">
           {uploadedFileInfo && (
             <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
