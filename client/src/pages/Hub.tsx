@@ -93,7 +93,8 @@ export default function Hub() {
       <div className="relative z-10 hub-with-animated-bg">
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
           {/* Embossed Pharaonic/Ottoman Text-Only Info Hub with Animated Neon Border */}
-          <div className="animated-neon-border mx-auto max-w-4xl">
+          <div className="flex justify-center mb-6 sm:mb-8">
+            <div className="animated-neon-border">
             <div className="text-center space-y-4">
               <h2 
                 className="text-3xl sm:text-4xl md:text-5xl font-bold"
@@ -168,7 +169,7 @@ export default function Hub() {
                 {language === "ar" ? "⚡ سريع وفعال" : "⚡ Fast & Efficient"}
               </span>
             </div>
-          </div>
+            </div>
           </div>
 
           <div className="text-center mb-8 sm:mb-12 md:mb-16 px-3">
