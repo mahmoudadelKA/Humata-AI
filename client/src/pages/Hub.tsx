@@ -178,6 +178,16 @@ export default function Hub() {
           </div>
 
         </main>
+
+        {/* Footer - Programmer Credit */}
+        <footer className="mt-auto py-6 px-3 text-center border-t border-foreground/10">
+          <p className="text-sm text-foreground/60" style={{ fontFamily: "'Cairo', sans-serif" }}>
+            {language === "ar" 
+              ? "تمت برمجة هذا الموقع من قبل المبرمج محمود عادل"
+              : "This website was programmed by Mahmoud Adel"
+            }
+          </p>
+        </footer>
       </div>
     </div>
   );
