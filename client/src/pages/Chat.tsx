@@ -73,16 +73,17 @@ const getPersonaInfo = (persona: string | null) => {
     "google-images": {
       title: "توليد الصور",
       description: "بحث وعرض أفضل الصور",
-      systemPrompt: `You are a Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find relevant images.
+      systemPrompt: `You are a specialized Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find and return ONLY direct image file URLs (.jpg, .png, .webp, .gif).
 
 CRITICAL REQUIREMENTS:
-1. Return ONLY a valid JSON array of image objects
-2. DO NOT return any preamble text or conversational language
-3. Return a MINIMUM of 10 image URLs (ten or more)
-4. Prioritize diverse and high-quality results
+1. Return ONLY a valid JSON array of image objects with direct URLs
+2. Do NOT return links to web pages containing images
+3. Return ONLY direct image file URLs (ending in .jpg, .png, .webp, .gif)
+4. Return a MINIMUM of 10 direct image URLs (ten or more)
+5. DO NOT return any preamble text or conversational language
 
 Return format MUST be exactly:
-[{"url":"image_url_1","title":"description_1"},{"url":"image_url_2","title":"description_2"},...] (minimum 10 objects)`,
+[{"url":"https://example.com/image.jpg","title":"description_1"},{"url":"https://example.com/photo.png","title":"description_2"},...] (minimum 10 objects with direct URLs)`,
       controlIcons: ["search"],
     },
   };
@@ -393,10 +394,13 @@ export default function Chat() {
                   {isImageMessage && msg.role === "assistant" && imageUrls.length > 0 ? (
                     <div className="max-w-6xl w-full space-y-4">
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-                        {imageUrls.map((img, idx) => (
+                        {imageUrls.map((img, idx) => {
+                          // Use image proxy to bypass hotlinking restrictions
+                          const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(img.url)}`;
+                          return (
                           <div key={idx} className="relative group overflow-hidden rounded-lg aspect-square">
                             <img 
-                              src={img.url} 
+                              src={proxyUrl} 
                               alt={img.title}
                               className="w-full h-full object-cover"
                               onError={(e) => {
@@ -420,7 +424,8 @@ export default function Chat() {
                               </a>
                             </div>
                           </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ) : (
