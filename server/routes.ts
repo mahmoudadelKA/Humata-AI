@@ -197,31 +197,23 @@ export async function registerRoutes(
       
       // Handle image search separately
       if (persona === "google-images") {
-        // Search for images using Pexels API (requires free API key)
+        // Search for images using Unsplash API
         const query = encodeURIComponent(message);
-        const pexelsKey = "e2wq7Z6qjvCVLrCy2LB5hc9Qd5PqnJdFVZLMrJ7wPJjWzqKnDm6aGzVE";
-        const pexelsUrl = `https://api.pexels.com/v1/search?query=${query}&per_page=12`;
+        const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=9&client_id=a_O3jJDskbr--1TxXuHqaG6nMPj6WxMq0Wfo3LjXXY0`;
         
         try {
-          const imageRes = await fetch(pexelsUrl, {
-            headers: { Authorization: pexelsKey }
-          });
-          
-          if (!imageRes.ok) {
-            throw new Error(`API response: ${imageRes.status}`);
-          }
-          
+          const imageRes = await fetch(unsplashUrl);
           const imageData = await imageRes.json();
           
-          if (imageData.photos && imageData.photos.length > 0) {
+          if (imageData.results && imageData.results.length > 0) {
             // Format images data for display
-            const images = imageData.photos.slice(0, 9).map((img: any) => ({
-              id: img.id.toString(),
-              url: img.src.large,
-              thumb: img.src.medium,
-              alt: img.alt || "Image",
-              downloadUrl: img.src.large,
-              photographer: img.photographer
+            const images = imageData.results.map((img: any) => ({
+              id: img.id,
+              url: img.urls.regular,
+              thumb: img.urls.small,
+              alt: img.alt_description || "صورة",
+              downloadUrl: img.links.download,
+              photographer: img.user.name || "Unsplash"
             }));
             
             aiResponse = JSON.stringify({
