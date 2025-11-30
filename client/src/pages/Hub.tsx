@@ -165,6 +165,15 @@ export default function Hub() {
             ))}
           </div>
 
+          <div className="mt-16 sm:mt-20 md:mt-24 mb-8 px-3 flex justify-center">
+            <p className="inspirational-quote text-center max-w-2xl" style={{ fontFamily: "'Lateef', serif" }}>
+              {language === "ar" 
+                ? "إذا لم تحاول أن تفعل شيئاً أبعد ممّا قد أتقنته.. فإنك لا تتقدم أبداً"
+                : "If you don't attempt something beyond what you have already mastered.. you will never progress"
+              }
+            </p>
+          </div>
+
         </main>
       </div>
     </div>

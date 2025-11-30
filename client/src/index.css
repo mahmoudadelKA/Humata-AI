@@ -289,6 +289,39 @@
   filter: drop-shadow(0 0 12px var(--icon-glow));
 }
 
+/* ===== INSPIRATIONAL QUOTE EFFECT ===== */
+
+@keyframes colorShiftGlow {
+  0% {
+    color: #00F0FF;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
+  }
+  25% {
+    color: #FF006E;
+    text-shadow: 0 0 10px rgba(255, 0, 110, 0.8), 0 0 20px rgba(255, 0, 110, 0.4);
+  }
+  50% {
+    color: #B366FF;
+    text-shadow: 0 0 10px rgba(179, 102, 255, 0.8), 0 0 20px rgba(179, 102, 255, 0.4);
+  }
+  75% {
+    color: #00FF88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 20px rgba(0, 255, 136, 0.4);
+  }
+  100% {
+    color: #00F0FF;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
+  }
+}
+
+.inspirational-quote {
+  animation: colorShiftGlow 6s ease-in-out infinite;
+  font-size: 1.25rem;
+  font-weight: bold;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
 /* ===== ANIMATED BACKGROUND ===== */
 
 /* Animated Gradient Background */
