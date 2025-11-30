@@ -197,30 +197,51 @@ export async function registerRoutes(
       
       // Handle image search separately
       if (persona === "google-images") {
-        // Search for images using Pixabay API
+        // Search for images using Wikimedia Commons API (free, no key required)
         const query = encodeURIComponent(message);
-        const pixabayUrl = `https://pixabay.com/api/?key=48216098-cb39b66a0e24b04c8c5f1baae&q=${query}&image_type=photo&per_page=12&safeSearch=true`;
+        const wikiUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=${query}&srwhat=file&format=json&origin=*&srlimit=20`;
         
         try {
-          const imageRes = await fetch(pixabayUrl);
+          const imageRes = await fetch(wikiUrl);
           const imageData = await imageRes.json();
           
-          if (imageData.hits && imageData.hits.length > 0) {
-            // Format images data for display - take first 9
-            const images = imageData.hits.slice(0, 9).map((img: any) => ({
-              id: img.id.toString(),
-              url: img.largeImageURL,
-              thumb: img.webformatURL,
-              alt: img.tags || "Image",
-              downloadUrl: img.largeImageURL,
-              photographer: img.user
-            }));
+          if (imageData.query && imageData.query.search && imageData.query.search.length > 0) {
+            // Get image details from search results
+            const imageIds = imageData.query.search.slice(0, 9).map((item: any) => item.title);
             
-            aiResponse = JSON.stringify({
-              type: "images",
-              images: images,
-              description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
-            });
+            // Fetch image URLs
+            const detailsUrl = `https://commons.wikimedia.org/w/api.php?action=query&titles=${imageIds.join('|')}&prop=imageinfo&iiprop=url&format=json&origin=*`;
+            const detailsRes = await fetch(detailsUrl);
+            const detailsData = await detailsRes.json();
+            
+            const images: any[] = [];
+            for (const pageId in detailsData.query.pages) {
+              const page = detailsData.query.pages[pageId];
+              if (page.imageinfo && page.imageinfo[0]) {
+                images.push({
+                  id: pageId,
+                  url: page.imageinfo[0].url,
+                  thumb: page.imageinfo[0].thumburl || page.imageinfo[0].url,
+                  alt: page.title,
+                  downloadUrl: page.imageinfo[0].url,
+                  photographer: "Wikimedia Commons"
+                });
+              }
+            }
+            
+            if (images.length > 0) {
+              aiResponse = JSON.stringify({
+                type: "images",
+                images: images.slice(0, 9),
+                description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
+              });
+            } else {
+              aiResponse = JSON.stringify({
+                type: "images",
+                images: [],
+                description: `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`
+              });
+            }
           } else {
             aiResponse = JSON.stringify({
               type: "images",
