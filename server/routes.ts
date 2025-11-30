@@ -252,7 +252,11 @@ export async function registerRoutes(
           
           console.log(`[ImageSearch] Fetching images from Wikimedia Commons for query: ${message}`);
           
-          const imageRes = await fetch(wikiUrl);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
+          
+          const imageRes = await fetch(wikiUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
           const imageData = await imageRes.json();
           
           const searchResults = imageData.query?.search || [];

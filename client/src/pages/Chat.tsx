@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -89,6 +89,18 @@ Return format MUST be exactly:
 [{"url":"https://example.com/image.jpg","title":"description_1"},{"url":"https://example.com/photo.png","title":"description_2"},...] (minimum 10 objects with direct URLs, all strictly relevant)`,
       controlIcons: ["search"],
     },
+    quizzes: {
+      title: "الاختبارات",
+      description: "إنشاء اختبارات تفاعلية من المصادر",
+      systemPrompt: `أنت متخصص في إنشاء الاختبارات التفاعلية. عندما يزودك المستخدم بمصدر (ملف أو رابط URL)، قم بـ:
+1. تحليل المصدر بعناية
+2. استخراج المعلومات الرئيسية
+3. إنشاء أسئلة متعددة الخيارات (10-15 أسئلة)
+4. صياغة الأسئلة بوضوح وصيغة عربية سليمة
+
+إرجع الإجابات والتفسيرات مع كل سؤال.`,
+      controlIcons: ["upload-source", "url-input"],
+    },
   };
   
   if (persona && personas[persona]) {
@@ -115,6 +127,7 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
+  const [showQuizzesMenu, setShowQuizzesMenu] = useState(false);
   const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -408,7 +421,7 @@ export default function Chat() {
                               className="w-full h-full object-cover"
                               onError={(e) => {
                                 // Hide the entire parent container on image load failure
-                                const container = e.currentTarget.closest('.image-container');
+                                const container = (e.currentTarget.closest('.image-container') as HTMLElement);
                                 if (container) {
                                   container.style.display = 'none';
                                 }
@@ -604,6 +617,54 @@ export default function Chat() {
               >
                 <Database className="w-4 h-4" />
               </Button>
+            )}
+
+            {personaInfo.controlIcons?.includes("upload-source") && (
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowQuizzesMenu(!showQuizzesMenu)}
+                  disabled={sendMessageMutation.isPending}
+                  data-testid="button-quizzes-menu"
+                  className="h-8 w-8"
+                  title={language === "ar" ? "خيارات الاختبار" : "Quiz Options"}
+                >
+                  <GripVertical className="w-4 h-4" />
+                </Button>
+                {showQuizzesMenu && (
+                  <div className="absolute bottom-10 left-0 bg-card border border-border rounded-lg shadow-lg z-50 flex flex-col gap-1 p-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setShowQuizzesMenu(false);
+                        fileInputRef.current?.click();
+                      }}
+                      disabled={uploadFileMutation.isPending}
+                      data-testid="button-upload-source"
+                      className="w-full justify-start text-xs"
+                    >
+                      <Upload className="w-3 h-3 ml-2" />
+                      {language === "ar" ? "رفع مصدر" : "Upload Source"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setShowQuizzesMenu(false);
+                        setShowUrlModal(true);
+                      }}
+                      disabled={sendMessageMutation.isPending}
+                      data-testid="button-url-input"
+                      className="w-full justify-start text-xs"
+                    >
+                      <Link2 className="w-3 h-3 ml-2" />
+                      {language === "ar" ? "رابط URL" : "URL Link"}
+                    </Button>
+                  </div>
+                )}
+              </div>
             )}
 
             {persona === "chat" && (
