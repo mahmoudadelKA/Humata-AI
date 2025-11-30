@@ -376,35 +376,41 @@ export default function Chat() {
                 >
                   {isImageMessage && msg.role === "assistant" ? (
                     <div className="max-w-4xl w-full space-y-4">
-                      <p className="text-sm text-muted-foreground">{imageData.description}</p>
-                      <div className="grid grid-cols-3 gap-3">
-                        {imageData.images.map((img: any) => (
-                          <div key={img.id} className="relative group overflow-hidden rounded-lg">
-                            <img 
-                              src={img.thumb} 
-                              alt={img.alt}
-                              className="w-full h-40 object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                              <a 
-                                href={img.downloadUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                download
-                              >
-                                <Button
-                                  size="sm"
-                                  variant="default"
-                                  data-testid={`button-download-${img.id}`}
-                                >
-                                  {language === "ar" ? "تحميل" : "Download"}
-                                </Button>
-                              </a>
-                            </div>
-                            <p className="text-xs text-muted-foreground absolute bottom-1 left-1">{img.photographer}</p>
+                      {imageData.images && imageData.images.length > 0 ? (
+                        <>
+                          <p className="text-sm text-muted-foreground">{imageData.description}</p>
+                          <div className="grid grid-cols-3 gap-3">
+                            {imageData.images.map((img: any) => (
+                              <div key={img.id} className="relative group overflow-hidden rounded-lg">
+                                <img 
+                                  src={img.thumb} 
+                                  alt={img.alt}
+                                  className="w-full h-40 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                  <a 
+                                    href={img.downloadUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    download
+                                  >
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      data-testid={`button-download-${img.id}`}
+                                    >
+                                      {language === "ar" ? "تحميل" : "Download"}
+                                    </Button>
+                                  </a>
+                                </div>
+                                <p className="text-xs text-muted-foreground absolute bottom-1 left-1">{img.photographer}</p>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </>
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-8">{imageData.description}</p>
+                      )}
                     </div>
                   ) : (
                     <div

@@ -197,23 +197,23 @@ export async function registerRoutes(
       
       // Handle image search separately
       if (persona === "google-images") {
-        // Search for images using Unsplash API
+        // Search for images using Pixabay API
         const query = encodeURIComponent(message);
-        const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=9&client_id=qJV0vO-TIg_4-JrVgHaJ_6LbmN9sF7KDk-t0_RQYZWI`;
+        const pixabayUrl = `https://pixabay.com/api/?key=48216098-cb39b66a0e24b04c8c5f1baae&q=${query}&image_type=photo&per_page=12&safeSearch=true`;
         
         try {
-          const imageRes = await fetch(unsplashUrl);
+          const imageRes = await fetch(pixabayUrl);
           const imageData = await imageRes.json();
           
-          if (imageData.results && imageData.results.length > 0) {
-            // Format images data for display
-            const images = imageData.results.map((img: any) => ({
-              id: img.id,
-              url: img.urls.regular,
-              thumb: img.urls.thumb,
-              alt: img.alt_description || "Image",
-              downloadUrl: img.links.download_location,
-              photographer: img.user.name
+          if (imageData.hits && imageData.hits.length > 0) {
+            // Format images data for display - take first 9
+            const images = imageData.hits.slice(0, 9).map((img: any) => ({
+              id: img.id.toString(),
+              url: img.largeImageURL,
+              thumb: img.webformatURL,
+              alt: img.tags || "Image",
+              downloadUrl: img.largeImageURL,
+              photographer: img.user
             }));
             
             aiResponse = JSON.stringify({
@@ -222,10 +222,19 @@ export async function registerRoutes(
               description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
             });
           } else {
-            aiResponse = `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`;
+            aiResponse = JSON.stringify({
+              type: "images",
+              images: [],
+              description: `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`
+            });
           }
         } catch (error) {
-          aiResponse = `حدث خطأ في البحث عن الصور. يرجى المحاولة لاحقاً.`;
+          console.error("Image search error:", error);
+          aiResponse = JSON.stringify({
+            type: "images",
+            images: [],
+            description: `حدث خطأ في البحث عن الصور. يرجى المحاولة لاحقاً.`
+          });
         }
       } else {
         aiResponse = await sendChatMessage(message, history, {
