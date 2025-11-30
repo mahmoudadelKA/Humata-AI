@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { MessageSquare, HelpCircle, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark } from "lucide-react";
+import { MessageSquare, HelpCircle, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, ChevronUp, ChevronDown } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import { useLocation } from "wouter";
@@ -7,6 +8,7 @@ import { useLocation } from "wouter";
 export function FloatingNavBar() {
   const { language } = useAppContext();
   const [location] = useLocation();
+  const [isExpanded, setIsExpanded] = useState(true);
   
   const getCurrentPersona = () => {
     const params = new URLSearchParams(location.split('?')[1]);
@@ -29,38 +31,60 @@ export function FloatingNavBar() {
 
   return (
     <div 
-      className="fixed hidden md:flex gap-3 p-4 rounded-3xl z-40 flex-row flex-wrap justify-center items-center transition-all duration-300"
+      className="fixed z-40 flex flex-col gap-2 transition-all duration-300"
       style={{
         top: "15%",
-        left: "20px",
-        backdropFilter: "blur(12px)",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        border: "1px solid rgba(0, 240, 255, 0.2)",
-        boxShadow: "0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(255, 0, 110, 0.1)",
-        width: "auto",
-        maxWidth: "80px"
+        left: "20px"
       }}
     >
-      {modules.map((module) => {
-        const IconComponent = module.icon;
-        const isActive = currentPersona === module.id || (module.id === 'chat' && currentPersona === '');
-        
-        return (
-          <Link key={module.id} href={module.route}>
-            <button
-              title={t(module.titleKey, language)}
-              className={`p-2.5 rounded-full transition-all duration-200 ${
-                isActive
-                  ? `${module.color} bg-white/20 shadow-lg`
-                  : `text-foreground/60 hover:text-foreground hover:bg-white/10`
-              }`}
-              data-testid={`button-floating-nav-${module.id}`}
-            >
-              <IconComponent className="w-5 h-5" />
-            </button>
-          </Link>
-        );
-      })}
+      {/* Toggle Button */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg"
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          border: "1px solid rgba(0, 240, 255, 0.3)",
+          boxShadow: "0 0 15px rgba(0, 240, 255, 0.4)"
+        }}
+        title={isExpanded ? "Hide modules" : "Show modules"}
+        data-testid="button-floating-nav-toggle"
+      >
+        {isExpanded ? (
+          <ChevronUp className="w-5 h-5 text-cyan-400" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-cyan-400" />
+        )}
+      </button>
+
+      {/* Icon Buttons */}
+      {isExpanded && (
+        <div className="flex flex-col gap-2 animate-in fade-in-50 duration-200">
+          {modules.map((module) => {
+            const IconComponent = module.icon;
+            const isActive = currentPersona === module.id || (module.id === 'chat' && currentPersona === '');
+            
+            return (
+              <Link key={module.id} href={module.route}>
+                <button
+                  title={t(module.titleKey, language)}
+                  className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 ${
+                    isActive ? "shadow-lg" : ""
+                  }`}
+                  style={{
+                    backgroundColor: isActive ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.5)",
+                    border: isActive ? "2px solid" : "1px solid rgba(0, 240, 255, 0.2)",
+                    borderColor: isActive ? "currentColor" : undefined,
+                    boxShadow: isActive ? `0 0 15px ${module.color === "text-cyan-400" ? "rgb(0, 240, 255)" : module.color === "text-magenta-400" ? "rgb(255, 0, 110)" : module.color === "text-green-400" ? "rgb(0, 240, 150)" : "rgb(255, 200, 0)"}` : "0 0 10px rgba(0, 240, 255, 0.2)"
+                  }}
+                  data-testid={`button-floating-nav-${module.id}`}
+                >
+                  <IconComponent className={`w-6 h-6 ${module.color}`} />
+                </button>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
