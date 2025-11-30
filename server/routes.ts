@@ -243,43 +243,44 @@ export async function registerRoutes(
 
       let aiResponse: string;
       
-      // Handle image search with DuckDuckGo Image Search (free, no API key required)
+      // Handle image search with Wikimedia Commons API (free, no API key required)
       if (persona === "google-images") {
         try {
           const query = encodeURIComponent(message);
-          // Using DuckDuckGo's image search API
-          const ddgUrl = `https://duckduckgo.com/?q=${query}&t=h_&iar=images&iax=images&ia=images&format=json`;
+          // Using Wikimedia Commons API - completely free and reliable
+          const wikiUrl = `https://commons.wikimedia.org/w/api.php?action=query&format=json&list=search&srsearch=${query}&srnamespace=6&srlimit=15&origin=*`;
           
-          console.log(`[ImageSearch] Fetching images for query: ${message}`);
+          console.log(`[ImageSearch] Fetching images from Wikimedia Commons for query: ${message}`);
           
-          const imageRes = await fetch(ddgUrl, {
-            headers: {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-            }
-          });
-          
-          console.log(`[ImageSearch] Response status: ${imageRes.status}`);
-          
+          const imageRes = await fetch(wikiUrl);
           const imageData = await imageRes.json();
           
-          // Extract image URLs from DuckDuckGo results
-          const results = imageData.results || [];
-          if (results.length > 0) {
-            console.log(`[ImageSearch] Found ${results.length} results`);
+          const searchResults = imageData.query?.search || [];
+          console.log(`[ImageSearch] Found ${searchResults.length} results from Wikimedia`);
+          
+          if (searchResults.length > 0) {
+            // Get file info for each result
+            const fileNames = searchResults.slice(0, 15).map((r: any) => r.title);
+            const fileInfoUrl = `https://commons.wikimedia.org/w/api.php?action=query&format=json&titles=${fileNames.join("|")}&prop=imageinfo&iiprop=url&origin=*`;
             
-            // Format as JSON array with direct image URLs
-            const images = results
-              .slice(0, 15)
-              .map((img: any) => ({
-                url: img.image || "",
-                title: img.title || "صورة"
-              }))
-              .filter((img: any) => img.url && img.url.startsWith("http")); // Only valid image URLs
+            const fileRes = await fetch(fileInfoUrl);
+            const fileData = await fileRes.json();
             
-            console.log(`[ImageSearch] Formatted ${images.length} images`);
+            const images: any[] = [];
+            for (const page of Object.values(fileData.query?.pages || {})) {
+              const page_data: any = page;
+              if (page_data.imageinfo?.[0]?.url) {
+                images.push({
+                  url: page_data.imageinfo[0].url,
+                  title: page_data.title || "صورة"
+                });
+              }
+            }
+            
+            console.log(`[ImageSearch] Formatted ${images.length} valid image URLs`);
             aiResponse = images.length > 0 ? JSON.stringify(images) : `[]`;
           } else {
-            console.log(`[ImageSearch] No results found`);
+            console.log(`[ImageSearch] No results found on Wikimedia Commons`);
             aiResponse = `[]`;
           }
         } catch (error) {
