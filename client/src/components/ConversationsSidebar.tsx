@@ -83,7 +83,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
   if (!user) return null;
 
   return (
-    <div className={`w-64 border-r border-border bg-muted/20 overflow-y-auto flex flex-col ${language === "ar" ? "border-l border-r-0" : ""}`}>
+    <div className={`w-64 border-r border-border bg-muted/20 flex flex-col ${language === "ar" ? "border-l border-r-0" : ""}`}>
       <div className="p-4 border-b border-border">
         <h3 className={`text-sm font-bold text-foreground mb-3 ${language === "ar" ? "text-right" : ""}`}>
           {language === "ar" ? "المحادثات المحفوظة" : "Saved Conversations"}
@@ -166,10 +166,10 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         ))}
       </div>
 
-      <div className="border-t border-border p-3 mt-auto flex justify-start">
+      <div className="sticky bottom-0 border-t border-border p-4 bg-muted/20 backdrop-blur-sm">
         <Link href="/">
           <Button
-            className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
+            className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50 w-full"
             data-testid="button-sidebar-home"
             title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
           >
