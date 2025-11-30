@@ -218,7 +218,7 @@ export async function registerRoutes(
                 // Validate URLs
                 const validImages = parsedJson.filter((img: any) => img.url && typeof img.url === 'string');
                 if (validImages.length > 0) {
-                  aiResponse = JSON.stringify(validImages.slice(0, 9));
+                  aiResponse = JSON.stringify(validImages.slice(0, 20));
                 } else {
                   aiResponse = `[]`;
                 }

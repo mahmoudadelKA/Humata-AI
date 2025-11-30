@@ -73,14 +73,16 @@ const getPersonaInfo = (persona: string | null) => {
     "google-images": {
       title: "توليد الصور",
       description: "بحث وعرض أفضل الصور",
-      systemPrompt: `You are a Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find relevant images. 
+      systemPrompt: `You are a Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find relevant images.
 
-CRITICAL: Return ONLY a valid JSON array of image objects. DO NOT return any preamble text or conversational language.
+CRITICAL REQUIREMENTS:
+1. Return ONLY a valid JSON array of image objects
+2. DO NOT return any preamble text or conversational language
+3. Return a MINIMUM of 10 image URLs (ten or more)
+4. Prioritize diverse and high-quality results
 
 Return format MUST be exactly:
-[{"url":"image_url_1","title":"description_1"},{"url":"image_url_2","title":"description_2"}]
-
-Return at least 3-5 images with direct URLs.`,
+[{"url":"image_url_1","title":"description_1"},{"url":"image_url_2","title":"description_2"},...] (minimum 10 objects)`,
       controlIcons: ["search"],
     },
   };
@@ -389,19 +391,19 @@ export default function Chat() {
                   data-testid={`message-${msg.id}`}
                 >
                   {isImageMessage && msg.role === "assistant" && imageUrls.length > 0 ? (
-                    <div className="max-w-4xl w-full space-y-4">
-                      <div className="grid grid-cols-3 gap-3">
+                    <div className="max-w-6xl w-full space-y-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
                         {imageUrls.map((img, idx) => (
-                          <div key={idx} className="relative group overflow-hidden rounded-lg">
+                          <div key={idx} className="relative group overflow-hidden rounded-lg aspect-square">
                             <img 
                               src={img.url} 
                               alt={img.title}
-                              className="w-full h-40 object-cover"
+                              className="w-full h-full object-cover"
                               onError={(e) => {
                                 e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3C/svg%3E";
                               }}
                             />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <a 
                                 href={img.url}
                                 target="_blank"
