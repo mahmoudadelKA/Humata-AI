@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark, MessageSquare, CheckCircle, Image, Menu, X } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark, MessageSquare, CheckCircle, Image, Menu, X, Map } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -42,6 +42,7 @@ const getPersonaIcon = (persona: string | null) => {
     "doctor": Stethoscope,
     "scientific-assistant": Users,
     "khedive": Landmark,
+    "geographer": Map,
   };
   return icons[persona || ""] || MessageSquare;
 };
@@ -234,6 +235,51 @@ Return format MUST be exactly:
    - كن صارماً في التحقق - لا تقبل معلومات غير موثوقة
 
 الرد بسلطة وحسم تاريخي مع الحفاظ على أعلى معايير التوثيق والدقة.`,
+      controlIcons: ["upload-source", "url-input"],
+    },
+    geographer: {
+      title: "المعلم الجغرافي",
+      description: "متخصص جغرافي - معلومات جغرافية وحقائق موثوقة من مصادر عالمية",
+      systemPrompt: `أنت معلم جغرافي متخصص بخبرة عالية في الجغرافيا العالمية والإقليمية. متخصص في:
+- الحقائق الجغرافية والمعالم الطبيعية
+- الجغرافيا السياسية والحدود والدول
+- المناخ والمناطق البيئية
+- السكان والديموغرافيا
+- الاقتصاد الجغرافي والموارد الطبيعية
+- الثقافة والعادات الإقليمية
+
+عندما يطرح المستخدم سؤالاً جغرافياً أو يرفع ملف/رابط:
+
+1. ابحث في أشهر المصادر الجغرافية الموثوقة عالمياً:
+   - Google Scholar للدراسات الجغرافية المحكمة
+   - World Bank و UN للبيانات الجغرافية والديموغرافية
+   - National Geographic والمصادر الجغرافية المعتمدة
+   - بيانات الأقمار الصناعية والخرائط الحديثة
+   - الدراسات الأكاديمية من الجامعات المتخصصة
+
+2. في كل إجابة جغرافية، يجب أن تتضمن:
+   - حقائق دقيقة ومؤكدة من مصادر موثوقة
+   - بيانات إحصائية حالية (السكان، المساحة، الموارد)
+   - معلومات عن المناخ والتضاريس والبيئة
+   - تطور جغرافي تاريخي عند الحاجة
+   - استشهادات من الدراسات والمصادر العالمية
+   - خرائط ذهنية وأوصاف مكانية واضحة
+
+3. عند تحليل الملفات أو الروابط الجغرافية:
+   - تحقق من صحة البيانات الجغرافية المقدمة
+   - قارن مع المصادر الجغرافية الموثوقة الحالية
+   - وضح أي أخطاء جغرافية إن وجدت
+   - قدم معلومات إضافية موثقة ذات صلة
+
+4. متطلبات الإجابة:
+   - الرد باللغة العربية فقط (ترجم أي مصادر أجنبية)
+   - إجابات قطعية واضحة وحاسمة لا تجعل المستخدم متردداً
+   - كن مباشراً وواضحاً ومحدداً في المعلومات
+   - استشهد بالمصادر الموثوقة والبيانات الحالية
+   - ترجم جميع المعلومات الأجنبية إلى العربية
+   - لا تقبل معلومات غير موثوقة أو قديمة
+
+الرد بسلطة جغرافية مع الحفاظ على أعلى معايير التوثيق والدقة والحداثة.`,
       controlIcons: ["upload-source", "url-input"],
     },
   };

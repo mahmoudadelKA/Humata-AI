@@ -262,7 +262,7 @@ export async function registerRoutes(
       }
       
       // Handle image search with Wikimedia Commons API (free, no API key required)
-      else if (persona === "google-images") {
+      if (persona === "google-images") {
         try {
           const query = encodeURIComponent(message);
           // Using Wikimedia Commons API - completely free and reliable
