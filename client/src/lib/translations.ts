@@ -16,6 +16,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "feature.chat": "الدردشة",
     "feature.ask": "اسأل",
     "feature.research": "البحث العلمي",
+    "feature.images": "توليد الصور",
   },
   en: {
     "system.active": "System Active",
@@ -32,6 +33,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "feature.chat": "Chat",
     "feature.ask": "Ask",
     "feature.research": "Research",
+    "feature.images": "Image Generation",
   },
 };
 
