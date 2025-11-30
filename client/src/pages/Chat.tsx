@@ -246,61 +246,13 @@ Return format MUST be exactly:
 
 export default function Chat() {
   const [location, navigate] = useLocation();
+  const { language, user, token } = useAppContext();
+  
+  // All state declarations must come before any useEffect that depends on them
   const [persona, setPersona] = useState<string>("");
   const [mode, setMode] = useState<string>("");
   const [convId, setConvId] = useState<string>("");
   const [initialMessage, setInitialMessage] = useState<string>("");
-  const [searchParams, setSearchParams] = useState<string>("");
-  const { language, user, token } = useAppContext();
-
-  // Monitor URL changes using a more reliable approach
-  useEffect(() => {
-    const checkUrlChange = () => {
-      const currentSearch = window.location.search;
-      if (currentSearch !== searchParams) {
-        setSearchParams(currentSearch);
-      }
-    };
-    
-    // Check immediately
-    checkUrlChange();
-    
-    // Also listen to popstate for back/forward navigation
-    window.addEventListener("popstate", checkUrlChange);
-    
-    return () => {
-      window.removeEventListener("popstate", checkUrlChange);
-    };
-  }, [searchParams]);
-
-  // Extract and sync URL parameters with state whenever search params change
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const newPersona = params.get("persona") || "";
-    const newMode = params.get("mode") || "";
-    const newConvId = params.get("convId") || "";
-    const newInitialMessage = params.get("initialMessage") || "";
-    
-    // If persona changed, reset conversation and messages for a fresh start
-    if (newPersona !== persona) {
-      setMessages([]);
-      setConversationId("");
-      setUploadedFileInfo(null);
-      setInputValue("");
-      setUrlInput("");
-      autoSentRef.current = false;
-      console.log("[Chat] Persona changed from", persona, "to", newPersona);
-    }
-    
-    setPersona(newPersona);
-    setMode(newMode);
-    setConvId(newConvId);
-    setInitialMessage(newInitialMessage);
-  }, [searchParams, persona]);
-
-  const personaInfo = getPersonaInfo(persona || null);
-  const { toast } = useToast();
-
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<string>("");
   const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
@@ -313,12 +265,40 @@ export default function Chat() {
   const [quizQuestionType, setQuizQuestionType] = useState("multiple-choice");
   const [quizDifficulty, setQuizDifficulty] = useState("medium");
   const [showDoctorMenu, setShowDoctorMenu] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" || persona === "khedive" ? true : false);
+  const [enableGrounding, setEnableGrounding] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarMode, setSidebarMode] = useState<"conversations" | "modules">("conversations");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
+
+  // Sync URL parameters with state whenever location changes (including query params)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const newPersona = params.get("persona") || "";
+    const newMode = params.get("mode") || "";
+    const newConvId = params.get("convId") || "";
+    const newInitialMessage = params.get("initialMessage") || "";
+    
+    // If persona changed, reset conversation and messages for a fresh start
+    if (newPersona !== persona) {
+      setMessages([]); // Clear previous messages
+      setConversationId(""); // Reset conversation
+      setUploadedFileInfo(null); // Clear uploaded file
+      setInputValue(""); // Clear input
+      setUrlInput(""); // Clear URL input
+      autoSentRef.current = false; // Reset auto-send flag
+      console.log("[Chat] Persona changed from", persona, "to", newPersona);
+    }
+    
+    setPersona(newPersona);
+    setMode(newMode);
+    setConvId(newConvId);
+    setInitialMessage(newInitialMessage);
+  }, [location, persona]);
+
+  const personaInfo = getPersonaInfo(persona || null);
+  const { toast } = useToast();
 
   // Sync conversationId with convId when convId changes
   useEffect(() => {
