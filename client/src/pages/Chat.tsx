@@ -73,13 +73,18 @@ const getPersonaInfo = (persona: string | null) => {
     "google-images": {
       title: "توليد الصور",
       description: "بحث وعرض أفضل الصور",
-      systemPrompt: `أنت متخصص في البحث عن الصور. عندما يطلب المستخدم صوراً عن أي موضوع:
-      
-1. افهم بدقة ما يريده المستخدم
-2. ابحث عن أفضل الصور المطابقة
-3. قدم وصفاً موجزاً للصور المتوفرة
+      systemPrompt: `You are a specialized Google Image Search engine. When receiving a user query, you MUST use the integrated Google Search tool to find relevant images. 
 
-يجب أن تكون إجابتك قصيرة وموضحة لما ستظهره من صور.`,
+Your response MUST include:
+1. A brief description of the search results
+2. Direct URL links to the top 3-5 images found (using markdown image syntax: ![alt](url))
+
+Format your response like this:
+وصف موجز عن الصور المتعلقة بـ [الموضوع]
+
+![صورة 1](https://image-url-1.jpg)
+![صورة 2](https://image-url-2.jpg)
+![صورة 3](https://image-url-3.jpg)`,
       controlIcons: ["search"],
     },
   };
@@ -108,7 +113,7 @@ export default function Chat() {
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" ? true : false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "google-images" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -355,17 +360,20 @@ export default function Chat() {
           ) : (
             <>
               {messages.map((msg) => {
+                // Extract image URLs from markdown format in AI responses
                 let isImageMessage = false;
-                let imageData: any = null;
+                let imageUrls: Array<{url: string; alt: string}> = [];
                 
-                try {
-                  const parsed = JSON.parse(msg.content);
-                  if (parsed.type === "images") {
-                    isImageMessage = true;
-                    imageData = parsed;
+                if (msg.role === "assistant" && persona === "google-images") {
+                  // Parse markdown image syntax: ![alt](url)
+                  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+                  let match;
+                  while ((match = imageRegex.exec(msg.content)) !== null) {
+                    imageUrls.push({ alt: match[1] || "صورة", url: match[2] });
                   }
-                } catch (e) {
-                  // Not JSON, continue as normal message
+                  if (imageUrls.length > 0) {
+                    isImageMessage = true;
+                  }
                 }
                 
                 return (
@@ -374,43 +382,38 @@ export default function Chat() {
                   className={`flex w-full ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
                   data-testid={`message-${msg.id}`}
                 >
-                  {isImageMessage && msg.role === "assistant" ? (
+                  {isImageMessage && msg.role === "assistant" && imageUrls.length > 0 ? (
                     <div className="max-w-4xl w-full space-y-4">
-                      {imageData.images && imageData.images.length > 0 ? (
-                        <>
-                          <p className="text-sm text-muted-foreground">{imageData.description}</p>
-                          <div className="grid grid-cols-3 gap-3">
-                            {imageData.images.map((img: any) => (
-                              <div key={img.id} className="relative group overflow-hidden rounded-lg">
-                                <img 
-                                  src={img.thumb} 
-                                  alt={img.alt}
-                                  className="w-full h-40 object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                  <a 
-                                    href={img.downloadUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    download
-                                  >
-                                    <Button
-                                      size="sm"
-                                      variant="default"
-                                      data-testid={`button-download-${img.id}`}
-                                    >
-                                      {language === "ar" ? "تحميل" : "Download"}
-                                    </Button>
-                                  </a>
-                                </div>
-                                <p className="text-xs text-muted-foreground absolute bottom-1 left-1">{img.photographer}</p>
-                              </div>
-                            ))}
+                      <div className="grid grid-cols-3 gap-3">
+                        {imageUrls.map((img, idx) => (
+                          <div key={idx} className="relative group overflow-hidden rounded-lg">
+                            <img 
+                              src={img.url} 
+                              alt={img.alt}
+                              className="w-full h-40 object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3C/svg%3E";
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                              <a 
+                                href={img.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                download
+                              >
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  data-testid={`button-download-${idx}`}
+                                >
+                                  {language === "ar" ? "تحميل" : "Download"}
+                                </Button>
+                              </a>
+                            </div>
                           </div>
-                        </>
-                      ) : (
-                        <p className="text-sm text-muted-foreground text-center py-8">{imageData.description}</p>
-                      )}
+                        ))}
+                      </div>
                     </div>
                   ) : (
                     <div

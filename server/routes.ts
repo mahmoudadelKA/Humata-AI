@@ -193,58 +193,20 @@ export async function registerRoutes(
         }
       }
 
-      let aiResponse: string;
-      
-      // Handle image search separately
+      // For image search, use Google Search grounding
+      let effectiveEnableGrounding = enableGrounding || false;
       if (persona === "google-images") {
-        // Search for images using Unsplash API
-        const query = encodeURIComponent(message);
-        const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=9&client_id=a_O3jJDskbr--1TxXuHqaG6nMPj6WxMq0Wfo3LjXXY0`;
-        
-        try {
-          const imageRes = await fetch(unsplashUrl);
-          const imageData = await imageRes.json();
-          
-          if (imageData.results && imageData.results.length > 0) {
-            // Format images data for display
-            const images = imageData.results.map((img: any) => ({
-              id: img.id,
-              url: img.urls.regular,
-              thumb: img.urls.small,
-              alt: img.alt_description || "صورة",
-              downloadUrl: img.links.download,
-              photographer: img.user.name || "Unsplash"
-            }));
-            
-            aiResponse = JSON.stringify({
-              type: "images",
-              images: images,
-              description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
-            });
-          } else {
-            aiResponse = JSON.stringify({
-              type: "images",
-              images: [],
-              description: `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`
-            });
-          }
-        } catch (error) {
-          console.error("Image search error:", error);
-          aiResponse = JSON.stringify({
-            type: "images",
-            images: [],
-            description: `حدث خطأ في البحث عن الصور. يرجى المحاولة لاحقاً.`
-          });
-        }
-      } else {
-        aiResponse = await sendChatMessage(message, history, {
-          systemPrompt: systemPrompt || undefined,
-          base64Data: base64Data || undefined,
-          mimeType: mimeType || undefined,
-          fileName: fileName || undefined,
-          enableGrounding: enableGrounding || false,
-        });
+        effectiveEnableGrounding = true;
+        console.log(`[Routes] Image search persona detected - enabling Google Search grounding`);
       }
+
+      const aiResponse = await sendChatMessage(message, history, {
+        systemPrompt: systemPrompt || undefined,
+        base64Data: base64Data || undefined,
+        mimeType: mimeType || undefined,
+        fileName: fileName || undefined,
+        enableGrounding: effectiveEnableGrounding,
+      });
 
       const userMessage = {
         id: randomUUID(),
