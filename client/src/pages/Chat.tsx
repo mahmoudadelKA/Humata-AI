@@ -252,32 +252,46 @@ export default function Chat() {
   const [initialMessage, setInitialMessage] = useState<string>("");
   const { language, user, token } = useAppContext();
 
-  // Update persona and other params when URL changes
+  // Update persona and other params when URL search params change
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const newPersona = params.get("persona") || "";
-      const newMode = params.get("mode") || "";
-      const newConvId = params.get("convId") || "";
-      const newInitialMessage = params.get("initialMessage") || "";
-      
-      // If persona changed, reset conversation and messages for a fresh start
-      if (newPersona !== persona) {
-        setMessages([]); // Clear previous messages
-        setConversationId(""); // Reset conversation
-        setUploadedFileInfo(null); // Clear uploaded file
-        setInputValue(""); // Clear input
-        setUrlInput(""); // Clear URL input
-        autoSentRef.current = false; // Reset auto-send flag
-        console.log("Persona changed from", persona, "to", newPersona);
+    const updatePersonaFromUrl = () => {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const newPersona = params.get("persona") || "";
+        const newMode = params.get("mode") || "";
+        const newConvId = params.get("convId") || "";
+        const newInitialMessage = params.get("initialMessage") || "";
+        
+        // If persona changed, reset conversation and messages for a fresh start
+        if (newPersona !== persona) {
+          setMessages([]); // Clear previous messages
+          setConversationId(""); // Reset conversation
+          setUploadedFileInfo(null); // Clear uploaded file
+          setInputValue(""); // Clear input
+          setUrlInput(""); // Clear URL input
+          autoSentRef.current = false; // Reset auto-send flag
+          console.log("Persona changed from", persona, "to", newPersona);
+        }
+        
+        setPersona(newPersona);
+        setMode(newMode);
+        setConvId(newConvId);
+        setInitialMessage(newInitialMessage);
       }
-      
-      setPersona(newPersona);
-      setMode(newMode);
-      setConvId(newConvId);
-      setInitialMessage(newInitialMessage);
-    }
-  }, [location]);
+    };
+
+    // Listen to popstate and hashchange events (back/forward buttons)
+    window.addEventListener("popstate", updatePersonaFromUrl);
+    window.addEventListener("hashchange", updatePersonaFromUrl);
+    
+    // Initial update
+    updatePersonaFromUrl();
+    
+    return () => {
+      window.removeEventListener("popstate", updatePersonaFromUrl);
+      window.removeEventListener("hashchange", updatePersonaFromUrl);
+    };
+  }, [persona]);
 
   const personaInfo = getPersonaInfo(persona || null);
   const { toast } = useToast();
