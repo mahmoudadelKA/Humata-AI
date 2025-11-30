@@ -121,25 +121,27 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
               </div>
             ) : (
               <>
-                <button
-                  onClick={() => onSelectConversation(conv.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-muted/40 transition-colors text-foreground/80 hover:text-foreground ${
-                    currentConversationId === conv.id ? "bg-muted text-foreground" : ""
-                  }`}
-                  data-testid={`button-conversation-${conv.id}`}
-                >
-                  <span className="truncate flex-1">{conv.title}</span>
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors group">
+                  <button
+                    onClick={() => onSelectConversation(conv.id)}
+                    className={`flex-1 text-left text-sm truncate text-foreground/80 group-hover:text-foreground ${
+                      currentConversationId === conv.id ? "text-foreground font-medium" : ""
+                    }`}
+                    data-testid={`button-conversation-${conv.id}`}
+                  >
+                    {conv.title}
+                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpenMenu(openMenu === conv.id ? null : conv.id);
                     }}
-                    className="p-1 hover:bg-muted/60 rounded opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                    className="p-1 hover:bg-muted/60 rounded flex-shrink-0"
                     data-testid={`button-menu-${conv.id}`}
                   >
                     <MoreVertical className="w-4 h-4" />
                   </button>
-                </button>
+                </div>
 
                 {openMenu === conv.id && (
                   <div className={`absolute top-0 ${language === "ar" ? "right-full mr-1" : "left-full ml-1"} bg-card rounded-md shadow-lg z-50 flex gap-1 p-1 animate-in fade-in-50 duration-200`}>
