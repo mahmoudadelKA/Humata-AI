@@ -353,14 +353,25 @@ export async function registerRoutes(
         conversationId: currentConversationId,
       });
     } catch (error: any) {
-      console.error("[Routes] Chat error:", error);
+      console.error("[Routes] Chat error - Full details:", {
+        message: error.message,
+        stack: error.stack,
+        status: error.status,
+        code: error.code,
+        timestamp: new Date().toISOString()
+      });
       
       // Handle specific API errors
       let errorMessage = "حدث خطأ في معالجة الرسالة";
       let statusCode = 500;
       
+      // Check for API key errors
+      if (error.message?.includes("API key") || error.message?.includes("apiKey")) {
+        errorMessage = "خطأ في إعدادات الخادم - مفتاح API غير صحيح";
+        statusCode = 500;
+      }
       // Check for quota limit errors (429)
-      if (error.status === 429 || error.message?.includes("429") || error.message?.includes("quota")) {
+      else if (error.status === 429 || error.message?.includes("429") || error.message?.includes("quota")) {
         errorMessage = "تم تجاوز حد الطلبات المسموح. يرجى المحاولة لاحقاً.";
         statusCode = 429;
       } 
@@ -368,9 +379,15 @@ export async function registerRoutes(
       else if (error.message?.includes("ApiError")) {
         errorMessage = "خطأ في الخدمة. يرجى المحاولة مرة أخرى.";
       }
+      // Database errors
+      else if (error.message?.includes("ECONNREFUSED") || error.message?.includes("database")) {
+        errorMessage = "خطأ في الاتصال بقاعدة البيانات";
+        statusCode = 503;
+      }
       
       res.status(statusCode).json({ 
-        error: errorMessage 
+        error: errorMessage,
+        ...(process.env.NODE_ENV === "development" && { details: error.message })
       });
     }
   });

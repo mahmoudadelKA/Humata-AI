@@ -5,6 +5,11 @@ import * as fs from "fs";
 // Using blueprint:javascript_gemini integration
 // The newest Gemini model series is "gemini-2.5-flash" or "gemini-2.5-pro"
 
+// Check if API key is configured
+if (!process.env.GEMINI_API_KEY) {
+  console.error("[Gemini] CRITICAL: GEMINI_API_KEY environment variable is not set!");
+}
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 const MODEL_NAME = "gemini-2.5-pro";
@@ -96,7 +101,24 @@ CRITICAL OUTPUT REQUIREMENT: Your responses MUST be clean, readable, professiona
     console.log(`[Gemini] Response received successfully`);
     return response.text || "I apologize, but I couldn't generate a response.";
   } catch (error: any) {
-    console.error("[Gemini] API error:", error);
+    console.error("[Gemini] API error details:", {
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      fullError: JSON.stringify(error)
+    });
+    
+    // Check for specific errors
+    if (error.message?.includes("API key")) {
+      throw new Error("خطأ في مفتاح API - تحقق من إعدادات الخادم");
+    }
+    if (error.status === 429) {
+      throw new Error("تم تجاوز حد الطلبات");
+    }
+    if (error.message?.includes("quota")) {
+      throw new Error("تم تجاوز حد الاستخدام اليومي");
+    }
+    
     throw new Error(error.message || "Failed to generate response from AI");
   }
 }
