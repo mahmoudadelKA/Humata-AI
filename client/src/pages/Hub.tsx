@@ -76,7 +76,8 @@ export default function Hub() {
               <h2 
                 className="text-3xl sm:text-4xl md:text-5xl font-bold"
                 style={{ 
-                  fontFamily: "'Lateef', serif",
+                  fontFamily: "'Cairo', sans-serif",
+                  fontWeight: 700,
                   color: "#00F0FF",
                   textShadow: `
                     0 0 20px rgba(0, 240, 255, 0.8),
@@ -95,7 +96,8 @@ export default function Hub() {
               <p 
                 className="text-lg sm:text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto"
                 style={{ 
-                  fontFamily: "'Lateef', serif",
+                  fontFamily: "'Cairo', sans-serif",
+                  fontWeight: 700,
                   color: "#00F0FF",
                   textShadow: `
                     0 0 15px rgba(0, 240, 255, 0.7),
