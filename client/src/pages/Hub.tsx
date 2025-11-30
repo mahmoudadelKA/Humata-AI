@@ -108,8 +108,8 @@ export default function Hub() {
                 }}
               >
                 {language === "ar" 
-                  ? "نظام ذكاء اصطناعي متقدم يجمع بين 9 تخصصات متميزة: الدردشة الحرة، البحث العميق، الاستشارات الطبية، المساعد العلمي، توليد الصور، الاختبارات التفاعلية والمزيد."
-                  : "An advanced AI system combining 9 specialized domains: Free Chat, Deep Research, Medical Consultation, Scientific Assistant, Image Generation, Interactive Quizzes, and more."
+                  ? "نظام ذكاء اصطناعي متقدم يجمع بين 10 تخصصات متميزة: الدردشة الحرة، البحث العلمي، الاستشارات الطبية، المساعد العلمي، توليد الصور، الاختبارات التفاعلية، صور ذكاء اصطناعي، الخديوي، المعلم الجغرافي والمزيد."
+                  : "An advanced AI system combining 10 specialized domains: Free Chat, Research, Medical Consultation, Scientific Assistant, Image Generation, Interactive Quizzes, AI Image Generation, Khedive, Geographer, and more."
                 }
               </p>
 
