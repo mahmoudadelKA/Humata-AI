@@ -243,43 +243,26 @@ export async function registerRoutes(
 
       let aiResponse: string;
       
-      // Handle image search with Gemini + Google Search grounding
+      // Handle image search with Unsplash API directly
       if (persona === "google-images") {
         try {
-          // Use Gemini with Google Search grounding enabled
-          const geminiResponse = await sendChatMessage(message, history, {
-            systemPrompt: systemPrompt || undefined,
-            base64Data: undefined,
-            mimeType: undefined,
-            fileName: undefined,
-            enableGrounding: true, // Force Google Search grounding for images
-          });
+          const query = encodeURIComponent(message);
+          const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=15&client_id=a_O3jJDskbr--1TxXuHqaG6nMPj6WxMq0Wfo3LjXXY0`;
           
-          console.log(`[Routes] Gemini image search response: ${geminiResponse.substring(0, 200)}`);
+          const imageRes = await fetch(unsplashUrl);
+          const imageData = await imageRes.json();
           
-          // Extract JSON from response (handle preamble text)
-          const jsonMatch = geminiResponse.match(/\[\s*\{[\s\S]*\}\s*\]/);
-          if (jsonMatch) {
-            try {
-              const parsedJson = JSON.parse(jsonMatch[0]);
-              if (Array.isArray(parsedJson) && parsedJson.length > 0) {
-                // Validate URLs
-                const validImages = parsedJson.filter((img: any) => img.url && typeof img.url === 'string');
-                if (validImages.length > 0) {
-                  aiResponse = JSON.stringify(validImages.slice(0, 20));
-                } else {
-                  aiResponse = `[]`;
-                }
-              } else {
-                aiResponse = `[]`;
-              }
-            } catch (parseError) {
-              console.error("JSON parse error:", parseError);
-              aiResponse = `[]`;
-            }
+          if (imageData.results && imageData.results.length > 0) {
+            // Format as JSON array with direct URLs
+            const images = imageData.results
+              .slice(0, 12)
+              .map((img: any) => ({
+                url: img.urls.regular,
+                title: img.alt_description || img.description || "صورة"
+              }));
+            
+            aiResponse = JSON.stringify(images);
           } else {
-            // No JSON found, return empty array
-            console.log("[Routes] No JSON found in Gemini response for image search");
             aiResponse = `[]`;
           }
         } catch (error) {
