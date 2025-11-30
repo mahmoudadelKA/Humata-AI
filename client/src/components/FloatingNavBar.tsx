@@ -10,8 +10,11 @@ export function FloatingNavBar() {
   const [isExpanded, setIsExpanded] = useState(true);
   
   const getCurrentPersona = () => {
-    const params = new URLSearchParams(location.split('?')[1]);
-    return params.get('persona') || 'chat';
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('persona') || 'chat';
+    }
+    return 'chat';
   };
 
   const modules = [

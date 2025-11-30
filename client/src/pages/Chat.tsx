@@ -245,13 +245,28 @@ Return format MUST be exactly:
 };
 
 export default function Chat() {
-  const [searchParams] = useLocation();
-  const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : searchParams);
-  const persona = params.get("persona") || "";
-  const mode = params.get("mode") || "";
-  const convId = params.get("convId") || ""; 
-  const initialMessage = params.get("initialMessage") || "";
+  const [location, navigate] = useLocation();
+  const [persona, setPersona] = useState<string>("");
+  const [mode, setMode] = useState<string>("");
+  const [convId, setConvId] = useState<string>("");
+  const [initialMessage, setInitialMessage] = useState<string>("");
   const { language, user, token } = useAppContext();
+
+  // Update persona and other params when URL changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const newPersona = params.get("persona") || "";
+      const newMode = params.get("mode") || "";
+      const newConvId = params.get("convId") || "";
+      const newInitialMessage = params.get("initialMessage") || "";
+      
+      setPersona(newPersona);
+      setMode(newMode);
+      setConvId(newConvId);
+      setInitialMessage(newInitialMessage);
+    }
+  }, [location]);
 
   const personaInfo = getPersonaInfo(persona || null);
   const { toast } = useToast();
