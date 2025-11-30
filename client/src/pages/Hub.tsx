@@ -192,7 +192,9 @@ export default function Hub() {
                 0 0 30px rgba(255, 0, 110, 0.3),
                 0 0 40px rgba(0, 240, 255, 0.2)
               `,
-              animation: "neon-flicker 3s infinite"
+              animation: "neon-flicker 3s infinite",
+              willChange: "text-shadow",
+              backfaceVisibility: "hidden"
             }}
           >
             {language === "ar" 

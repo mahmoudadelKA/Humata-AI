@@ -139,60 +139,67 @@
   }
 }
 
-/* Mobile optimizations */
+/* Mobile optimizations - Lighter animations with GPU acceleration */
 @media (max-width: 768px) {
-  /* Disable heavy animations on mobile */
-  @keyframes neon-flicker-mobile {
-    0%, 100% {
-      text-shadow: 
-        0 0 8px rgba(0, 240, 255, 0.4),
-        0 0 15px rgba(0, 240, 255, 0.2);
-    }
-    50% {
-      text-shadow: 
-        0 0 12px rgba(0, 240, 255, 0.6),
-        0 0 20px rgba(0, 240, 255, 0.4);
-    }
+  /* Enable GPU acceleration */
+  * {
+    will-change: auto;
+    transform: translateZ(0);
   }
 
-  /* Reduce animation speed on mobile */
+  /* Speed up animations 3x on mobile */
   [style*="animation: neon-flicker"] {
-    animation-duration: 5s !important;
+    animation-duration: 1s !important;
   }
 
   .animated-dua {
-    animation: none !important;
+    animation-duration: 0.3s !important;
+    animation-timing-function: ease-out !important;
   }
 
   .icon-3d {
-    animation: none !important;
+    animation-duration: 1s !important;
+    animation-timing-function: ease-in-out !important;
   }
 
   .animate-pulse {
-    animation: none !important;
+    animation-duration: 1s !important;
   }
 
   .animate-fade-in-up {
-    animation: fadeIn 0.5s ease-out !important;
+    animation-duration: 0.2s !important;
+    animation-timing-function: ease-out !important;
   }
 
   .animate-pulsing-glow {
-    animation: none !important;
+    animation-duration: 0.8s !important;
   }
 
-  /* Reduce planet animations */
+  /* Speed up planet animations */
   [class*="planet-float"] {
-    animation: none !important;
+    animation-duration: 3s !important;
   }
 
-  /* Reduce gradient animations */
+  /* Speed up gradient animations */
   .inspirational-quote {
-    animation: none !important;
+    animation-duration: 2s !important;
   }
 
-  /* Slower transitions on mobile */
+  /* Faster transitions on mobile - 50ms */
   * {
-    transition-duration: 0.15s !important;
+    transition-duration: 0.05s !important;
+  }
+
+  /* Reduce shadow complexity on mobile */
+  .shadow-lg,
+  .shadow-md,
+  .shadow-sm {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+  }
+
+  /* Keep text-shadow but make it lighter on mobile */
+  [style*="text-shadow"] {
+    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.3)) !important;
   }
 }
 
