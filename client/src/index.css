@@ -1083,24 +1083,30 @@ html[lang="ar"] select {
 }
 
 /* ===== SIDEBAR ANIMATION ===== */
-.sidebar-open {
-  transform: translateX(0);
-  opacity: 1;
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-.sidebar-closed {
-  transform: translateX(-100%);
-  opacity: 0;
-  pointer-events: none;
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-/* Sidebar animation for RTL */
-[dir="rtl"] .sidebar-open {
-  transform: translateX(0);
+.animate-slide-in {
+  animation: slideInLeft 0.3s ease-in-out;
 }
 
-[dir="rtl"] .sidebar-closed {
-  transform: translateX(100%);
+[dir="rtl"] .animate-slide-in {
+  animation: slideInRight 0.3s ease-in-out;
 }
 
 /* ===== RESPONSIVE DESIGN - MOBILE & TABLET ===== */
@@ -1155,24 +1161,6 @@ html[lang="ar"] select {
     margin: 0 auto !important;
   }
 
-  /* Sidebar - fixed positioning on mobile */
-  .sidebar-open {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-  }
-
-  .sidebar-closed {
-    transform: translateX(-100%) !important;
-    opacity: 0 !important;
-  }
-
-  [dir="rtl"] .sidebar-open {
-    transform: translateX(0) !important;
-  }
-
-  [dir="rtl"] .sidebar-closed {
-    transform: translateX(100%) !important;
-  }
 
   /* Chat main area - full width */
   .flex-1.overflow-y-auto {

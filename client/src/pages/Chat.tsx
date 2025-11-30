@@ -533,33 +533,45 @@ export default function Chat() {
       </header>
 
       <main className="flex-1 overflow-hidden flex flex-row">
-        {/* Sidebar - Mobile overlay or desktop sidebar */}
-        <div className={`fixed md:relative inset-0 md:inset-auto transition-all duration-300 ease-in-out z-30 md:z-auto ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'} md:block`}>
-          {/* Mobile backdrop */}
-          {isSidebarOpen && (
+        {/* Desktop Sidebar - Always visible */}
+        <div className="hidden md:block">
+          <ConversationsSidebar 
+            onSelectConversation={(id) => setConversationId(id)}
+            currentConversationId={conversationId}
+            onNewConversation={() => {
+              setConversationId("");
+              setMessages([]);
+              setInputValue("");
+              setUploadedFileInfo(null);
+            }}
+          />
+        </div>
+
+        {/* Mobile Sidebar - Overlay */}
+        {isSidebarOpen && (
+          <>
             <div 
-              className="absolute inset-0 bg-black/50 md:hidden"
+              className="fixed inset-0 bg-black/50 md:hidden z-30"
               onClick={() => setIsSidebarOpen(false)}
             />
-          )}
-          {/* Sidebar content */}
-          <div className="relative h-full">
-            <ConversationsSidebar 
-              onSelectConversation={(id) => {
-                setConversationId(id);
-                setIsSidebarOpen(false);
-              }}
-              currentConversationId={conversationId}
-              onNewConversation={() => {
-                setConversationId("");
-                setMessages([]);
-                setInputValue("");
-                setUploadedFileInfo(null);
-                setIsSidebarOpen(false);
-              }}
-            />
-          </div>
-        </div>
+            <div className="fixed left-0 top-0 h-full md:hidden z-40 animate-slide-in">
+              <ConversationsSidebar 
+                onSelectConversation={(id) => {
+                  setConversationId(id);
+                  setIsSidebarOpen(false);
+                }}
+                currentConversationId={conversationId}
+                onNewConversation={() => {
+                  setConversationId("");
+                  setMessages([]);
+                  setInputValue("");
+                  setUploadedFileInfo(null);
+                  setIsSidebarOpen(false);
+                }}
+              />
+            </div>
+          </>
+        )}
         <div className="flex-1 overflow-y-auto flex flex-col px-3 sm:px-4 md:px-6 py-4 sm:py-8 bg-background/5 backdrop-blur-sm">
           <div className="max-w-3xl w-full mx-auto space-y-4 sm:space-y-6 flex-1">
           {messages.length === 0 ? (
