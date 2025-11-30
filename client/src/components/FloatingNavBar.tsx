@@ -1,10 +1,16 @@
 import { useLocation } from "wouter";
-import { Home } from "lucide-react";
+import { Home, Menu, X } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 
-export function FloatingNavBar() {
+interface FloatingNavBarProps {
+  isSidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
+  isOnChatPage?: boolean;
+}
+
+export function FloatingNavBar({ isSidebarOpen = false, onToggleSidebar, isOnChatPage = false }: FloatingNavBarProps) {
   const { language } = useAppContext();
   const [location, navigate] = useLocation();
 
@@ -62,6 +68,29 @@ export function FloatingNavBar() {
       >
         <SiWhatsapp className="w-6 h-6" style={{ color: "#1fC158" }} />
       </a>
+
+      {/* Sidebar Toggle Button - Show on Mobile Chat Page */}
+      {isMobile && isOnChatPage && onToggleSidebar && (
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer"
+          style={{
+            backgroundColor: isSidebarOpen ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.5)",
+            border: isSidebarOpen ? "2px solid rgba(255, 0, 110, 1)" : "1px solid rgba(255, 0, 110, 0.3)",
+            boxShadow: isSidebarOpen ? "0 0 15px rgba(255, 0, 110, 0.8)" : "0 0 10px rgba(255, 0, 110, 0.2)",
+            pointerEvents: "auto"
+          }}
+          title={isSidebarOpen ? "إخفاء القائمة" : "عرض القائمة"}
+          data-testid="button-floating-nav-sidebar-toggle"
+        >
+          {isSidebarOpen ? (
+            <X className="w-6 h-6" style={{ color: "#FF006E" }} />
+          ) : (
+            <Menu className="w-6 h-6" style={{ color: "#FF006E" }} />
+          )}
+        </button>
+      )}
     </div>
   );
 }
