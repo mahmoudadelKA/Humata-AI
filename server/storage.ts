@@ -106,6 +106,21 @@ export class DbStorage implements IStorage {
 
   async createConversation(userId: string, title: string): Promise<Conversation> {
     try {
+      // Ensure user exists (create anonymous user if needed)
+      if (userId === "anonymous") {
+        const existingUser = await this.getUserById("anonymous");
+        if (!existingUser) {
+          console.log("[DbStorage] Creating anonymous user for conversation storage");
+          await this.createUser({
+            id: "anonymous",
+            name: "مستخدم مجهول",
+            email: "anonymous@humata.local",
+            password: "anonymous",
+            createdAt: new Date(),
+          });
+        }
+      }
+
       const conversationId = randomUUID();
       const shareToken = randomUUID();
       const now = new Date();
