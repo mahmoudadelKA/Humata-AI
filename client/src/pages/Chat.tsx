@@ -450,15 +450,17 @@ export default function Chat() {
   if (persona === "ai-images") {
     return (
       <div className="h-screen w-screen bg-background flex flex-col overflow-hidden" dir={language === "ar" ? "rtl" : "ltr"}>
-        <div className="absolute top-4 right-4 z-50">
+        <div className="absolute top-4 left-4 z-50">
           <Link href="/">
             <Button
-              variant="ghost"
-              size="icon"
-              data-testid="button-back"
-              className="bg-card/80 backdrop-blur-sm hover:bg-card"
+              variant="default"
+              size="sm"
+              data-testid="button-back-kiira"
+              className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
+              title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-xs font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
             </Button>
           </Link>
         </div>
@@ -477,14 +479,17 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
-        <div className="px-6 py-4 flex items-center justify-between">
+        <div className="px-6 py-4 flex items-center justify-between gap-4">
           <Link href="/">
             <Button
-              variant="ghost"
-              size="icon"
-              data-testid="button-back"
+              variant="default"
+              size="sm"
+              data-testid="button-back-exit"
+              className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
+              title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-xs font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
             </Button>
           </Link>
           <div className="flex items-center justify-center gap-3 flex-1">
@@ -493,7 +498,7 @@ export default function Chat() {
               {personaInfo.title}
             </h2>
           </div>
-          <div className="w-10" />
+          <div className="w-24" />
         </div>
       </header>
 
