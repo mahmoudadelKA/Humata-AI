@@ -105,48 +105,86 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-          {/* Oval Glassmorphism Info Hub */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="max-w-4xl mx-auto mb-8 sm:mb-12 px-2">
-              <div 
-                className="relative px-8 sm:px-12 py-8 sm:py-10 smooth-transition backdrop-blur-lg"
-                style={{
-                  background: "rgba(255, 255, 255, 0.08)",
-                  borderRadius: "50% / 35%",
-                  border: "1.5px solid rgba(0, 240, 255, 0.3)",
-                  boxShadow: `0 8px 32px rgba(0, 240, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 0 40px rgba(0, 240, 255, 0.1)`,
-                  backdropFilter: "blur(10px)",
-                }}
-                data-testid="info-hub-oval-glass"
-              >
-                <div className="relative z-10 space-y-3">
-                  <h2 className="text-2xl sm:text-3xl font-bold" style={{ 
-                    color: "#00F0FF", 
-                    textShadow: "0 0 15px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.5)"
-                  }}>
-                    {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
-                  </h2>
-                  
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed max-w-3xl mx-auto">
-                    {language === "ar" 
-                      ? "تجربة ذكاء اصطناعي متقدمة مع 9 تخصصات متميزة: دردشة، بحث، استشارات طبية، مساعد علمي، توليد صور، اختبارات تفاعلية وأكثر."
-                      : "Advanced AI with 9 specialized modules: Chat, Research, Medical, Science, Image Generation, Quizzes, and more."
-                    }
-                  </p>
+          {/* Embossed Pharaonic/Ottoman Text-Only Info Hub */}
+          <div className="text-center mb-8 sm:mb-12 space-y-4">
+            <h2 
+              className="text-3xl sm:text-4xl md:text-5xl font-bold"
+              style={{ 
+                fontFamily: "'Lateef', serif",
+                color: "#D4AF37",
+                WebkitTextStroke: "1px rgba(255, 255, 255, 0.3)",
+                textShadow: `
+                  2px 2px 4px rgba(0, 0, 0, 0.8),
+                  4px 4px 8px rgba(0, 0, 0, 0.6),
+                  -1px -1px 2px rgba(255, 255, 255, 0.4),
+                  -2px -2px 4px rgba(255, 215, 0, 0.3),
+                  0 0 20px rgba(212, 175, 55, 0.5),
+                  0 8px 16px rgba(0, 0, 0, 0.7)
+                `,
+                letterSpacing: "0.05em",
+                filter: "drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.9))",
+              }}
+              data-testid="info-hub-pharaonic-text"
+            >
+              {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
+            </h2>
+            
+            <p 
+              className="text-sm sm:text-base leading-relaxed max-w-3xl mx-auto"
+              style={{ 
+                fontFamily: "'Lateef', serif",
+                color: "#E8D4A8",
+                WebkitTextStroke: "0.5px rgba(255, 255, 255, 0.2)",
+                textShadow: `
+                  1px 1px 3px rgba(0, 0, 0, 0.7),
+                  2px 2px 6px rgba(0, 0, 0, 0.5),
+                  -1px -1px 1px rgba(255, 255, 255, 0.3),
+                  0 0 15px rgba(212, 175, 55, 0.3),
+                  0 4px 8px rgba(0, 0, 0, 0.6)
+                `,
+                filter: "drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))",
+              }}
+            >
+              {language === "ar" 
+                ? "نظام ذكاء اصطناعي متقدم يجمع بين 9 تخصصات متميزة: الدردشة الحرة، البحث العميق، الاستشارات الطبية، المساعد العلمي، توليد الصور، الاختبارات التفاعلية والمزيد."
+                : "An advanced AI system combining 9 specialized domains: Free Chat, Deep Research, Medical Consultation, Scientific Assistant, Image Generation, Interactive Quizzes, and more."
+              }
+            </p>
 
-                  <div className="flex flex-wrap justify-center gap-3 pt-2">
-                    <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                      {language === "ar" ? "📁 رؤية الملفات" : "📁 File Vision"}
-                    </span>
-                    <span className="text-xs px-3 py-1 rounded-full bg-magenta-500/20 text-magenta-300 border border-magenta-500/30">
-                      {language === "ar" ? "🤖 ذكاء متخصص" : "🤖 Specialist AI"}
-                    </span>
-                    <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      {language === "ar" ? "⚡ سريع" : "⚡ Fast"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-wrap justify-center gap-4 pt-2">
+              <span 
+                className="text-sm px-4 py-2 rounded-full border border-cyan-500/50"
+                style={{
+                  fontFamily: "'Lateef', serif",
+                  color: "#00F0FF",
+                  backgroundColor: "rgba(0, 240, 255, 0.1)",
+                  textShadow: `0 0 10px rgba(0, 240, 255, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.5)`,
+                }}
+              >
+                {language === "ar" ? "📁 رؤية الملفات" : "📁 File Vision"}
+              </span>
+              <span 
+                className="text-sm px-4 py-2 rounded-full border border-magenta-500/50"
+                style={{
+                  fontFamily: "'Lateef', serif",
+                  color: "#FF006E",
+                  backgroundColor: "rgba(255, 0, 110, 0.1)",
+                  textShadow: `0 0 10px rgba(255, 0, 110, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.5)`,
+                }}
+              >
+                {language === "ar" ? "🤖 ذكاء متخصص" : "🤖 Specialist AI"}
+              </span>
+              <span 
+                className="text-sm px-4 py-2 rounded-full border border-purple-500/50"
+                style={{
+                  fontFamily: "'Lateef', serif",
+                  color: "#B366FF",
+                  backgroundColor: "rgba(179, 102, 255, 0.1)",
+                  textShadow: `0 0 10px rgba(179, 102, 255, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.5)`,
+                }}
+              >
+                {language === "ar" ? "⚡ سريع وفعال" : "⚡ Fast & Efficient"}
+              </span>
             </div>
           </div>
 
