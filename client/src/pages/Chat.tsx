@@ -530,30 +530,7 @@ export default function Chat() {
 
       {/* Chat Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
-      <header className="border-b border-border/30 backdrop-blur-md bg-background/10 sticky top-0 z-40">
-        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-between md:justify-center gap-2 sm:gap-4">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="md:hidden w-8 h-8"
-            data-testid="button-sidebar-toggle"
-            title={language === "ar" ? "المحادثات" : "Conversations"}
-          >
-            {isSidebarOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
-          </Button>
-          <div className="flex items-center justify-center gap-2 sm:gap-3 flex-shrink">
-            <PersonaIconComponent className="w-5 sm:w-6 h-5 sm:h-6 text-primary smooth-transition flex-shrink-0" />
-            <h2 className={`text-sm sm:text-base md:text-lg font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-sm sm:text-base md:text-lg" : ""}`}>
-              {personaInfo.title}
-            </h2>
-          </div>
-        </div>
-      </header>
+      <div className="md:hidden h-3" />
 
       <main className="flex-1 overflow-hidden flex flex-row">
         {/* Desktop Sidebar - Always visible */}
@@ -627,9 +604,16 @@ export default function Chat() {
           </>
         )}
         <div className="flex-1 overflow-y-auto flex flex-col px-3 sm:px-4 md:px-6 py-4 sm:py-8 bg-background/5 backdrop-blur-sm">
-          <div className="max-w-3xl w-full mx-auto space-y-4 sm:space-y-6 flex-1">
+          <div className="max-w-3xl w-full mx-auto space-y-4 sm:space-y-6 flex-1 flex flex-col">
           {messages.length === 0 ? (
-            <div className="h-full" />
+            <div className="h-full flex items-center justify-center">
+              <div className="text-center">
+                <PersonaIconComponent className="w-16 sm:w-20 h-16 sm:h-20 text-primary smooth-transition mx-auto mb-4 animate-pulse" />
+                <h2 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-2xl sm:text-3xl md:text-4xl" : ""}`}>
+                  {personaInfo.title}
+                </h2>
+              </div>
+            </div>
           ) : (
             <>
               {messages.map((msg) => {
