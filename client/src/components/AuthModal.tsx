@@ -58,12 +58,20 @@ export function AuthModal() {
     }
   };
 
-  if (!showAuthModal) return null;
+  if (!showAuthModal) {
+    console.log("[AuthModal] Modal hidden - showAuthModal is false");
+    return null;
+  }
+
+  console.log("[AuthModal] Rendering modal - isLogin:", isLogin);
 
   return (
     <div 
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] animate-in fade-in duration-200"
-      onClick={() => setShowAuthModal(false)}
+      onClick={() => {
+        console.log("[AuthModal] Backdrop clicked, closing modal");
+        setShowAuthModal(false);
+      }}
       data-testid="modal-backdrop"
     >
       <div 

@@ -96,28 +96,36 @@ export function Auth() {
     );
   }
 
+  const handleLoginClick = () => {
+    console.log("[Auth] Login button clicked");
+    setIsLogin(true);
+    setShowAuthModal(true);
+  };
+
+  const handleSignupClick = () => {
+    console.log("[Auth] Signup button clicked");
+    setIsLogin(false);
+    setShowAuthModal(true);
+  };
+
   return (
     <div className={`flex items-center gap-2 ${language === "ar" ? "flex-row-reverse" : ""}`}>
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => {
-          setIsLogin(true);
-          setShowAuthModal(true);
-        }}
-        className={`h-8 px-3 text-sm ${language === "ar" ? "font-bold" : ""}`}
+        onClick={handleLoginClick}
+        className={`h-8 px-3 text-sm cursor-pointer ${language === "ar" ? "font-bold" : ""}`}
         data-testid="button-login"
+        type="button"
       >
         {language === "ar" ? "تسجيل دخول" : "Login"}
       </Button>
       <Button
         size="sm"
-        onClick={() => {
-          setIsLogin(false);
-          setShowAuthModal(true);
-        }}
-        className={`h-8 px-3 text-sm ${language === "ar" ? "font-bold" : ""}`}
+        onClick={handleSignupClick}
+        className={`h-8 px-3 text-sm cursor-pointer ${language === "ar" ? "font-bold" : ""}`}
         data-testid="button-signup"
+        type="button"
       >
         {language === "ar" ? "تسجيل" : "Signup"}
       </Button>
