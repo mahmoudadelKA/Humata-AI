@@ -261,12 +261,21 @@ export default function Chat() {
       const newConvId = params.get("convId") || "";
       const newInitialMessage = params.get("initialMessage") || "";
       
+      // If persona changed, reset conversation and messages for a fresh start
+      if (newPersona !== persona) {
+        setMessages([]); // Clear previous messages
+        setConversationId(""); // Reset conversation
+        setUploadedFileInfo(null); // Clear uploaded file
+        setInputValue(""); // Clear input
+        autoSentRef.current = false; // Reset auto-send flag
+      }
+      
       setPersona(newPersona);
       setMode(newMode);
       setConvId(newConvId);
       setInitialMessage(newInitialMessage);
     }
-  }, [location]);
+  }, [location, persona]);
 
   const personaInfo = getPersonaInfo(persona || null);
   const { toast } = useToast();
