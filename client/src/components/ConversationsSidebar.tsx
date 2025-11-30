@@ -143,34 +143,34 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                   </button>
 
                   {openMenu === conv.id && (
-                    <div className={`absolute ${language === "ar" ? "right-full mr-1" : "left-full ml-1"} top-0 bg-card rounded-md shadow-2xl flex gap-1 p-1 animate-in fade-in-50 duration-200 z-50`}>
+                    <div className={`absolute top-full mt-1 ${language === "ar" ? "right-0" : "left-0"} bg-card rounded-lg shadow-2xl border border-border/30 flex flex-col w-44 py-1 animate-in fade-in-50 duration-200 z-50`}>
                       <button
                         onClick={() => {
                           setRenamingId(conv.id);
                           setNewTitle(conv.title);
                           setOpenMenu(null);
                         }}
-                        className="p-1.5 hover:bg-muted/60 rounded transition-colors text-foreground/70 hover:text-foreground flex-shrink-0"
-                        title={language === "ar" ? "تعديل الاسم" : "Rename"}
+                        className={`px-4 py-2 hover:bg-muted/60 transition-colors text-foreground/80 hover:text-foreground text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
                         data-testid="button-rename"
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
+                        <Edit2 className="w-4 h-4" />
+                        <span>{language === "ar" ? "تعديل الاسم" : "Rename"}</span>
                       </button>
                       <button
                         onClick={() => handleDownload(conv)}
-                        className="p-1.5 hover:bg-muted/60 rounded transition-colors text-foreground/70 hover:text-foreground flex-shrink-0"
-                        title={language === "ar" ? "تصدير" : "Export"}
+                        className={`px-4 py-2 hover:bg-muted/60 transition-colors text-foreground/80 hover:text-foreground text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
                         data-testid="button-download"
                       >
-                        <Download className="w-3.5 h-3.5" />
+                        <Download className="w-4 h-4" />
+                        <span>{language === "ar" ? "تصدير" : "Export"}</span>
                       </button>
                       <button
                         onClick={() => deleteMutation.mutate(conv.id)}
-                        className="p-1.5 hover:bg-red-500/10 rounded transition-colors text-red-500 hover:text-red-600 flex-shrink-0"
-                        title={language === "ar" ? "حذف" : "Delete"}
+                        className={`px-4 py-2 hover:bg-red-500/10 transition-colors text-red-500 hover:text-red-600 text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
                         data-testid="button-delete"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
+                        <span>{language === "ar" ? "حذف" : "Delete"}</span>
                       </button>
                     </div>
                   )}
