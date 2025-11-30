@@ -476,20 +476,45 @@ export async function registerRoutes(
     }
   });
 
-  // Conversations API
+  // Conversations API - both GET and POST to support fetching
   app.get("/api/conversations", async (req: Request, res: Response) => {
     try {
-      // Use guestId from cookies for anonymous users - NEVER use "anonymous"
       let userId = (req as any).userId || (req.cookies.guestId as string);
-      
       if (!userId) {
-        // Generate new guestId if user doesn't have one yet
         userId = randomUUID();
         res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
       }
-      
       const conversations = await storage.getConversations(userId);
       res.json(conversations.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/conversations", async (req: Request, res: Response) => {
+    try {
+      let userId = (req as any).userId;
+      const { guestId, title } = req.body;
+      
+      // If not authenticated, use guestId from request body
+      if (!userId && guestId) {
+        userId = guestId;
+        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+        console.log(`[Routes] Using guestId from request body: ${userId}`);
+      } else if (!userId) {
+        userId = (req.cookies.guestId as string) || randomUUID();
+        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+      }
+      
+      // If title is provided, create new conversation
+      if (title) {
+        const conversation = await storage.createConversation(userId, title);
+        res.json(conversation);
+      } else {
+        // Otherwise, fetch all conversations for this user
+        const conversations = await storage.getConversations(userId);
+        res.json(conversations.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
+      }
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -504,21 +529,6 @@ export async function registerRoutes(
         res.status(404).json({ error: "Conversation not found" });
         return;
       }
-      res.json(conversation);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  app.post("/api/conversations", async (req: Request, res: Response) => {
-    try {
-      let userId = (req as any).userId || (req.cookies.guestId as string);
-      if (!userId) {
-        userId = randomUUID();
-        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
-      }
-      const { title } = req.body;
-      const conversation = await storage.createConversation(userId, title || "New Conversation");
       res.json(conversation);
     } catch (error: any) {
       res.status(500).json({ error: error.message });

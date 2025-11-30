@@ -24,10 +24,14 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
   const [newTitle, setNewTitle] = useState("");
 
   const { data: conversations = [] } = useQuery({
-    queryKey: ["/api/conversations"],
+    queryKey: ["/api/conversations", localStorage.getItem("guestId")],
     queryFn: async () => {
+      const guestId = localStorage.getItem("guestId");
       const response = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({ guestId }),
       });
       if (!response.ok) throw new Error("Failed to fetch conversations");
       return response.json();
