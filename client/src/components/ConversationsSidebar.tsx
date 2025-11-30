@@ -142,7 +142,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                 </button>
 
                 {openMenu === conv.id && (
-                  <div className={`absolute top-0 ${language === "ar" ? "right-full mr-1" : "left-full ml-1"} bg-card border border-border rounded-md shadow-lg z-50 flex gap-1 p-1.5 animate-in fade-in-50 duration-200`}>
+                  <div className={`absolute top-0 ${language === "ar" ? "right-full mr-1" : "left-full ml-1"} bg-card rounded-md shadow-lg z-50 flex gap-1 p-1 animate-in fade-in-50 duration-200`}>
                     <button
                       onClick={() => {
                         setRenamingId(conv.id);
