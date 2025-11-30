@@ -18,6 +18,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "feature.research": "البحث العلمي",
     "feature.images": "توليد الصور",
     "feature.quizzes": "الاختبارات",
+    "feature.ai-images": "صور ذكاء اصطناعي",
   },
   en: {
     "system.active": "System Active",
@@ -36,6 +37,7 @@ export const translations: Record<Language, Record<string, string>> = {
     "feature.research": "Research",
     "feature.images": "Image Generation",
     "feature.quizzes": "Quizzes",
+    "feature.ai-images": "AI Image Generation",
   },
 };
 

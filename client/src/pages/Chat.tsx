@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -100,6 +100,12 @@ Return format MUST be exactly:
 
 إرجع الإجابات والتفسيرات مع كل سؤال.`,
       controlIcons: ["upload-source", "url-input"],
+    },
+    "ai-images": {
+      title: "صور ذكاء اصطناعي",
+      description: "توليد صور بواسطة الذكاء الاصطناعي",
+      systemPrompt: "",
+      controlIcons: [],
     },
   };
   
@@ -302,7 +308,7 @@ export default function Chat() {
   };
 
 
-  if (persona === "images") {
+  if (persona === "ai-images") {
     return (
       <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
         <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
@@ -323,25 +329,13 @@ export default function Chat() {
             </Link>
           </div>
         </header>
-        <main className="flex-1 overflow-hidden w-full flex items-center justify-center">
-          <div className="text-center">
-            <p className={`text-foreground mb-6 ${language === "ar" ? "text-lg" : ""}`}>
-              {language === "ar" ? "انقر على الزر أدناه للوصول إلى محرك البحث عن الصور Kiira AI" : "Click the button below to access Kiira AI image search"}
-            </p>
-            <a 
-              href="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button 
-                size="lg"
-                data-testid="open-kiira-images"
-                className="px-8"
-              >
-                {language === "ar" ? "فتح Kiira AI" : "Open Kiira AI"}
-              </Button>
-            </a>
-          </div>
+        <main className="flex-1 overflow-hidden w-full">
+          <iframe
+            src="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
+            title="Kiira AI - AI Image Generation"
+            className="w-full h-full border-0"
+            data-testid="kiira-ai-iframe"
+          />
         </main>
       </div>
     );
