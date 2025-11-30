@@ -496,7 +496,7 @@ export default function Chat() {
       {/* Chat Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
       <header className="border-b border-border/30 backdrop-blur-md bg-background/10 sticky top-0 z-40">
-        <div className="px-6 py-4 flex items-center justify-center gap-4">
+        <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
           <Link href="/">
             <Button
               size="sm"
@@ -508,9 +508,9 @@ export default function Chat() {
               <span className="text-xs font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
             </Button>
           </Link>
-          <div className="flex items-center justify-center gap-3">
-            <PersonaIconComponent className="w-6 h-6 text-primary smooth-transition" />
-            <h2 className={`text-lg font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-xl" : ""}`}>
+          <div className="flex items-center justify-center gap-2 sm:gap-3 flex-shrink">
+            <PersonaIconComponent className="w-5 sm:w-6 h-5 sm:h-6 text-primary smooth-transition flex-shrink-0" />
+            <h2 className={`text-sm sm:text-base md:text-lg font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-sm sm:text-base md:text-lg" : ""}`}>
               {personaInfo.title}
             </h2>
           </div>
@@ -518,18 +518,20 @@ export default function Chat() {
       </header>
 
       <main className="flex-1 overflow-hidden flex flex-row">
-        <ConversationsSidebar 
-          onSelectConversation={(id) => setConversationId(id)}
-          currentConversationId={conversationId}
-          onNewConversation={() => {
-            setConversationId("");
-            setMessages([]);
-            setInputValue("");
-            setUploadedFileInfo(null);
-          }}
-        />
-        <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8 bg-background/5 backdrop-blur-sm">
-          <div className="max-w-3xl w-full mx-auto space-y-6 flex-1">
+        <div className="hidden md:block">
+          <ConversationsSidebar 
+            onSelectConversation={(id) => setConversationId(id)}
+            currentConversationId={conversationId}
+            onNewConversation={() => {
+              setConversationId("");
+              setMessages([]);
+              setInputValue("");
+              setUploadedFileInfo(null);
+            }}
+          />
+        </div>
+        <div className="flex-1 overflow-y-auto flex flex-col px-3 sm:px-4 md:px-6 py-4 sm:py-8 bg-background/5 backdrop-blur-sm">
+          <div className="max-w-3xl w-full mx-auto space-y-4 sm:space-y-6 flex-1">
           {messages.length === 0 ? (
             <div className="h-full" />
           ) : (
@@ -661,7 +663,7 @@ export default function Chat() {
       </main>
 
       <footer className="border-t border-border/30 bg-background/10 backdrop-blur-md sticky bottom-0">
-        <div className="max-w-3xl w-full mx-auto px-6 py-6 space-y-4">
+        <div className="max-w-3xl w-full mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4">
           {uploadedFileInfo && (
             <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
               <div className="flex items-center gap-2">

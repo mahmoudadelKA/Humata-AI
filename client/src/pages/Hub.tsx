@@ -20,7 +20,7 @@ function FeatureCardComponent({ feature }: any) {
 
   const card = (
     <div
-      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 smooth-hover animate-fade-in-up"
+      className="group cursor-pointer flex flex-col items-center justify-center gap-3 w-40 h-40 sm:w-40 sm:h-40 md:w-48 md:h-48 smooth-hover animate-fade-in-up"
       style={{
         borderRadius: "0",
         border: `2px solid ${colors.border}`,
@@ -29,14 +29,18 @@ function FeatureCardComponent({ feature }: any) {
         animationDelay: feature.delay,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
-        e.currentTarget.style.borderColor = `${colors.border}`;
-        e.currentTarget.style.transform = "scale(1.05)";
+        if (window.innerWidth >= 768) {
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}80, inset 1px 1px 3px ${colors.border}50, inset -1px -1px 3px hsl(0 0% 0% / 0.95), 0 0 16px ${colors.border}60, 0 0 32px ${colors.border}40`;
+          e.currentTarget.style.borderColor = `${colors.border}`;
+          e.currentTarget.style.transform = "scale(1.05)";
+        }
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
-        e.currentTarget.style.borderColor = `${colors.border}`;
-        e.currentTarget.style.transform = "scale(1)";
+        if (window.innerWidth >= 768) {
+          e.currentTarget.style.boxShadow = `inset 0 0 0 1px ${colors.border}40, inset 1px 1px 2px ${colors.border}30, inset -1px -1px 2px hsl(0 0% 0% / 0.9), ${colors.shadow}`;
+          e.currentTarget.style.borderColor = `${colors.border}`;
+          e.currentTarget.style.transform = "scale(1)";
+        }
       }}
       data-testid={`card-feature-${feature.id}`}
     >
@@ -96,23 +100,23 @@ export default function Hub() {
   return (
     <div className="min-h-screen relative" dir={language === "ar" ? "rtl" : "ltr"}>
       <div className="relative z-10 hub-with-animated-bg">
-        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50">
-          <div className="max-w-6xl mx-auto px-6 py-4">
+        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 px-2 sm:px-4 md:px-6">
+          <div className="max-w-6xl mx-auto py-3 sm:py-4">
             <div className="flex items-center justify-center flex-col gap-1">
-              <h1 className={`text-3xl font-bold text-primary ${language === "ar" ? "text-4xl" : ""}`}>
+              <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-primary ${language === "ar" ? "text-2xl sm:text-3xl" : ""}`}>
                 HUMATA AI
               </h1>
-              <p className={`text-xs text-muted-foreground/70 ${language === "ar" ? "text-sm font-bold" : ""}`}>
+              <p className={`text-xs sm:text-sm text-muted-foreground/70 ${language === "ar" ? "text-xs sm:text-sm font-bold" : ""}`}>
                 {t("hub.system", language)}
               </p>
             </div>
           </div>
         </header>
 
-        <main className="max-w-6xl mx-auto px-6 py-8">
-          <div className="text-center mb-12">
-            <div className="max-w-2xl mx-auto mb-12">
-              <div className="flex items-center gap-2 bg-card rounded-full pl-5 pr-2 py-3 border border-primary/40 shadow-lg smooth-hover">
+        <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-3">
+              <div className="flex items-center gap-2 bg-card rounded-full pl-4 sm:pl-5 pr-2 py-2 sm:py-3 border border-primary/40 shadow-lg smooth-hover">
                 <Search className="w-4 h-4 text-muted-foreground/60 smooth-transition" />
                 <Input
                   placeholder={t("hub.chat.input", language)}
@@ -134,14 +138,14 @@ export default function Hub() {
             </div>
           </div>
 
-          <div className="text-center mb-16">
-            <h2 className={`text-3xl font-bold mb-4 ${language === "ar" ? "text-2xl animated-dua" : "text-foreground"}`}>
+          <div className="text-center mb-8 sm:mb-12 md:mb-16 px-3">
+            <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-4 ${language === "ar" ? "text-lg sm:text-xl md:text-2xl animated-dua" : "text-foreground"}`}>
               {t("hub.select", language)}
             </h2>
           </div>
 
           <div 
-            className="flex flex-wrap justify-center items-center gap-8"
+            className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 px-3"
             data-testid="feature-grid"
             style={{ maxWidth: "1000px", margin: "0 auto" }}
           >

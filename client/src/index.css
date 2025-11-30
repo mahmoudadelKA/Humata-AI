@@ -1081,3 +1081,173 @@ html[lang="ar"] select {
     background: hsl(180 100% 50% / 0.5);
   }
 }
+
+/* ===== RESPONSIVE DESIGN - MOBILE & TABLET ===== */
+@media (max-width: 768px) {
+  /* Global typography adjustments */
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.75rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  h3 {
+    font-size: 1rem !important;
+  }
+
+  p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Header responsive */
+  header {
+    padding: 0.75rem 0;
+  }
+
+  /* Main container padding */
+  main {
+    padding: 1rem 0.5rem !important;
+  }
+
+  /* Hub feature grid - vertical stacking */
+  .flex.flex-wrap {
+    flex-wrap: wrap;
+    gap: 0.75rem !important;
+    justify-content: center;
+  }
+
+  /* Feature cards - responsive sizing */
+  .w-40.h-40 {
+    width: 140px !important;
+    height: 140px !important;
+  }
+
+  /* Input and search boxes - full width */
+  .max-w-2xl {
+    width: 95% !important;
+    margin: 0 auto !important;
+  }
+
+  /* Sidebar - hide on mobile */
+  .w-64 {
+    display: none;
+  }
+
+  /* Chat main area - full width */
+  .flex-1.overflow-y-auto {
+    width: 100% !important;
+    padding: 0.5rem !important;
+  }
+
+  /* Message containers */
+  .max-w-3xl {
+    width: 100% !important;
+    padding: 0 0.5rem !important;
+  }
+
+  /* Padding adjustments for small screens */
+  .px-6 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Footer chat input - responsive */
+  footer {
+    padding: 0.75rem 0.5rem !important;
+  }
+
+  /* Input fields */
+  input,
+  textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+
+  /* Button sizing on mobile */
+  button {
+    min-height: 2rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .h-8.w-8 {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+
+  /* Text scaling for Arabic */
+  [dir="rtl"] h1 {
+    font-size: 1.75rem !important;
+  }
+
+  [dir="rtl"] h2 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* ===== EXTRA SMALL SCREENS (< 480px) ===== */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.1rem !important;
+  }
+
+  p {
+    font-size: 0.85rem !important;
+  }
+
+  /* Feature cards - even smaller */
+  .w-40.h-40 {
+    width: 110px !important;
+    height: 110px !important;
+  }
+
+  /* Icon sizing */
+  .w-14.h-14 {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+
+  /* Reduce gaps */
+  .gap-8 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-6 {
+    gap: 0.75rem !important;
+  }
+
+  /* Very aggressive padding reduction */
+  main {
+    padding: 0.5rem !important;
+  }
+
+  .px-6 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  /* Message text sizing */
+  .text-sm {
+    font-size: 0.8rem !important;
+  }
+
+  .text-xs {
+    font-size: 0.7rem !important;
+  }
+
+  /* Hide long text on very small screens */
+  .text-center p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
