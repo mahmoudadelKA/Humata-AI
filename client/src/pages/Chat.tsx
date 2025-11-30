@@ -477,22 +477,8 @@ export default function Chat() {
   
   return (
     <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
-      <div className={`fixed ${language === "ar" ? "right-6" : "left-6"} top-6 z-50`}>
-        <Link href="/">
-          <Button
-            size="lg"
-            data-testid="button-back-floating"
-            className="gap-2 bg-primary/90 hover:bg-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-full px-6 border-2 border-primary/50"
-            title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
-          </Button>
-        </Link>
-      </div>
-
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
-        <div className="px-6 py-4 flex items-center justify-between">
+        <div className="px-6 py-4 flex items-center justify-center gap-4">
           <Link href="/">
             <Button
               size="sm"
@@ -504,13 +490,12 @@ export default function Chat() {
               <span className="text-xs font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
             </Button>
           </Link>
-          <div className="flex items-center justify-center gap-3 flex-1">
+          <div className="flex items-center justify-center gap-3">
             <PersonaIconComponent className="w-6 h-6 text-primary" />
             <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
               {personaInfo.title}
             </h2>
           </div>
-          <div className="w-20" />
         </div>
       </header>
 
