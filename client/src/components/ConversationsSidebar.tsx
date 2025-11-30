@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { MoreVertical, Download, Trash2, Edit2 } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 
 interface Conversation {
   id: string;
@@ -16,6 +19,9 @@ interface ConversationsSidebarProps {
 
 export function ConversationsSidebar({ onSelectConversation, currentConversationId, onNewConversation }: ConversationsSidebarProps) {
   const { language, user } = useAppContext();
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [newTitle, setNewTitle] = useState("");
 
   const { data: conversations = [] } = useQuery({
     queryKey: ["/api/conversations"],
@@ -28,6 +34,50 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
     },
     enabled: true,
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/conversations/${id}`, { 
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to delete");
+      return response.json();
+    },
+    onSuccess: () => {
+      setOpenMenu(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+    },
+  });
+
+  const renameMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/conversations/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: newTitle }),
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to rename");
+      return response.json();
+    },
+    onSuccess: () => {
+      setRenamingId(null);
+      setNewTitle("");
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+    },
+  });
+
+  const handleDownload = (conv: Conversation) => {
+    const data = JSON.stringify({ title: conv.title, timestamp: new Date() }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${conv.title}-${Date.now()}.json`;
+    link.click();
+    setOpenMenu(null);
+  };
 
   if (!user) return null;
 
@@ -49,16 +99,83 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
 
       <div className="space-y-1 p-2 flex-1 overflow-y-auto">
         {conversations.map((conv: Conversation) => (
-          <button
-            key={conv.id}
-            onClick={() => onSelectConversation(conv.id)}
-            className={`w-full flex items-center justify-center px-3 py-2 rounded-lg text-sm hover:bg-muted/40 transition-colors text-foreground/80 hover:text-foreground ${
-              currentConversationId === conv.id ? "bg-muted text-foreground" : ""
-            }`}
-            data-testid={`button-conversation-${conv.id}`}
-          >
-            <span className="truncate text-center">{conv.title}</span>
-          </button>
+          <div key={conv.id} className="relative group">
+            {renamingId === conv.id ? (
+              <div className="absolute inset-0 bg-card border border-border rounded-lg flex items-center px-2 gap-2 z-20">
+                <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="flex-1 bg-muted border border-border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  autoFocus
+                />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => renameMutation.mutate(conv.id)}
+                  className="h-6 px-2 text-xs"
+                  data-testid="button-confirm-rename"
+                >
+                  ✓
+                </Button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => onSelectConversation(conv.id)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-muted/40 transition-colors text-foreground/80 hover:text-foreground ${
+                    currentConversationId === conv.id ? "bg-muted text-foreground" : ""
+                  }`}
+                  data-testid={`button-conversation-${conv.id}`}
+                >
+                  <span className="truncate flex-1">{conv.title}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenu(openMenu === conv.id ? null : conv.id);
+                    }}
+                    className="p-1 hover:bg-muted/60 rounded opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                    data-testid={`button-menu-${conv.id}`}
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </button>
+
+                {openMenu === conv.id && (
+                  <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 w-40">
+                    <button
+                      onClick={() => {
+                        setRenamingId(conv.id);
+                        setNewTitle(conv.title);
+                        setOpenMenu(null);
+                      }}
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center gap-2 text-foreground/80 hover:text-foreground border-b border-border/30 ${language === "ar" ? "flex-row-reverse" : ""}`}
+                      data-testid="button-rename"
+                    >
+                      <Edit2 className="w-4 h-4 flex-shrink-0" />
+                      <span>{language === "ar" ? "تعديل الاسم" : "Rename"}</span>
+                    </button>
+                    <button
+                      onClick={() => handleDownload(conv)}
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center gap-2 text-foreground/80 hover:text-foreground border-b border-border/30 ${language === "ar" ? "flex-row-reverse" : ""}`}
+                      data-testid="button-download"
+                    >
+                      <Download className="w-4 h-4 flex-shrink-0" />
+                      <span>{language === "ar" ? "تصدير" : "Export"}</span>
+                    </button>
+                    <button
+                      onClick={() => deleteMutation.mutate(conv.id)}
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-red-500/10 flex items-center gap-2 text-red-500 hover:text-red-600 ${language === "ar" ? "flex-row-reverse" : ""}`}
+                      data-testid="button-delete"
+                    >
+                      <Trash2 className="w-4 h-4 flex-shrink-0" />
+                      <span>{language === "ar" ? "حذف" : "Delete"}</span>
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         ))}
       </div>
 
