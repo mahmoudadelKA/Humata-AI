@@ -166,10 +166,10 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         ))}
       </div>
 
-      <div className="border-t border-border p-3 mt-auto">
+      <div className="border-t border-border p-3 mt-auto flex justify-start">
         <Link href="/">
           <Button
-            className="w-full gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
+            className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
             data-testid="button-sidebar-home"
             title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
           >
