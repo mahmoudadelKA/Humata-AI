@@ -526,7 +526,11 @@ export default function Chat() {
       </div>
 
       {/* Floating Navigation Bar */}
-      <FloatingNavBar />
+      <FloatingNavBar 
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        isOnChatPage={true}
+      />
 
       {/* Chat Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
