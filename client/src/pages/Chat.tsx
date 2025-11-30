@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark, MessageSquare, CheckCircle, Image } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -28,6 +28,22 @@ interface UploadedFileInfo {
   fileName: string;
   mimeType: string;
 }
+
+const getPersonaIcon = (persona: string | null) => {
+  const icons: Record<string, any> = {
+    "": MessageSquare,
+    "chat": MessageSquare,
+    "ask": HelpCircle,
+    "research": BookOpen,
+    "google-images": Image,
+    "quizzes": CheckCircle,
+    "ai-images": Sparkles,
+    "doctor": Stethoscope,
+    "scientific-assistant": Users,
+    "khedive": Landmark,
+  };
+  return icons[persona || ""] || MessageSquare;
+};
 
 const getPersonaInfo = (persona: string | null) => {
   const personas: Record<string, any> = {
@@ -456,16 +472,12 @@ export default function Chat() {
     );
   }
 
+  const PersonaIconComponent = getPersonaIcon(persona);
+  
   return (
     <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
       <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
         <div className="px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
-              {personaInfo.title}
-            </h2>
-            {conversationId && <span className="text-xs text-muted-foreground">{conversationId.substring(0, 8)}</span>}
-          </div>
           <Link href="/">
             <Button
               variant="ghost"
@@ -475,6 +487,13 @@ export default function Chat() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
+          <div className="flex items-center justify-center gap-3 flex-1">
+            <PersonaIconComponent className="w-6 h-6 text-primary" />
+            <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
+              {personaInfo.title}
+            </h2>
+          </div>
+          <div className="w-10" />
         </div>
       </header>
 
