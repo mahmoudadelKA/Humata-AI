@@ -628,124 +628,102 @@ export default function Chat() {
             )}
 
             {personaInfo.controlIcons?.includes("upload-source") && (
-              <div className="relative">
+              <>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setShowQuizzesMenu(!showQuizzesMenu)}
-                  disabled={sendMessageMutation.isPending}
-                  data-testid="button-quizzes-menu"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadFileMutation.isPending}
+                  data-testid="button-upload-source"
                   className="h-8 w-8"
-                  title={language === "ar" ? "خيارات الاختبار" : "Quiz Options"}
+                  title={language === "ar" ? "رفع مصدر" : "Upload Source"}
                 >
-                  <GripVertical className="w-4 h-4" />
+                  <Upload className="w-4 h-4" />
                 </Button>
-                {showQuizzesMenu && (
-                  <div className="absolute bottom-10 left-0 bg-card border border-border rounded-lg shadow-lg z-50 flex flex-col gap-1 p-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setShowQuizzesMenu(false);
-                        fileInputRef.current?.click();
-                      }}
-                      disabled={uploadFileMutation.isPending}
-                      data-testid="button-upload-source"
-                      className="w-full justify-start text-xs"
-                    >
-                      <Upload className="w-3 h-3 ml-2" />
-                      {language === "ar" ? "رفع مصدر" : "Upload Source"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setShowQuizzesMenu(false);
-                        setShowUrlModal(true);
-                      }}
-                      disabled={sendMessageMutation.isPending}
-                      data-testid="button-url-input"
-                      className="w-full justify-start text-xs"
-                    >
-                      <Link2 className="w-3 h-3 ml-2" />
-                      {language === "ar" ? "رابط URL" : "URL Link"}
-                    </Button>
-                    <div className="border-t border-border my-1" />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setShowQuizzesMenu(false);
-                        setShowQuizzesSettings(!showQuizzesSettings);
-                      }}
-                      data-testid="button-quiz-settings"
-                      className="w-full justify-start text-xs"
-                    >
-                      <Settings className="w-3 h-3 ml-2" />
-                      {language === "ar" ? "الإعدادات" : "Settings"}
-                    </Button>
-                  </div>
-                )}
-                
-                {showQuizzesSettings && (
-                  <div className="absolute bottom-10 left-0 bg-card border border-border rounded-lg shadow-lg z-50 p-3 w-72">
-                    <h4 className="font-bold mb-3 text-sm">{language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}</h4>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "عدد الأسئلة" : "Number of Questions"}</label>
-                        <input
-                          type="number"
-                          min="1"
-                          max="50"
-                          value={quizNumQuestions}
-                          onChange={(e) => setQuizNumQuestions(e.target.value)}
-                          data-testid="input-quiz-count"
-                          className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
-                        />
-                      </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowUrlModal(true)}
+                  disabled={sendMessageMutation.isPending}
+                  data-testid="button-url-input"
+                  className="h-8 w-8"
+                  title={language === "ar" ? "رابط URL" : "URL Link"}
+                >
+                  <Link2 className="w-4 h-4" />
+                </Button>
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowQuizzesSettings(!showQuizzesSettings)}
+                    disabled={sendMessageMutation.isPending}
+                    data-testid="button-quiz-settings"
+                    className="h-8 w-8"
+                    title={language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}
+                  >
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                  
+                  {showQuizzesSettings && (
+                    <div className="absolute bottom-10 right-0 bg-card border border-border rounded-lg shadow-lg z-50 p-3 w-72">
+                      <h4 className="font-bold mb-3 text-sm">{language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}</h4>
                       
-                      <div>
-                        <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "نوع الأسئلة" : "Question Type"}</label>
-                        <select
-                          value={quizQuestionType}
-                          onChange={(e) => setQuizQuestionType(e.target.value)}
-                          data-testid="select-question-type"
-                          className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "عدد الأسئلة" : "Number of Questions"}</label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="50"
+                            value={quizNumQuestions}
+                            onChange={(e) => setQuizNumQuestions(e.target.value)}
+                            data-testid="input-quiz-count"
+                            className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "نوع الأسئلة" : "Question Type"}</label>
+                          <select
+                            value={quizQuestionType}
+                            onChange={(e) => setQuizQuestionType(e.target.value)}
+                            data-testid="select-question-type"
+                            className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                          >
+                            <option value="multiple-choice">{language === "ar" ? "اختيار من متعدد" : "Multiple Choice"}</option>
+                            <option value="true-false">{language === "ar" ? "صح/خطأ" : "True/False"}</option>
+                            <option value="mixed">{language === "ar" ? "مختلط" : "Mixed"}</option>
+                          </select>
+                        </div>
+                        
+                        <div>
+                          <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "مستوى الصعوبة" : "Difficulty Level"}</label>
+                          <select
+                            value={quizDifficulty}
+                            onChange={(e) => setQuizDifficulty(e.target.value)}
+                            data-testid="select-difficulty"
+                            className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                          >
+                            <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
+                            <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
+                            <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
+                          </select>
+                        </div>
+                        
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowQuizzesSettings(false)}
+                          data-testid="button-close-settings"
+                          className="w-full mt-2"
                         >
-                          <option value="multiple-choice">{language === "ar" ? "اختيار من متعدد" : "Multiple Choice"}</option>
-                          <option value="true-false">{language === "ar" ? "صح/خطأ" : "True/False"}</option>
-                          <option value="mixed">{language === "ar" ? "مختلط" : "Mixed"}</option>
-                        </select>
+                          {language === "ar" ? "تم" : "Done"}
+                        </Button>
                       </div>
-                      
-                      <div>
-                        <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "مستوى الصعوبة" : "Difficulty Level"}</label>
-                        <select
-                          value={quizDifficulty}
-                          onChange={(e) => setQuizDifficulty(e.target.value)}
-                          data-testid="select-difficulty"
-                          className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
-                        >
-                          <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
-                          <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
-                          <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
-                        </select>
-                      </div>
-                      
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowQuizzesSettings(false)}
-                        data-testid="button-close-settings"
-                        className="w-full mt-2"
-                      >
-                        {language === "ar" ? "تم" : "Done"}
-                      </Button>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </>
             )}
 
             {persona === "chat" && (
