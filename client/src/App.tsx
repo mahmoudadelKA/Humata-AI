@@ -14,11 +14,15 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const [location] = useLocation();
   
+  // Use full URL path + query parameters for the key
+  // This ensures Chat component remounts when query params change
+  const chatKey = `${location}${typeof window !== "undefined" ? window.location.search : ""}`;
+  
   return (
     <Switch>
       <Route path="/" component={Hub} />
       <Route path="/chat">
-        {() => <Chat key={location} />}
+        {() => <Chat key={chatKey} />}
       </Route>
       <Route component={NotFound} />
     </Switch>
