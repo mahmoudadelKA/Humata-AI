@@ -105,44 +105,115 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
-          {/* Animated Cloud-Glass Info Hub */}
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="max-w-xl mx-auto mb-6 sm:mb-8 px-3">
+          {/* Ottoman Firman (Imperial Decree) Info Hub */}
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="max-w-4xl mx-auto mb-8 sm:mb-12 px-2">
               <div 
-                className="animated-cloud-border relative px-4 sm:px-6 py-5 sm:py-6 backdrop-blur-lg smooth-transition"
+                className="relative px-8 sm:px-12 py-8 sm:py-10 smooth-transition"
                 style={{
-                  background: "rgba(255, 255, 255, 0.08)",
-                  borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
-                  border: "2px solid transparent",
-                  backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)), 
-                                     conic-gradient(from 0deg, hsl(180, 100%, 50%), hsl(328, 100%, 50%), hsl(270, 100%, 60%), hsl(180, 100%, 50%))`,
-                  backgroundOrigin: "border-box",
-                  backgroundClip: "padding-box, border-box",
-                  boxShadow: `0 8px 32px rgba(0, 240, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+                  background: "linear-gradient(135deg, #D4A574 0%, #C19A6B 50%, #B8956A 100%)",
+                  borderRadius: "8px",
+                  border: "3px solid #8B7355",
+                  boxShadow: `
+                    inset -2px -2px 5px rgba(0, 0, 0, 0.3),
+                    inset 2px 2px 5px rgba(255, 255, 255, 0.2),
+                    0 0 0 8px #8B7355,
+                    0 0 0 10px #D4A574,
+                    0 10px 30px rgba(0, 0, 0, 0.4)
+                  `,
+                  position: "relative",
                 }}
-                data-testid="info-hub-cloud-glass"
+                data-testid="info-hub-ottoman-firman"
               >
+                {/* Ornate corner decorations */}
+                <div style={{
+                  position: "absolute",
+                  top: "-8px",
+                  left: "-8px",
+                  width: "20px",
+                  height: "20px",
+                  borderTop: "3px solid #8B7355",
+                  borderLeft: "3px solid #8B7355",
+                  borderRadius: "2px"
+                }} />
+                <div style={{
+                  position: "absolute",
+                  top: "-8px",
+                  right: "-8px",
+                  width: "20px",
+                  height: "20px",
+                  borderTop: "3px solid #8B7355",
+                  borderRight: "3px solid #8B7355",
+                  borderRadius: "2px"
+                }} />
+                <div style={{
+                  position: "absolute",
+                  bottom: "-8px",
+                  left: "-8px",
+                  width: "20px",
+                  height: "20px",
+                  borderBottom: "3px solid #8B7355",
+                  borderLeft: "3px solid #8B7355",
+                  borderRadius: "2px"
+                }} />
+                <div style={{
+                  position: "absolute",
+                  bottom: "-8px",
+                  right: "-8px",
+                  width: "20px",
+                  height: "20px",
+                  borderBottom: "3px solid #8B7355",
+                  borderRight: "3px solid #8B7355",
+                  borderRadius: "2px"
+                }} />
+
                 <div className="relative z-10 space-y-3">
-                  <h2 className="text-xl sm:text-2xl font-bold" style={{ color: "#00F0FF", textShadow: "0 0 15px rgba(0, 240, 255, 0.8), 0 0 25px rgba(0, 240, 255, 0.5)" }}>
-                    {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
+                  <h2 className="text-2xl sm:text-3xl font-bold" style={{ 
+                    fontFamily: "'Georgia', serif",
+                    color: "#2C1810",
+                    letterSpacing: "0.05em",
+                    textShadow: "1px 1px 2px rgba(255, 255, 255, 0.3)"
+                  }}>
+                    {language === "ar" ? "أهلاً وسهلاً في HUMATA AI" : "Welcome to HUMATA AI"}
                   </h2>
                   
-                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed max-w-lg mx-auto">
+                  <p className="text-sm sm:text-base leading-relaxed max-w-3xl mx-auto" style={{ 
+                    fontFamily: "'Georgia', serif",
+                    color: "#3D2817",
+                  }}>
                     {language === "ar" 
-                      ? "تجربة ذكاء اصطناعي متقدمة مع 9 تخصصات متميزة: دردشة، بحث، استشارات طبية، مساعد علمي، توليد صور وأكثر."
-                      : "Advanced AI with 9 specialized modules: Chat, Research, Medical, Science, Image Generation, and more."
+                      ? "نظام ذكاء اصطناعي متقدم يجمع بين 9 تخصصات متميزة: الدردشة الحرة، البحث العميق، الاستشارات الطبية، المساعد العلمي، توليد الصور، الاختبارات التفاعلية، والمزيد. تجربة شاملة مع رؤية الملفات وتحليل متخصص."
+                      : "An advanced AI system combining 9 specialized domains: Free Chat, Deep Research, Medical Consultation, Scientific Assistant, Image Generation, Interactive Quizzes, and more. A comprehensive experience with file vision and expert analysis."
                     }
                   </p>
 
-                  <div className="flex flex-wrap justify-center gap-2 pt-1">
-                    <span className="text-xs px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  <div className="flex flex-wrap justify-center gap-3 pt-2">
+                    <span className="text-xs px-3 py-1 rounded-md" style={{
+                      background: "#DEB887",
+                      color: "#2C1810",
+                      border: "1px solid #8B7355",
+                      fontFamily: "'Georgia', serif",
+                      fontWeight: "bold"
+                    }}>
                       {language === "ar" ? "📁 رؤية الملفات" : "📁 File Vision"}
                     </span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-magenta-500/20 text-magenta-300 border border-magenta-500/30">
+                    <span className="text-xs px-3 py-1 rounded-md" style={{
+                      background: "#DEB887",
+                      color: "#2C1810",
+                      border: "1px solid #8B7355",
+                      fontFamily: "'Georgia', serif",
+                      fontWeight: "bold"
+                    }}>
                       {language === "ar" ? "🤖 ذكاء متخصص" : "🤖 Specialist AI"}
                     </span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      {language === "ar" ? "⚡ سريع" : "⚡ Fast"}
+                    <span className="text-xs px-3 py-1 rounded-md" style={{
+                      background: "#DEB887",
+                      color: "#2C1810",
+                      border: "1px solid #8B7355",
+                      fontFamily: "'Georgia', serif",
+                      fontWeight: "bold"
+                    }}>
+                      {language === "ar" ? "⚡ سريع وفعال" : "⚡ Fast & Efficient"}
                     </span>
                   </div>
                 </div>
