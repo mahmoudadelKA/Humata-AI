@@ -266,10 +266,10 @@ export async function registerRoutes(
       let aiResponse: string;
 
       // Check if user is asking "Who are you?" - respond directly without API call
-      const whoAreYouPattern = /^[\s]*(من أنت|who are you|ما اسمك|what is your name|what's your name|من انت|ما هويتك)[\s]*[\?\.]?[\s]*$/i;
+      const whoAreYouPattern = /^[\s]*(من أنت|who are you|ما اسمك|what is your name|what's your name|من انت|ما هويتك|اخبرني عنك|من مبرمجك|who programmed you|who created you)[\s]*[\?\.]?[\s]*$/i;
       if (whoAreYouPattern.test(message.trim())) {
         console.log(`[Routes] Detected "Who are you?" question - returning privacy-respecting response`);
-        aiResponse = "أنا ذكاء اصطناعي تم تطويري من قبل محمود عادل. أنا هنا لمساعدتك في المحادثات والإجابة على أسئلتك بسرية وخصوصية تامة.";
+        aiResponse = "تمت برمجتي من قبل محمود عادل وأنا نموذج لغوي كبير تم تدريبي بواسطة جوجل.";
       }
       
       // Handle image search with Wikimedia Commons API (free, no API key required)
