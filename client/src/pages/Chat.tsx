@@ -496,6 +496,9 @@ export default function Chat() {
         <div className="floating-orb orb-3" style={{ bottom: '15%', left: '5%' }} />
       </div>
 
+      {/* Floating Navigation Bar */}
+      <FloatingNavBar />
+
       {/* Chat Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
       <header className="border-b border-border/30 backdrop-blur-md bg-background/10 sticky top-0 z-40">
@@ -514,17 +517,6 @@ export default function Chat() {
               <Menu className="w-5 h-5" />
             )}
           </Button>
-          <Link href="/">
-            <Button
-              size="sm"
-              data-testid="button-header-home"
-              className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50"
-              title={language === "ar" ? "العودة للرئيسية" : "Back to Home"}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-xs font-semibold">{language === "ar" ? "رئيسي" : "Home"}</span>
-            </Button>
-          </Link>
           <div className="flex items-center justify-center gap-2 sm:gap-3 flex-shrink">
             <PersonaIconComponent className="w-5 sm:w-6 h-5 sm:h-6 text-primary smooth-transition flex-shrink-0" />
             <h2 className={`text-sm sm:text-base md:text-lg font-bold text-foreground animate-pulsing-glow ${language === "ar" ? "text-sm sm:text-base md:text-lg" : ""}`}>
@@ -548,9 +540,7 @@ export default function Chat() {
                 setUploadedFileInfo(null);
               }}
             />
-          ) : (
-            <ModuleNavigation />
-          )}
+          ) : null}
         </div>
 
         {/* Mobile Sidebar - Overlay */}
@@ -603,9 +593,7 @@ export default function Chat() {
                     setIsSidebarOpen(false);
                   }}
                 />
-              ) : (
-                <ModuleNavigation onNavigate={() => setIsSidebarOpen(false)} />
-              )}
+              ) : null}
             </div>
           </>
         )}
