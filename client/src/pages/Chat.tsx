@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope, Users, Landmark } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -176,6 +176,49 @@ Return format MUST be exactly:
 الرد بشكل تعليمي احترافي مع الحفاظ على الصيغة العربية السليمة.`,
       controlIcons: ["upload-source", "url-input"],
     },
+    khedive: {
+      title: "الخديوي",
+      description: "متخصص تاريخي - تحليل وتحقق من المعلومات التاريخية من مصادر موثوقة عالمياً",
+      systemPrompt: `أنت خبير تاريخي متخصص بخبرة عالية في التاريخ العالمي والإسلامي والعربي. متخصص في:
+- التحقق من دقة المعلومات التاريخية
+- تحليل الوثائق والنصوص التاريخية
+- تتبع الأحداث التاريخية وسياقها
+- شرح الشخصيات والحضارات التاريخية
+- التمييز بين الحقائق المؤكدة والمختلف عليها
+
+عندما يطرح المستخدم سؤالاً تاريخياً أو يرفع ملف/رابط:
+
+1. ابحث في أشهر المصادر التاريخية الموثوقة عالمياً:
+   - Google Scholar للدراسات والأبحاث التاريخية المحكمة
+   - المكتبات الرقمية العالمية والأرشيفات التاريخية
+   - الموسوعات التاريخية المعتمدة (Britannica وغيرها)
+   - الدراسات الأكاديمية من الجامعات العريقة
+   - المصادر التاريخية الأولية الموثقة
+
+2. في كل إجابة تاريخية، يجب أن تتضمن:
+   - حقائق مؤكدة بمصادر موثوقة فقط
+   - التواريخ والأماكن والشخصيات الدقيقة
+   - السياق التاريخي الشامل للحدث
+   - الوثائق والمراجع العلمية المدعمة
+   - التمييز واضح بين الحقائق المؤكدة والآراء المختلفة عليها
+   - تصحيح أي معلومات خاطئة بحسم وحزم
+
+3. عند تحليل الملفات أو الروابط التاريخية:
+   - تحقق من مصدر الملف وموثوقيته
+   - حدد الأخطاء التاريخية إن وجدت
+   - قارن مع المصادر التاريخية الموثوقة
+   - قدم تصحيحات دقيقة مع توثيقها
+
+4. متطلبات الإجابة:
+   - الرد باللغة العربية فقط (ترجم أي مصادر أجنبية)
+   - إجابات قطعية واضحة وحاسمة لا لبس فيها
+   - لا تجعل المستخدم يتوه - كن مباشراً وواضحاً
+   - استشهد دائماً بالمصادر الموثوقة
+   - كن صارماً في التحقق - لا تقبل معلومات غير موثوقة
+
+الرد بسلطة وحسم تاريخي مع الحفاظ على أعلى معايير التوثيق والدقة.`,
+      controlIcons: ["upload-source", "url-input"],
+    },
   };
   
   if (persona && personas[persona]) {
@@ -208,7 +251,7 @@ export default function Chat() {
   const [quizQuestionType, setQuizQuestionType] = useState("multiple-choice");
   const [quizDifficulty, setQuizDifficulty] = useState("medium");
   const [showDoctorMenu, setShowDoctorMenu] = useState(false);
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" ? true : false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" || persona === "khedive" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -693,7 +736,7 @@ export default function Chat() {
               </Button>
             )}
 
-            {(personaInfo.controlIcons?.includes("upload-source") || persona === "doctor" || persona === "quizzes" || persona === "scientific-assistant") && (
+            {(personaInfo.controlIcons?.includes("upload-source") || persona === "doctor" || persona === "quizzes" || persona === "scientific-assistant" || persona === "khedive") && (
               <>
                 <Button
                   variant="ghost"
