@@ -156,8 +156,8 @@ export default function Hub() {
 
         </main>
 
-        {/* Center-Bottom Controls - Hub Only */}
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40">
+        {/* Left-Bottom Controls - Hub Only */}
+        <div className="fixed bottom-8 left-8 z-40">
           <div className={`flex items-center gap-3 bg-muted/40 border border-border/50 rounded-full px-5 py-3 backdrop-blur-md hover:bg-muted/60 transition-all ${language === "ar" ? "flex-row-reverse" : ""}`}>
             {/* Theme Toggle */}
             <Button
