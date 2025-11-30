@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { MessageSquare, HelpCircle, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, ChevronUp, ChevronDown } from "lucide-react";
+import { Home, MessageSquare, HelpCircle, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, ChevronUp, ChevronDown } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 
@@ -8,16 +8,12 @@ export function FloatingNavBar() {
   const { language } = useAppContext();
   const [location, navigate] = useLocation();
   const [isExpanded, setIsExpanded] = useState(true);
-  
-  const getCurrentPersona = () => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('persona') || 'chat';
-    }
-    return 'chat';
-  };
 
   const modules = [
+    // HOME ICON - FIRST
+    { id: "home", titleKey: "nav.home", icon: Home, route: "/", color: "text-cyan-400" },
+    
+    // ALL PERSONA ICONS
     { id: "chat", titleKey: "feature.chat", icon: MessageSquare, route: "/chat", color: "text-cyan-400" },
     { id: "ask", titleKey: "feature.ask", icon: HelpCircle, route: "/chat?persona=ask", color: "text-magenta-400" },
     { id: "research", titleKey: "feature.research", icon: BookOpen, route: "/chat?persona=research", color: "text-green-400" },
@@ -29,20 +25,11 @@ export function FloatingNavBar() {
     { id: "khedive", titleKey: "feature.khedive", icon: Landmark, route: "/chat?persona=khedive", color: "text-yellow-400" },
   ];
 
-  const currentPersona = getCurrentPersona();
-
-  const handleNavigate = (e: React.MouseEvent<HTMLButtonElement>, route: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Navigating to:", route);
-    // Use wouter's navigate for smooth client-side navigation
+  const handleNavigate = (route: string) => {
     navigate(route);
   };
 
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Toggling navbar");
+  const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
@@ -59,8 +46,7 @@ export function FloatingNavBar() {
       {/* Toggle Button */}
       <button
         type="button"
-        onClick={handleToggle}
-        onTouchEnd={handleToggle}
+        onClick={toggleExpand}
         className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer"
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -78,33 +64,32 @@ export function FloatingNavBar() {
         )}
       </button>
 
-      {/* Icon Buttons */}
+      {/* Navigation Icons */}
       {isExpanded && (
         <div className="flex flex-col gap-2 animate-in fade-in-50 duration-200">
           {modules.map((module) => {
             const IconComponent = module.icon;
-            const isActive = currentPersona === module.id || (module.id === 'chat' && currentPersona === '');
+            const isActive = location === module.route || 
+              (location === "/chat" && module.id === "chat") ||
+              (location.includes("persona=") && location.includes(module.route.split("=")[1]));
             
             return (
               <button
                 key={module.id}
                 type="button"
-                onClick={(e) => handleNavigate(e, module.route)}
-                onTouchEnd={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log("Navigating to:", module.route);
-                  navigate(module.route);
-                }}
+                onClick={() => handleNavigate(module.route)}
                 title={t(module.titleKey, language)}
-                className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer ${
-                  isActive ? "shadow-lg" : ""
-                }`}
+                className={`p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer`}
                 style={{
                   backgroundColor: isActive ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.5)",
                   border: isActive ? "2px solid" : "1px solid rgba(0, 240, 255, 0.2)",
                   borderColor: isActive ? "currentColor" : undefined,
-                  boxShadow: isActive ? `0 0 15px ${module.color === "text-cyan-400" ? "rgb(0, 240, 255)" : module.color === "text-magenta-400" ? "rgb(255, 0, 110)" : module.color === "text-green-400" ? "rgb(0, 240, 150)" : "rgb(255, 200, 0)"}` : "0 0 10px rgba(0, 240, 255, 0.2)",
+                  boxShadow: isActive ? `0 0 15px ${
+                    module.color === "text-cyan-400" ? "rgb(0, 240, 255)" :
+                    module.color === "text-magenta-400" ? "rgb(255, 0, 110)" :
+                    module.color === "text-green-400" ? "rgb(0, 240, 150)" :
+                    "rgb(255, 200, 0)"
+                  }` : "0 0 10px rgba(0, 240, 255, 0.2)",
                   pointerEvents: "auto"
                 }}
                 data-testid={`button-floating-nav-${module.id}`}
