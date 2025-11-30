@@ -253,9 +253,16 @@ export async function registerRoutes(
       }
 
       let aiResponse: string;
+
+      // Check if user is asking "Who are you?" - respond directly without API call
+      const whoAreYouPattern = /^[\s]*(من أنت|who are you|ما اسمك|what is your name|what's your name|من انت|ما هويتك)[\s]*[\?\.]?[\s]*$/i;
+      if (whoAreYouPattern.test(message.trim())) {
+        console.log(`[Routes] Detected "Who are you?" question - returning privacy-respecting response`);
+        aiResponse = "أنا ذكاء اصطناعي تم تطويري من قبل محمود عادل. أنا هنا لمساعدتك في المحادثات والإجابة على أسئلتك بسرية وخصوصية تامة.";
+      }
       
       // Handle image search with Wikimedia Commons API (free, no API key required)
-      if (persona === "google-images") {
+      else if (persona === "google-images") {
         try {
           const query = encodeURIComponent(message);
           // Using Wikimedia Commons API - completely free and reliable
