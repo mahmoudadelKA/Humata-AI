@@ -14,9 +14,10 @@ interface Conversation {
 interface ConversationsSidebarProps {
   onSelectConversation: (id: string) => void;
   currentConversationId?: string;
+  onNewConversation?: () => void;
 }
 
-export function ConversationsSidebar({ onSelectConversation, currentConversationId }: ConversationsSidebarProps) {
+export function ConversationsSidebar({ onSelectConversation, currentConversationId, onNewConversation }: ConversationsSidebarProps) {
   const { language, user } = useAppContext();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -83,8 +84,16 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
 
   return (
     <div className={`w-64 border-r border-border bg-muted/20 flex flex-col ${language === "ar" ? "border-l border-r-0" : ""}`}>
-      <div className="p-4 border-b border-border">
-        <h3 className={`text-sm font-bold text-foreground mb-3 ${language === "ar" ? "text-right" : ""}`}>
+      <div className="p-4 border-b border-border space-y-3">
+        <Button
+          onClick={onNewConversation}
+          variant="default"
+          className="w-full"
+          data-testid="button-new-conversation"
+        >
+          {language === "ar" ? "محادثة جديده" : "New Conversation"}
+        </Button>
+        <h3 className={`text-sm font-bold text-foreground ${language === "ar" ? "text-right" : ""}`}>
           {language === "ar" ? "المحادثات المحفوظة" : "Saved Conversations"}
         </h3>
       </div>

@@ -521,6 +521,12 @@ export default function Chat() {
         <ConversationsSidebar 
           onSelectConversation={(id) => setConversationId(id)}
           currentConversationId={conversationId}
+          onNewConversation={() => {
+            setConversationId("");
+            setMessages([]);
+            setInputValue("");
+            setUploadedFileInfo(null);
+          }}
         />
         <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8 bg-background/5 backdrop-blur-sm">
           <div className="max-w-3xl w-full mx-auto space-y-6 flex-1">
