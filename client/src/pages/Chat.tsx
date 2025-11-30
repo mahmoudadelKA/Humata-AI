@@ -1052,6 +1052,24 @@ export default function Chat() {
 
         </div>
       </footer>
+
+      {/* Mobile New Conversation Button - Bottom Center */}
+      <div className="md:hidden fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40">
+        <Button
+          onClick={() => {
+            setConversationId("");
+            setMessages([]);
+            setInputValue("");
+            setUploadedFileInfo(null);
+            setIsSidebarOpen(false);
+          }}
+          variant="default"
+          className="gap-2 px-6 rounded-full shadow-lg"
+          data-testid="button-new-conversation-mobile"
+        >
+          {language === "ar" ? "محادثة جديدة" : "New Conversation"}
+        </Button>
+      </div>
       </div>
     </div>
   );
