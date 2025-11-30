@@ -130,16 +130,16 @@ export default function Hub() {
             </h2>
             
             <p 
-              className="text-sm sm:text-base leading-relaxed max-w-3xl mx-auto"
+              className="text-lg sm:text-xl md:text-2xl leading-relaxed max-w-3xl mx-auto"
               style={{ 
                 fontFamily: "'Lateef', serif",
-                color: "#E8D4A8",
+                color: "#D4AF37",
                 WebkitTextStroke: "0.5px rgba(255, 255, 255, 0.2)",
                 textShadow: `
                   1px 1px 3px rgba(0, 0, 0, 0.7),
                   2px 2px 6px rgba(0, 0, 0, 0.5),
                   -1px -1px 1px rgba(255, 255, 255, 0.3),
-                  0 0 15px rgba(212, 175, 55, 0.3),
+                  0 0 15px rgba(212, 175, 55, 0.4),
                   0 4px 8px rgba(0, 0, 0, 0.6)
                 `,
                 filter: "drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))",
