@@ -418,6 +418,66 @@
   z-index: 10;
 }
 
+/* ===== ANIMATED DUA STYLING ===== */
+
+/* Gradient Text Animation */
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glow Pulse for Dua */
+@keyframes duaGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px hsl(180 100% 50% / 0.6)) drop-shadow(0 0 16px hsl(328 100% 50% / 0.3));
+  }
+  25% {
+    filter: drop-shadow(0 0 12px hsl(180 100% 50% / 0.8)) drop-shadow(0 0 24px hsl(328 100% 50% / 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px hsl(328 100% 50% / 0.8)) drop-shadow(0 0 32px hsl(270 100% 50% / 0.4));
+  }
+  75% {
+    filter: drop-shadow(0 0 12px hsl(270 100% 50% / 0.6)) drop-shadow(0 0 20px hsl(180 100% 50% / 0.5));
+  }
+}
+
+/* Gentle Wave Animation */
+@keyframes waveMotion {
+  0%, 100% {
+    transform: translateY(0px) scaleY(1);
+  }
+  50% {
+    transform: translateY(-3px) scaleY(1.02);
+  }
+}
+
+/* Animated Gradient Dua Text */
+.animated-dua {
+  background: linear-gradient(
+    90deg,
+    hsl(180 100% 50%),
+    hsl(328 100% 50%),
+    hsl(270 100% 50%),
+    hsl(120 100% 50%),
+    hsl(180 100% 50%)
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientFlow 8s ease infinite, duaGlowPulse 4s ease-in-out infinite, waveMotion 3s ease-in-out infinite;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
 /* Dark mode is cyberpunk */
 .dark {
   --button-outline: rgba(0, 240, 255, .15);

@@ -135,7 +135,7 @@ export default function Hub() {
           </div>
 
           <div className="text-center mb-16">
-            <h2 className={`text-3xl font-bold mb-4 text-foreground ${language === "ar" ? "text-lg font-semibold" : ""}`}>
+            <h2 className={`text-3xl font-bold mb-4 ${language === "ar" ? "text-2xl animated-dua" : "text-foreground"}`}>
               {t("hub.select", language)}
             </h2>
           </div>
