@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import { ConversationsSidebar } from "@/components/ConversationsSidebar";
+import { ModuleNavigation } from "@/components/ModuleNavigation";
 import { queryClient } from "@/lib/queryClient";
 
 interface Message {
@@ -269,6 +270,7 @@ export default function Chat() {
   const [showDoctorMenu, setShowDoctorMenu] = useState(false);
   const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" || persona === "scientific-assistant" || persona === "khedive" ? true : false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarMode, setSidebarMode] = useState<"conversations" | "modules">("conversations");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -535,16 +537,20 @@ export default function Chat() {
       <main className="flex-1 overflow-hidden flex flex-row">
         {/* Desktop Sidebar - Always visible */}
         <div className="hidden md:block">
-          <ConversationsSidebar 
-            onSelectConversation={(id) => setConversationId(id)}
-            currentConversationId={conversationId}
-            onNewConversation={() => {
-              setConversationId("");
-              setMessages([]);
-              setInputValue("");
-              setUploadedFileInfo(null);
-            }}
-          />
+          {sidebarMode === "conversations" ? (
+            <ConversationsSidebar 
+              onSelectConversation={(id) => setConversationId(id)}
+              currentConversationId={conversationId}
+              onNewConversation={() => {
+                setConversationId("");
+                setMessages([]);
+                setInputValue("");
+                setUploadedFileInfo(null);
+              }}
+            />
+          ) : (
+            <ModuleNavigation />
+          )}
         </div>
 
         {/* Mobile Sidebar - Overlay */}
@@ -554,21 +560,52 @@ export default function Chat() {
               className="fixed inset-0 bg-black/50 md:hidden z-30"
               onClick={() => setIsSidebarOpen(false)}
             />
-            <div className="fixed left-0 top-0 h-full md:hidden z-40 animate-slide-in">
-              <ConversationsSidebar 
-                onSelectConversation={(id) => {
-                  setConversationId(id);
-                  setIsSidebarOpen(false);
-                }}
-                currentConversationId={conversationId}
-                onNewConversation={() => {
-                  setConversationId("");
-                  setMessages([]);
-                  setInputValue("");
-                  setUploadedFileInfo(null);
-                  setIsSidebarOpen(false);
-                }}
-              />
+            <div className="fixed left-0 top-0 h-full md:hidden z-40 animate-slide-in flex flex-col">
+              {/* Sidebar Mode Toggle Tabs */}
+              <div className="flex gap-1 p-2 border-b border-border/30 bg-background/50 backdrop-blur-sm">
+                <button
+                  onClick={() => setSidebarMode("conversations")}
+                  className={`flex-1 px-3 py-2 text-xs font-semibold rounded transition-colors ${
+                    sidebarMode === "conversations"
+                      ? "bg-primary/30 text-primary border border-primary/50"
+                      : "bg-muted/20 text-muted-foreground hover:bg-muted/40"
+                  }`}
+                  data-testid="button-tab-conversations"
+                >
+                  {language === "ar" ? "محادثات" : "Chats"}
+                </button>
+                <button
+                  onClick={() => setSidebarMode("modules")}
+                  className={`flex-1 px-3 py-2 text-xs font-semibold rounded transition-colors ${
+                    sidebarMode === "modules"
+                      ? "bg-primary/30 text-primary border border-primary/50"
+                      : "bg-muted/20 text-muted-foreground hover:bg-muted/40"
+                  }`}
+                  data-testid="button-tab-modules"
+                >
+                  {language === "ar" ? "وحدات" : "Modules"}
+                </button>
+              </div>
+
+              {/* Sidebar Content */}
+              {sidebarMode === "conversations" ? (
+                <ConversationsSidebar 
+                  onSelectConversation={(id) => {
+                    setConversationId(id);
+                    setIsSidebarOpen(false);
+                  }}
+                  currentConversationId={conversationId}
+                  onNewConversation={() => {
+                    setConversationId("");
+                    setMessages([]);
+                    setInputValue("");
+                    setUploadedFileInfo(null);
+                    setIsSidebarOpen(false);
+                  }}
+                />
+              ) : (
+                <ModuleNavigation onNavigate={() => setIsSidebarOpen(false)} />
+              )}
             </div>
           </>
         )}
