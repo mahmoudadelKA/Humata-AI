@@ -223,11 +223,22 @@ export async function registerRoutes(
       if (!userId) {
         if (guestId) {
           userId = guestId;
+          // Save guestId to cookies to persist across requests
+          res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+          console.log(`[Routes] Using provided guestId: ${userId}`);
         } else {
-          // Generate new unique guestId if not provided
-          userId = randomUUID();
+          // Check if guestId exists in cookies
+          const cookieGuestId = req.cookies.guestId;
+          if (cookieGuestId) {
+            userId = cookieGuestId;
+            console.log(`[Routes] Using guestId from cookies: ${userId}`);
+          } else {
+            // Generate new unique guestId if not provided
+            userId = randomUUID();
+            res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
+            console.log(`[Routes] Generated new guestId: ${userId}`);
+          }
         }
-        res.cookie("guestId", userId, { maxAge: 30 * 24 * 60 * 60 * 1000 });
       }
 
       console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}, enableGrounding: ${enableGrounding}, persona: ${persona}`);

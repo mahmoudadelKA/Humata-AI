@@ -424,6 +424,9 @@ export default function Chat() {
       fileName?: string;
       mimeType?: string;
     }) => {
+      // Get guestId from localStorage to ensure consistency
+      const guestId = localStorage.getItem("guestId") || user?.id;
+      
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -437,6 +440,7 @@ export default function Chat() {
           base64Data: data.base64Data,
           fileName: data.fileName,
           mimeType: data.mimeType,
+          guestId: guestId,
         }),
       });
 

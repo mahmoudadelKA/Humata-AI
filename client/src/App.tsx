@@ -44,19 +44,35 @@ function AppContent() {
   );
 }
 
+function generateGuestId(): string {
+  return `guest-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 function App() {
   const [language, setLanguage] = useState<Language>("ar");
   const [theme, setTheme] = useState<Theme>("dark");
   const [user, setUser] = useState<User | null>({ id: "anonymous", name: "مستخدم", email: "" });
   const [token, setToken] = useState<string | null>("anonymous-token");
+  const [guestId, setGuestId] = useState<string>("");
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     const savedLang = localStorage.getItem("language") as Language | null;
     const savedToken = localStorage.getItem("authToken");
+    let savedGuestId = localStorage.getItem("guestId");
 
     if (savedTheme) setTheme(savedTheme);
     if (savedLang) setLanguage(savedLang);
+    
+    // Restore or create guestId from localStorage
+    if (!savedGuestId) {
+      savedGuestId = generateGuestId();
+      localStorage.setItem("guestId", savedGuestId);
+      console.log("[App] Created new guestId:", savedGuestId);
+    } else {
+      console.log("[App] Restored guestId from localStorage:", savedGuestId);
+    }
+    setGuestId(savedGuestId);
     
     // Restore token from localStorage if available
     if (savedToken) {
@@ -81,7 +97,7 @@ function App() {
   const contextValue: AppContextType = {
     language,
     theme,
-    user,
+    user: user ? { ...user, id: guestId || user.id } : null,
     token,
     setLanguage,
     setTheme,
