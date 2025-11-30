@@ -170,6 +170,7 @@ export default function Hub() {
               </span>
             </div>
             </div>
+            </div>
           </div>
 
           <div className="text-center mb-8 sm:mb-12 md:mb-16 px-3">
