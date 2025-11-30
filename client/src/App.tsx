@@ -8,22 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe } from "lucide-react";
 import { AppContext, useAppContext } from "@/lib/appContext";
 import type { Language, Theme, AppContextType, User } from "@/lib/appContext";
-import { Auth } from "@/components/Auth";
 import Hub from "@/pages/Hub";
 import Chat from "@/pages/Chat";
 import NotFound from "@/pages/not-found";
-import { AuthModal } from "@/components/AuthModal";
 
 function TopLeftControls() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
 
   return (
     <div className={`fixed top-4 right-4 z-50 flex items-center gap-3 bg-muted/30 border border-border/40 rounded-2xl px-4 py-3 backdrop-blur-md hover:bg-muted/40 transition-all ${language === "ar" ? "flex-row-reverse font-bold" : ""}`}>
-      {/* Auth Component */}
-      <Auth />
-
-      <div className="w-0.5 h-7 bg-border/40 rounded-full"></div>
-
       {/* Theme Controls */}
       <Button
         variant="ghost"
@@ -101,7 +94,6 @@ function AppContent() {
       <div className="relative z-10">
         <TopLeftControls />
         <Router />
-        {showAuthModal && <AuthModal />}
       </div>
     </div>
   );

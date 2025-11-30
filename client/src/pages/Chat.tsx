@@ -500,12 +500,10 @@ export default function Chat() {
       </header>
 
       <main className="flex-1 overflow-hidden flex flex-row">
-        {user && (
-          <ConversationsSidebar 
-            onSelectConversation={(id) => setConversationId(id)}
-            currentConversationId={conversationId}
-          />
-        )}
+        <ConversationsSidebar 
+          onSelectConversation={(id) => setConversationId(id)}
+          currentConversationId={conversationId}
+        />
         <div className="flex-1 overflow-y-auto flex flex-col px-6 py-8">
           <div className="max-w-3xl w-full mx-auto space-y-6 flex-1">
           {messages.length === 0 ? (
