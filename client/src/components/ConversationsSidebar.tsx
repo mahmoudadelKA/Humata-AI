@@ -144,10 +144,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
             )}
             
             {openMenu === conv.id && (
-              <div className="fixed bg-card rounded-lg shadow-2xl border border-border/30 flex flex-col w-48 py-1 z-50 animate-in fade-in-50 duration-200" style={{
-                top: `${100 + index * 45}px`,
-                [language === "ar" ? "right" : "left"]: "280px"
-              }}>
+              <div className="bg-card rounded-lg shadow-2xl border border-border/30 flex flex-col mt-1 py-1 z-50 animate-in fade-in-50 duration-200">
                 <button
                   onClick={() => {
                     setRenamingId(conv.id);
@@ -166,7 +163,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                   data-testid="button-download"
                 >
                   <Download className="w-4 h-4" />
-                  <span>{language === "ar" ? "تصدير" : "Export"}</span>
+                  <span>{language === "ar" ? "مشاركة" : "Share"}</span>
                 </button>
                 <button
                   onClick={() => deleteMutation.mutate(conv.id)}
