@@ -105,10 +105,10 @@ export default function Hub() {
 
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
           {/* Animated Cloud-Glass Info Hub */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-3">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="max-w-xl mx-auto mb-6 sm:mb-8 px-3">
               <div 
-                className="animated-cloud-border relative px-6 sm:px-8 py-8 sm:py-10 backdrop-blur-lg smooth-transition"
+                className="animated-cloud-border relative px-4 sm:px-6 py-5 sm:py-6 backdrop-blur-lg smooth-transition"
                 style={{
                   background: "rgba(255, 255, 255, 0.08)",
                   borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
@@ -121,27 +121,27 @@ export default function Hub() {
                 }}
                 data-testid="info-hub-cloud-glass"
               >
-                <div className="relative z-10 space-y-4">
-                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-magenta-400 to-purple-400 bg-clip-text text-transparent">
+                <div className="relative z-10 space-y-3">
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-400 via-magenta-400 to-purple-400 bg-clip-text text-transparent">
                     {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
                   </h2>
                   
-                  <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-xl mx-auto">
+                  <p className="text-xs sm:text-sm text-white/80 leading-relaxed max-w-lg mx-auto">
                     {language === "ar" 
-                      ? "تجربة ذكاء اصطناعي متقدمة مع 9 تخصصات متميزة: الدردشة الحرة، البحث المتقدم، المساعد الطبي، المساعد العلمي، توليد الصور، إنشاء الاختبارات والمزيد. رؤية ملفات شاملة وتحليل متخصص لكل احتياجاتك."
-                      : "Experience advanced AI with 9 specialized modules: Free Chat, Advanced Research, Medical Consultant, Scientific Assistant, Image Generation, Quiz Creation, and more. Comprehensive file vision and specialized analysis for all your needs."
+                      ? "تجربة ذكاء اصطناعي متقدمة مع 9 تخصصات متميزة: دردشة، بحث، استشارات طبية، مساعد علمي، توليد صور وأكثر."
+                      : "Advanced AI with 9 specialized modules: Chat, Research, Medical, Science, Image Generation, and more."
                     }
                   </p>
 
-                  <div className="flex flex-wrap justify-center gap-3 pt-2">
-                    <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  <div className="flex flex-wrap justify-center gap-2 pt-1">
+                    <span className="text-xs px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                       {language === "ar" ? "📁 رؤية الملفات" : "📁 File Vision"}
                     </span>
-                    <span className="text-xs px-3 py-1 rounded-full bg-magenta-500/20 text-magenta-300 border border-magenta-500/30">
+                    <span className="text-xs px-2 py-1 rounded-full bg-magenta-500/20 text-magenta-300 border border-magenta-500/30">
                       {language === "ar" ? "🤖 ذكاء متخصص" : "🤖 Specialist AI"}
                     </span>
-                    <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      {language === "ar" ? "⚡ سريع وفعال" : "⚡ Fast & Efficient"}
+                    <span className="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      {language === "ar" ? "⚡ سريع" : "⚡ Fast"}
                     </span>
                   </div>
                 </div>
