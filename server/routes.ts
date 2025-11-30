@@ -249,24 +249,34 @@ export async function registerRoutes(
           const query = encodeURIComponent(message);
           const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=15&client_id=a_O3jJDskbr--1TxXuHqaG6nMPj6WxMq0Wfo3LjXXY0`;
           
+          console.log(`[Unsplash] Fetching images for query: ${message}`);
+          console.log(`[Unsplash] URL: ${unsplashUrl}`);
+          
           const imageRes = await fetch(unsplashUrl);
+          console.log(`[Unsplash] Response status: ${imageRes.status}`);
+          
           const imageData = await imageRes.json();
+          console.log(`[Unsplash] Response data:`, JSON.stringify(imageData).substring(0, 200));
           
           if (imageData.results && imageData.results.length > 0) {
+            console.log(`[Unsplash] Found ${imageData.results.length} results`);
             // Format as JSON array with direct URLs
             const images = imageData.results
               .slice(0, 12)
               .map((img: any) => ({
-                url: img.urls.regular,
+                url: img.urls?.regular || img.urls?.small || "",
                 title: img.alt_description || img.description || "صورة"
-              }));
+              }))
+              .filter((img: any) => img.url); // Filter out images without URLs
             
+            console.log(`[Unsplash] Formatted ${images.length} images`);
             aiResponse = JSON.stringify(images);
           } else {
+            console.log(`[Unsplash] No results found or error in response`);
             aiResponse = `[]`;
           }
         } catch (error) {
-          console.error("Image search error:", error);
+          console.error("[Unsplash] Image search error:", error);
           aiResponse = `[]`;
         }
       } else {
