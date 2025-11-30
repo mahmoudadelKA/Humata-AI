@@ -97,11 +97,11 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         </h3>
       </div>
 
-      <div className="space-y-1 p-2 flex-1 overflow-y-auto overflow-x-visible">
-        {conversations.map((conv: Conversation) => (
-          <div key={conv.id} className="relative group">
+      <div className="space-y-1 p-2 flex-1 overflow-y-auto">
+        {conversations.map((conv: Conversation, index: number) => (
+          <div key={conv.id}>
             {renamingId === conv.id ? (
-              <div className="absolute inset-0 bg-card border border-border rounded-lg flex items-center px-2 gap-2 z-20">
+              <div className="bg-card border border-border rounded-lg flex items-center px-3 py-2 gap-2">
                 <input
                   type="text"
                   value={newTitle}
@@ -120,62 +120,63 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                 </Button>
               </div>
             ) : (
-              <>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors group relative">
-                  <button
-                    onClick={() => onSelectConversation(conv.id)}
-                    className={`flex-1 text-left text-sm truncate text-foreground/80 group-hover:text-foreground ${
-                      currentConversationId === conv.id ? "text-foreground font-medium" : ""
-                    }`}
-                    data-testid={`button-conversation-${conv.id}`}
-                  >
-                    {conv.title}
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenMenu(openMenu === conv.id ? null : conv.id);
-                    }}
-                    className="p-1 hover:bg-muted/60 rounded flex-shrink-0"
-                    data-testid={`button-menu-${conv.id}`}
-                  >
-                    <MoreVertical className="w-4 h-4" />
-                  </button>
-
-                  {openMenu === conv.id && (
-                    <div className={`absolute top-full mt-1 ${language === "ar" ? "right-0" : "left-0"} bg-card rounded-lg shadow-2xl border border-border/30 flex flex-col w-44 py-1 animate-in fade-in-50 duration-200 z-50`}>
-                      <button
-                        onClick={() => {
-                          setRenamingId(conv.id);
-                          setNewTitle(conv.title);
-                          setOpenMenu(null);
-                        }}
-                        className={`px-4 py-2 hover:bg-muted/60 transition-colors text-foreground/80 hover:text-foreground text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
-                        data-testid="button-rename"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                        <span>{language === "ar" ? "تعديل الاسم" : "Rename"}</span>
-                      </button>
-                      <button
-                        onClick={() => handleDownload(conv)}
-                        className={`px-4 py-2 hover:bg-muted/60 transition-colors text-foreground/80 hover:text-foreground text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
-                        data-testid="button-download"
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>{language === "ar" ? "تصدير" : "Export"}</span>
-                      </button>
-                      <button
-                        onClick={() => deleteMutation.mutate(conv.id)}
-                        className={`px-4 py-2 hover:bg-red-500/10 transition-colors text-red-500 hover:text-red-600 text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
-                        data-testid="button-delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>{language === "ar" ? "حذف" : "Delete"}</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/40 transition-colors group relative">
+                <button
+                  onClick={() => onSelectConversation(conv.id)}
+                  className={`flex-1 text-left text-sm truncate text-foreground/80 group-hover:text-foreground ${
+                    currentConversationId === conv.id ? "text-foreground font-medium" : ""
+                  }`}
+                  data-testid={`button-conversation-${conv.id}`}
+                >
+                  {conv.title}
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenMenu(openMenu === conv.id ? null : conv.id);
+                  }}
+                  className="p-1 hover:bg-muted/60 rounded flex-shrink-0"
+                  data-testid={`button-menu-${conv.id}`}
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+            
+            {openMenu === conv.id && (
+              <div className="fixed bg-card rounded-lg shadow-2xl border border-border/30 flex flex-col w-48 py-1 z-50 animate-in fade-in-50 duration-200" style={{
+                top: `${100 + index * 45}px`,
+                [language === "ar" ? "right" : "left"]: "280px"
+              }}>
+                <button
+                  onClick={() => {
+                    setRenamingId(conv.id);
+                    setNewTitle(conv.title);
+                    setOpenMenu(null);
+                  }}
+                  className={`px-4 py-2 hover:bg-muted/60 transition-colors text-foreground/80 hover:text-foreground text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
+                  data-testid="button-rename"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  <span>{language === "ar" ? "تعديل الاسم" : "Rename"}</span>
+                </button>
+                <button
+                  onClick={() => handleDownload(conv)}
+                  className={`px-4 py-2 hover:bg-muted/60 transition-colors text-foreground/80 hover:text-foreground text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
+                  data-testid="button-download"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{language === "ar" ? "تصدير" : "Export"}</span>
+                </button>
+                <button
+                  onClick={() => deleteMutation.mutate(conv.id)}
+                  className={`px-4 py-2 hover:bg-red-500/10 transition-colors text-red-500 hover:text-red-600 text-sm flex items-center gap-2 ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
+                  data-testid="button-delete"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{language === "ar" ? "حذف" : "Delete"}</span>
+                </button>
+              </div>
             )}
           </div>
         ))}
