@@ -171,7 +171,7 @@ export async function registerRoutes(
       const { message, conversationId, persona, systemPrompt, base64Data, fileName, mimeType, enableGrounding } = req.body;
       const userId = (req as any).userId;
 
-      console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}, enableGrounding: ${enableGrounding}`);
+      console.log(`[Routes] Chat request - userId: ${userId}, message: "${message?.substring(0, 50)}...", hasFile: ${!!base64Data}, enableGrounding: ${enableGrounding}, persona: ${persona}`);
 
       if (!message || typeof message !== "string") {
         res.status(400).json({ error: "Message is required" });
@@ -193,13 +193,49 @@ export async function registerRoutes(
         }
       }
 
-      const aiResponse = await sendChatMessage(message, history, {
-        systemPrompt: systemPrompt || undefined,
-        base64Data: base64Data || undefined,
-        mimeType: mimeType || undefined,
-        fileName: fileName || undefined,
-        enableGrounding: enableGrounding || false,
-      });
+      let aiResponse: string;
+      
+      // Handle image search separately
+      if (persona === "google-images") {
+        // Search for images using Unsplash API
+        const query = encodeURIComponent(message);
+        const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&count=9&client_id=qJV0vO-TIg_4-JrVgHaJ_6LbmN9sF7KDk-t0_RQYZWI`;
+        
+        try {
+          const imageRes = await fetch(unsplashUrl);
+          const imageData = await imageRes.json();
+          
+          if (imageData.results && imageData.results.length > 0) {
+            // Format images data for display
+            const images = imageData.results.map((img: any) => ({
+              id: img.id,
+              url: img.urls.regular,
+              thumb: img.urls.thumb,
+              alt: img.alt_description || "Image",
+              downloadUrl: img.links.download_location,
+              photographer: img.user.name
+            }));
+            
+            aiResponse = JSON.stringify({
+              type: "images",
+              images: images,
+              description: `تم العثور على ${images.length} صور متعلقة بـ "${message}"`
+            });
+          } else {
+            aiResponse = `لم يتم العثور على صور متعلقة بـ "${message}". جرب كلمات بحث أخرى.`;
+          }
+        } catch (error) {
+          aiResponse = `حدث خطأ في البحث عن الصور. يرجى المحاولة لاحقاً.`;
+        }
+      } else {
+        aiResponse = await sendChatMessage(message, history, {
+          systemPrompt: systemPrompt || undefined,
+          base64Data: base64Data || undefined,
+          mimeType: mimeType || undefined,
+          fileName: fileName || undefined,
+          enableGrounding: enableGrounding || false,
+        });
+      }
 
       const userMessage = {
         id: randomUUID(),

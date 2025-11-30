@@ -70,6 +70,18 @@ const getPersonaInfo = (persona: string | null) => {
 4. الرد بصيغة عربية سليمة وواضحة مع تنسيق منظم.`,
       controlIcons: ["google-scholar", "pubmed", "research-db"],
     },
+    "google-images": {
+      title: "توليد الصور",
+      description: "بحث وعرض أفضل الصور",
+      systemPrompt: `أنت متخصص في البحث عن الصور. عندما يطلب المستخدم صوراً عن أي موضوع:
+      
+1. افهم بدقة ما يريده المستخدم
+2. ابحث عن أفضل الصور المطابقة
+3. قدم وصفاً موجزاً للصور المتوفرة
+
+يجب أن تكون إجابتك قصيرة وموضحة لما ستظهره من صور.`,
+      controlIcons: ["search"],
+    },
   };
   
   if (persona && personas[persona]) {
@@ -261,51 +273,6 @@ export default function Chat() {
     uploadFileMutation.mutate(file);
   };
 
-  // For embedded content like Google Images or AI Images
-  if (persona === "google-images") {
-    return (
-      <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
-        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
-          <div className="px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
-                {personaInfo.title}
-              </h2>
-            </div>
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="icon"
-                data-testid="button-back"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
-        </header>
-        <main className="flex-1 overflow-hidden w-full flex items-center justify-center">
-          <div className="text-center">
-            <p className={`text-foreground mb-6 ${language === "ar" ? "text-lg" : ""}`}>
-              {language === "ar" ? "انقر على الزر أدناه للوصول إلى Google Images" : "Click the button below to access Google Images"}
-            </p>
-            <a 
-              href="https://images.google.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button 
-                size="lg"
-                data-testid="open-google-images"
-                className="px-8"
-              >
-                {language === "ar" ? "فتح Google Images" : "Open Google Images"}
-              </Button>
-            </a>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   if (persona === "images") {
     return (
@@ -387,31 +354,80 @@ export default function Chat() {
             <div className="h-full" />
           ) : (
             <>
-              {messages.map((msg) => (
+              {messages.map((msg) => {
+                let isImageMessage = false;
+                let imageData: any = null;
+                
+                try {
+                  const parsed = JSON.parse(msg.content);
+                  if (parsed.type === "images") {
+                    isImageMessage = true;
+                    imageData = parsed;
+                  }
+                } catch (e) {
+                  // Not JSON, continue as normal message
+                }
+                
+                return (
                 <div
                   key={msg.id}
                   className={`flex w-full ${msg.role === "assistant" ? "justify-start" : "justify-end"}`}
                   data-testid={`message-${msg.id}`}
                 >
-                  <div
-                    className={`max-w-2xl px-5 py-3 rounded-2xl ${
-                      msg.role === "assistant"
-                        ? "bg-muted/40 text-foreground ai-message"
-                        : "bg-primary/30 text-foreground"
-                    }`}
-                  >
-                    <p className={`whitespace-pre-wrap leading-relaxed ${language === "ar" ? "text-lg font-bold" : "text-sm"}`}>
-                      {msg.content}
-                    </p>
-                    {msg.fileInfo && (
-                      <div className="mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground flex items-center gap-2">
-                        <Upload className="w-3 h-3" />
-                        {msg.fileInfo.name}
+                  {isImageMessage && msg.role === "assistant" ? (
+                    <div className="max-w-4xl w-full space-y-4">
+                      <p className="text-sm text-muted-foreground">{imageData.description}</p>
+                      <div className="grid grid-cols-3 gap-3">
+                        {imageData.images.map((img: any) => (
+                          <div key={img.id} className="relative group overflow-hidden rounded-lg">
+                            <img 
+                              src={img.thumb} 
+                              alt={img.alt}
+                              className="w-full h-40 object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                              <a 
+                                href={img.downloadUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                download
+                              >
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  data-testid={`button-download-${img.id}`}
+                                >
+                                  {language === "ar" ? "تحميل" : "Download"}
+                                </Button>
+                              </a>
+                            </div>
+                            <p className="text-xs text-muted-foreground absolute bottom-1 left-1">{img.photographer}</p>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`max-w-2xl px-5 py-3 rounded-2xl ${
+                        msg.role === "assistant"
+                          ? "bg-muted/40 text-foreground ai-message"
+                          : "bg-primary/30 text-foreground"
+                      }`}
+                    >
+                      <p className={`whitespace-pre-wrap leading-relaxed ${language === "ar" ? "text-lg font-bold" : "text-sm"}`}>
+                        {msg.content}
+                      </p>
+                      {msg.fileInfo && (
+                        <div className="mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground flex items-center gap-2">
+                          <Upload className="w-3 h-3" />
+                          {msg.fileInfo.name}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              ))}
+              );
+              })}
               {sendMessageMutation.isPending && (
                 <div className="flex w-full justify-start">
                   <div className="max-w-2xl px-5 py-3 rounded-2xl bg-muted/40 text-foreground flex items-center gap-3">
