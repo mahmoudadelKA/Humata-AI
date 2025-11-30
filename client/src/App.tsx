@@ -32,13 +32,8 @@ function Router() {
 function AppContent() {
   return (
     <div className="relative min-h-screen">
-      {/* Animated Background */}
-      <div className="animated-bg-container">
-        {/* Floating Particles - Reduced for Performance */}
-        <div className="floating-particle particle-cyan" style={{ width: '80px', height: '80px', top: '10%', left: '5%' }} />
-        <div className="floating-particle particle-magenta" style={{ width: '60px', height: '60px', top: '60%', right: '10%' }} />
-        <div className="floating-particle particle-purple" style={{ width: '100px', height: '100px', bottom: '15%', left: '15%' }} />
-      </div>
+      {/* Minimal Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-[#0f0f1e] via-[#1a1a2e] to-[#16213e] pointer-events-none" />
 
       {/* Content Layer */}
       <div className="relative z-10">

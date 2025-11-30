@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=block');
 
 @tailwind base;
 @tailwind components;
@@ -192,329 +191,82 @@
 
 /* ===== CYBERPUNK ANIMATIONS ===== */
 
-/* Component Load Animation - Fade in + Slide up */
-@keyframes fadeInSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Minimal Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Pulsing Neon Glow - Cyberpunk Title Effect */
-@keyframes pulseNeonGlow {
-  0%, 100% {
-    text-shadow: 
-      0 0 8px hsl(180 100% 50% / 0.6),
-      0 0 16px hsl(180 100% 50% / 0.4),
-      0 0 24px hsl(180 100% 50% / 0.2);
-  }
-  50% {
-    text-shadow: 
-      0 0 12px hsl(180 100% 50% / 0.9),
-      0 0 24px hsl(180 100% 50% / 0.6),
-      0 0 36px hsl(180 100% 50% / 0.3);
-  }
-}
-
-/* Subtle Scale Hover - Interactive elements */
-@keyframes scaleHover {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.05);
-  }
-}
-
-/* Smooth Utility Classes */
 .animate-fade-in-up {
-  animation: fadeInSlideUp 0.6s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .animate-pulsing-glow {
-  animation: pulseNeonGlow 3s ease-in-out infinite;
+  /* Removed for performance */
 }
 
 .smooth-transition {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s ease;
 }
 
 .smooth-hover {
-  transition: all 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
-/* ===== 3D FLOATING ICON EFFECTS ===== */
-
-@keyframes float3d {
-  0%, 100% {
-    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
-  }
-  50% {
-    transform: translateY(-8px) rotateX(5deg) rotateY(5deg);
-  }
-}
-
-@keyframes icon3dGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 10px var(--icon-glow));
-  }
-  50% {
-    filter: drop-shadow(0 0 20px var(--icon-glow));
-  }
-}
+/* ===== LIGHT ICON EFFECTS ===== */
 
 .icon-3d-container {
-  perspective: 1000px;
+  perspective: none;
 }
 
 .icon-3d-wrapper {
-  --icon-glow: rgba(0, 240, 255, 0.6);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform-style: preserve-3d;
-  animation: float3d 3s ease-in-out infinite, icon3dGlow 2s ease-in-out infinite;
+  --icon-glow: rgba(0, 240, 255, 0.3);
+  transition: opacity 0.2s ease;
 }
 
 .icon-3d-wrapper:hover {
-  animation: float3d 3s ease-in-out infinite, icon3dGlow 1s ease-in-out infinite;
-  filter: drop-shadow(0 0 30px var(--icon-glow));
-  transform: scale(1.15) rotateX(-8deg) rotateY(8deg);
+  opacity: 0.9;
+  transform: none;
 }
 
 .icon-3d {
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 0 12px var(--icon-glow));
+  transition: opacity 0.2s ease;
 }
 
 /* ===== INSPIRATIONAL QUOTE EFFECT ===== */
 
-@keyframes colorShiftGlow {
-  0% {
-    color: #00F0FF;
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
-  }
-  25% {
-    color: #FF006E;
-    text-shadow: 0 0 10px rgba(255, 0, 110, 0.8), 0 0 20px rgba(255, 0, 110, 0.4);
-  }
-  50% {
-    color: #B366FF;
-    text-shadow: 0 0 10px rgba(179, 102, 255, 0.8), 0 0 20px rgba(179, 102, 255, 0.4);
-  }
-  75% {
-    color: #00FF88;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8), 0 0 20px rgba(0, 255, 136, 0.4);
-  }
-  100% {
-    color: #00F0FF;
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
-  }
-}
-
 .inspirational-quote {
-  animation: colorShiftGlow 6s ease-in-out infinite;
-  font-size: 1.75rem;
+  color: #00F0FF;
+  font-size: 1.5rem;
   font-weight: bold;
-  line-height: 1.8;
-  letter-spacing: 0.02em;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
 }
 
 @media (min-width: 640px) {
   .inspirational-quote {
-    font-size: 2.25rem;
+    font-size: 1.875rem;
   }
 }
 
 @media (min-width: 1024px) {
   .inspirational-quote {
-    font-size: 2.75rem;
+    font-size: 2rem;
   }
 }
 
-/* ===== ANIMATED BACKGROUND ===== */
+/* Removed all heavy animations and effects */
 
-/* Animated Gradient Background */
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Floating Particles Animation */
-@keyframes floatParticle1 {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translate(50px, -60px) scale(1.1);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.3;
-  }
-}
-
-@keyframes floatParticle2 {
-  0% {
-    transform: translate(0, 0) scale(1.1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translate(-60px, 50px) scale(1.2);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate(0, 0) scale(1.1);
-    opacity: 0.4;
-  }
-}
-
-@keyframes floatParticle3 {
-  0% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 0.35;
-  }
-  50% {
-    transform: translate(40px, -50px) rotate(180deg) scale(1.1);
-    opacity: 0.45;
-  }
-  100% {
-    transform: translate(0, 0) rotate(360deg) scale(1);
-    opacity: 0.35;
-  }
-}
-
-/* Floating Light Orbs */
-@keyframes floatOrb1 {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-30px) translateX(20px);
-  }
-}
-
-@keyframes floatOrb2 {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-40px) translateX(-15px);
-  }
-}
-
-@keyframes floatOrb3 {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-25px) translateX(25px);
-  }
-}
-
-/* Container for animated background */
 .animated-bg-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    -45deg,
-    hsl(248 67% 11%),
-    hsl(270 80% 20%),
-    hsl(180 100% 35% / 0.05),
-    hsl(328 100% 35% / 0.05)
-  );
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  pointer-events: none;
-  z-index: 0;
-  will-change: background-position;
-  contain: layout style paint;
+  display: none;
 }
 
-/* Floating Particles */
 .floating-particle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(1px);
-  will-change: transform, opacity;
-  contain: layout style paint;
+  display: none;
 }
 
-.particle-cyan {
-  background: radial-gradient(circle, hsl(180 100% 50% / 0.5), hsl(180 100% 50% / 0.05));
-  animation: floatParticle1 8s ease-in-out infinite;
-}
-
-.particle-magenta {
-  background: radial-gradient(circle, hsl(328 100% 50% / 0.5), hsl(328 100% 50% / 0.05));
-  animation: floatParticle2 10s ease-in-out infinite;
-}
-
-.particle-purple {
-  background: radial-gradient(circle, hsl(270 100% 50% / 0.4), hsl(270 100% 50% / 0.05));
-  animation: floatParticle3 12s ease-in-out infinite;
-}
-
-/* Floating Orbs */
 .floating-orb {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(2px);
-}
-
-.orb-1 {
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, hsl(180 100% 50% / 0.15), transparent);
-  animation: floatOrb1 10s ease-in-out infinite;
-}
-
-.orb-2 {
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, hsl(328 100% 50% / 0.12), transparent);
-  animation: floatOrb2 12s ease-in-out infinite;
-}
-
-.orb-3 {
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, hsl(270 100% 50% / 0.1), transparent);
-  animation: floatOrb3 14s ease-in-out infinite;
-}
-
-/* Animated Planets - Glassmorphic Style */
-@keyframes planetFloat1 {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  33% { transform: translateY(-40px) translateX(30px); }
-  66% { transform: translateY(-20px) translateX(-20px); }
-}
-
-@keyframes planetFloat2 {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  33% { transform: translateY(-35px) translateX(-25px); }
-  66% { transform: translateY(-15px) translateX(35px); }
-}
-
-@keyframes planetGlow {
-  0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.3)) drop-shadow(0 0 40px rgba(0, 240, 255, 0.1)); }
-  50% { filter: drop-shadow(0 0 40px rgba(0, 240, 255, 0.6)) drop-shadow(0 0 80px rgba(0, 240, 255, 0.3)); }
+  display: none;
 }
 
 .planet-container {
@@ -523,7 +275,6 @@
   pointer-events: none;
   will-change: transform;
   contain: layout style paint;
-  backdrop-filter: blur(0.5px);
 }
 
 .planet-1 {
