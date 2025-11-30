@@ -267,7 +267,9 @@ export default function Chat() {
         setConversationId(""); // Reset conversation
         setUploadedFileInfo(null); // Clear uploaded file
         setInputValue(""); // Clear input
+        setUrlInput(""); // Clear URL input
         autoSentRef.current = false; // Reset auto-send flag
+        console.log("Persona changed from", persona, "to", newPersona);
       }
       
       setPersona(newPersona);
@@ -275,7 +277,7 @@ export default function Chat() {
       setConvId(newConvId);
       setInitialMessage(newInitialMessage);
     }
-  }, [location, persona]);
+  }, [location]);
 
   const personaInfo = getPersonaInfo(persona || null);
   const { toast } = useToast();

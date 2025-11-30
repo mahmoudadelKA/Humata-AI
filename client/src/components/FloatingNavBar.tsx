@@ -35,8 +35,8 @@ export function FloatingNavBar() {
     e.preventDefault();
     e.stopPropagation();
     console.log("Navigating to:", route);
-    // Use window.location.href to force full page reload with new persona
-    window.location.href = route;
+    // Use navigate from wouter for smooth client-side navigation without page reload
+    navigate(route);
   };
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
