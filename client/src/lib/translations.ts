@@ -3,7 +3,7 @@ export type Language = "ar" | "en";
 export const translations: Record<Language, Record<string, string>> = {
   ar: {
     "system.active": "النظام نشط",
-    "hub.select": "اختر قسماً",
+    "hub.select": "حَسْبِـيَ اللّهُ لا إلهَ إلاّ هُوَ عَلَـيهِ تَوَكَّـلتُ وَهُوَ رَبُّ العَرْشِ العَظـيم",
     "hub.description": "وحدات الذكاء الاصطناعي المتقدمة",
     "hub.powered": "مدعوم من",
     "hub.system": "المبرمج محمود عادل",
