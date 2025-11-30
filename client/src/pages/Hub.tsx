@@ -1,10 +1,8 @@
 import { useLocation } from "wouter";
-import { MessageSquare, HelpCircle, Send, Search, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, Sun, Moon, Globe } from "lucide-react";
-import { useState } from "react";
+import { MessageSquare, HelpCircle, BookOpen, Image, CheckCircle, Sparkles, Stethoscope, Users, Landmark, Sun, Moon, Globe } from "lucide-react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 function FeatureCardComponent({ feature }: any) {
   const IconComponent = feature.icon;
@@ -66,14 +64,6 @@ function FeatureCardComponent({ feature }: any) {
 export default function Hub() {
   const { language, theme, setLanguage, setTheme } = useAppContext();
   const [, setLocation] = useLocation();
-  const [inputValue, setInputValue] = useState("");
-
-  const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
-    const message = inputValue;
-    setInputValue("");
-    setLocation(`/chat?initialMessage=${encodeURIComponent(message)}`);
-  };
 
   const featureKeys = [
     { id: "chat", titleKey: "feature.chat", descKey: "feature.chat.desc", icon: MessageSquare, route: "/chat", glowColor: "cyan" },
@@ -114,26 +104,47 @@ export default function Hub() {
         </header>
 
         <main className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8">
+          {/* Animated Cloud-Glass Info Hub */}
           <div className="text-center mb-8 sm:mb-12">
             <div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-3">
-              <div className="flex items-center gap-2 bg-card rounded-full pl-4 sm:pl-5 pr-2 py-2 sm:py-3 border border-primary/40 shadow-lg smooth-hover">
-                <Search className="w-4 h-4 text-muted-foreground/60 smooth-transition" />
-                <Input
-                  placeholder={t("hub.chat.input", language)}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                  className="border-0 bg-transparent placeholder:text-muted-foreground/50 !ring-0 !outline-none focus-visible:!ring-0 focus-visible:!outline-none focus:!ring-0 focus:!outline-none ring-offset-0 focus-visible:ring-offset-0 flex-1 smooth-transition"
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!inputValue.trim()}
-                  size="icon"
-                  className="h-8 w-8 rounded-full smooth-hover"
-                  data-testid="button-send-hub"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
+              <div 
+                className="animated-cloud-border relative px-6 sm:px-8 py-8 sm:py-10 backdrop-blur-lg smooth-transition"
+                style={{
+                  background: "rgba(255, 255, 255, 0.08)",
+                  borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+                  border: "2px solid transparent",
+                  backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)), 
+                                     conic-gradient(from 0deg, hsl(180, 100%, 50%), hsl(328, 100%, 50%), hsl(270, 100%, 60%), hsl(180, 100%, 50%))`,
+                  backgroundOrigin: "border-box",
+                  backgroundClip: "padding-box, border-box",
+                  boxShadow: `0 8px 32px rgba(0, 240, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+                }}
+                data-testid="info-hub-cloud-glass"
+              >
+                <div className="relative z-10 space-y-4">
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 via-magenta-400 to-purple-400 bg-clip-text text-transparent">
+                    {language === "ar" ? "مرحباً بك في HUMATA AI" : "Welcome to HUMATA AI"}
+                  </h2>
+                  
+                  <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-xl mx-auto">
+                    {language === "ar" 
+                      ? "تجربة ذكاء اصطناعي متقدمة مع 9 تخصصات متميزة: الدردشة الحرة، البحث المتقدم، المساعد الطبي، المساعد العلمي، توليد الصور، إنشاء الاختبارات والمزيد. رؤية ملفات شاملة وتحليل متخصص لكل احتياجاتك."
+                      : "Experience advanced AI with 9 specialized modules: Free Chat, Advanced Research, Medical Consultant, Scientific Assistant, Image Generation, Quiz Creation, and more. Comprehensive file vision and specialized analysis for all your needs."
+                    }
+                  </p>
+
+                  <div className="flex flex-wrap justify-center gap-3 pt-2">
+                    <span className="text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                      {language === "ar" ? "📁 رؤية الملفات" : "📁 File Vision"}
+                    </span>
+                    <span className="text-xs px-3 py-1 rounded-full bg-magenta-500/20 text-magenta-300 border border-magenta-500/30">
+                      {language === "ar" ? "🤖 ذكاء متخصص" : "🤖 Specialist AI"}
+                    </span>
+                    <span className="text-xs px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      {language === "ar" ? "⚡ سريع وفعال" : "⚡ Fast & Efficient"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
