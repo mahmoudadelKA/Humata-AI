@@ -28,7 +28,19 @@ export function FloatingNavBar() {
   const currentPersona = getCurrentPersona();
 
   return (
-    <div className={`fixed bottom-8 ${language === "ar" ? "right-8" : "left-8"} z-40 hidden md:flex gap-2 p-3 rounded-full backdrop-blur-lg bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-lg hover:shadow-xl transition-shadow`}>
+    <div 
+      className="fixed hidden md:flex gap-3 p-4 rounded-3xl z-40 flex-row flex-wrap justify-center items-center transition-all duration-300"
+      style={{
+        top: "15%",
+        left: "20px",
+        backdropFilter: "blur(12px)",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        border: "1px solid rgba(0, 240, 255, 0.2)",
+        boxShadow: "0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(255, 0, 110, 0.1)",
+        width: "auto",
+        maxWidth: "80px"
+      }}
+    >
       {modules.map((module) => {
         const IconComponent = module.icon;
         const isActive = currentPersona === module.id || (module.id === 'chat' && currentPersona === '');
@@ -39,8 +51,8 @@ export function FloatingNavBar() {
               title={t(module.titleKey, language)}
               className={`p-2.5 rounded-full transition-all duration-200 ${
                 isActive
-                  ? `${module.color} bg-white/20 dark:bg-white/10 shadow-md`
-                  : `text-foreground/60 hover:text-foreground hover:bg-white/10 dark:hover:bg-white/5`
+                  ? `${module.color} bg-white/20 shadow-lg`
+                  : `text-foreground/60 hover:text-foreground hover:bg-white/10`
               }`}
               data-testid={`button-floating-nav-${module.id}`}
             >

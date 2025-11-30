@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 import { ConversationsSidebar } from "@/components/ConversationsSidebar";
-import { ModuleNavigation } from "@/components/ModuleNavigation";
+import { FloatingNavBar } from "@/components/FloatingNavBar";
 import { queryClient } from "@/lib/queryClient";
 
 interface Message {
