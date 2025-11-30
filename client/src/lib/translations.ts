@@ -20,6 +20,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "feature.quizzes": "الاختبارات",
     "feature.ai-images": "صور ذكاء اصطناعي",
     "feature.doctor": "الدكتور",
+    "error.message-failed": "فشل إرسال الرسالة",
+    "error.quota-exceeded": "تم تجاوز حد الطلبات. يرجى المحاولة لاحقاً.",
+    "error.api-error": "خطأ في الخدمة. يرجى المحاولة مرة أخرى.",
   },
   en: {
     "system.active": "System Active",
@@ -40,6 +43,9 @@ export const translations: Record<Language, Record<string, string>> = {
     "feature.quizzes": "Quizzes",
     "feature.ai-images": "AI Image Generation",
     "feature.doctor": "Doctor",
+    "error.message-failed": "Message failed to send",
+    "error.quota-exceeded": "Request limit exceeded. Please try again later.",
+    "error.api-error": "Service error. Please try again.",
   },
 };
 

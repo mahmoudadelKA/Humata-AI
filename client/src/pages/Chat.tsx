@@ -271,9 +271,19 @@ export default function Chat() {
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
     },
     onError: (error: any) => {
+      let errorTitle = t("error.message-failed", language);
+      let errorDescription = error.message || t("error.api-error", language);
+      
+      // Check if error message contains Arabic error messages from backend
+      if (error.message?.includes("تم تجاوز حد")) {
+        errorDescription = "تم تجاوز حد الطلبات المسموح. يرجى المحاولة لاحقاً.";
+      } else if (error.message?.includes("حدث خطأ")) {
+        errorDescription = error.message;
+      }
+      
       toast({
-        title: "Message failed",
-        description: error.message,
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
     },

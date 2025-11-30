@@ -357,8 +357,23 @@ export async function registerRoutes(
       });
     } catch (error: any) {
       console.error("[Routes] Chat error:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to process chat message" 
+      
+      // Handle specific API errors
+      let errorMessage = "حدث خطأ في معالجة الرسالة";
+      let statusCode = 500;
+      
+      // Check for quota limit errors (429)
+      if (error.status === 429 || error.message?.includes("429") || error.message?.includes("quota")) {
+        errorMessage = "تم تجاوز حد الطلبات المسموح. يرجى المحاولة لاحقاً.";
+        statusCode = 429;
+      } 
+      // Check for other Gemini API errors
+      else if (error.message?.includes("ApiError")) {
+        errorMessage = "خطأ في الخدمة. يرجى المحاولة مرة أخرى.";
+      }
+      
+      res.status(statusCode).json({ 
+        error: errorMessage 
       });
     }
   });
