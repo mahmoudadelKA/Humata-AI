@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation } from "wouter";
 import { Home } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
@@ -8,19 +7,23 @@ import { t } from "@/lib/translations";
 export function FloatingNavBar() {
   const { language } = useAppContext();
   const [location, navigate] = useLocation();
-  const [isExpanded, setIsExpanded] = useState(true);
 
   const handleNavigate = (route: string) => {
     console.log("[FloatingNavBar] Navigating to:", route);
     navigate(route);
   };
 
+  // Desktop: left sidebar vertical | Mobile: top center horizontal
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
   return (
     <div 
-      className="fixed flex flex-col gap-2 transition-all duration-300"
+      className="fixed flex gap-2 transition-all duration-300"
       style={{
-        top: "15%",
-        left: "20px",
+        top: isMobile ? "20px" : "15%",
+        left: isMobile ? "50%" : "20px",
+        transform: isMobile ? "translateX(-50%)" : "none",
+        flexDirection: isMobile ? "row" : "column",
         zIndex: 99999,
         pointerEvents: "auto"
       }}
