@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -128,6 +128,10 @@ export default function Chat() {
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
   const [showQuizzesMenu, setShowQuizzesMenu] = useState(false);
+  const [showQuizzesSettings, setShowQuizzesSettings] = useState(false);
+  const [quizNumQuestions, setQuizNumQuestions] = useState("10");
+  const [quizQuestionType, setQuizQuestionType] = useState("multiple-choice");
+  const [quizDifficulty, setQuizDifficulty] = useState("medium");
   const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -281,8 +285,12 @@ export default function Chat() {
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
 
+    const messageToSend = persona === "quizzes" 
+      ? `${userMessage.content}\n\n[Quiz Settings: ${quizNumQuestions} questions, Type: ${quizQuestionType}, Difficulty: ${quizDifficulty}]`
+      : userMessage.content;
+    
     sendMessageMutation.mutate({
-      message: userMessage.content,
+      message: messageToSend,
       base64Data: uploadedFileInfo?.base64Data,
       fileName: uploadedFileInfo?.fileName,
       mimeType: uploadedFileInfo?.mimeType,
@@ -662,6 +670,79 @@ export default function Chat() {
                       <Link2 className="w-3 h-3 ml-2" />
                       {language === "ar" ? "رابط URL" : "URL Link"}
                     </Button>
+                    <div className="border-t border-border my-1" />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setShowQuizzesMenu(false);
+                        setShowQuizzesSettings(!showQuizzesSettings);
+                      }}
+                      data-testid="button-quiz-settings"
+                      className="w-full justify-start text-xs"
+                    >
+                      <Settings className="w-3 h-3 ml-2" />
+                      {language === "ar" ? "الإعدادات" : "Settings"}
+                    </Button>
+                  </div>
+                )}
+                
+                {showQuizzesSettings && (
+                  <div className="absolute bottom-10 left-0 bg-card border border-border rounded-lg shadow-lg z-50 p-3 w-72">
+                    <h4 className="font-bold mb-3 text-sm">{language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}</h4>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "عدد الأسئلة" : "Number of Questions"}</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="50"
+                          value={quizNumQuestions}
+                          onChange={(e) => setQuizNumQuestions(e.target.value)}
+                          data-testid="input-quiz-count"
+                          className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "نوع الأسئلة" : "Question Type"}</label>
+                        <select
+                          value={quizQuestionType}
+                          onChange={(e) => setQuizQuestionType(e.target.value)}
+                          data-testid="select-question-type"
+                          className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                        >
+                          <option value="multiple-choice">{language === "ar" ? "اختيار من متعدد" : "Multiple Choice"}</option>
+                          <option value="true-false">{language === "ar" ? "صح/خطأ" : "True/False"}</option>
+                          <option value="mixed">{language === "ar" ? "مختلط" : "Mixed"}</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "مستوى الصعوبة" : "Difficulty Level"}</label>
+                        <select
+                          value={quizDifficulty}
+                          onChange={(e) => setQuizDifficulty(e.target.value)}
+                          data-testid="select-difficulty"
+                          className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                        >
+                          <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
+                          <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
+                          <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
+                        </select>
+                      </div>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowQuizzesSettings(false)}
+                        data-testid="button-close-settings"
+                        className="w-full mt-2"
+                      >
+                        {language === "ar" ? "تم" : "Done"}
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
