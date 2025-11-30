@@ -332,6 +332,23 @@ export async function registerRoutes(
       const effectiveUserId = userId || "anonymous";
       console.log(`[Routes] Saving conversation for userId: ${effectiveUserId}`);
       
+      // Ensure guest user exists in database before creating conversation
+      try {
+        const existingUser = await storage.getUserById(effectiveUserId);
+        if (!existingUser) {
+          console.log(`[Routes] Creating guest user: ${effectiveUserId}`);
+          await storage.createUser({
+            id: effectiveUserId,
+            name: "Guest",
+            email: `guest-${effectiveUserId}@anonymous.local`,
+            password: "",
+            createdAt: new Date(),
+          });
+        }
+      } catch (userError) {
+        console.warn(`[Routes] Warning creating user: ${userError}`);
+      }
+      
       if (!currentConversationId) {
         // Create new conversation on first AI response
         const firstUserMsg = message.substring(0, 50);
