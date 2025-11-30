@@ -166,7 +166,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
         ))}
       </div>
 
-      <div className="sticky bottom-0 border-t border-border p-4 bg-muted/20 backdrop-blur-sm">
+      <div className="flex-shrink-0 border-t border-border p-4 bg-muted/20">
         <Link href="/">
           <Button
             className="gap-2 bg-primary/20 hover:bg-primary/30 border border-primary/50 w-full"
