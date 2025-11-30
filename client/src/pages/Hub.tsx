@@ -175,6 +175,22 @@ export default function Hub() {
             </div>
           </div>
 
+          <div className="text-center mb-8 sm:mb-12 md:mb-16 px-3">
+            <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-4 ${language === "ar" ? "text-lg sm:text-xl md:text-2xl animated-dua" : "text-foreground"}`}>
+              {t("hub.select", language)}
+            </h2>
+          </div>
+
+          <div 
+            className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 px-3"
+            data-testid="feature-grid"
+            style={{ maxWidth: "1000px", margin: "0 auto" }}
+          >
+            {features.map((feature) => (
+              <FeatureCardComponent key={feature.id} feature={feature} />
+            ))}
+          </div>
+
         </main>
       </div>
     </div>
