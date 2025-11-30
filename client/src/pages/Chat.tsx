@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles } from "lucide-react";
+import { Upload, Send, ArrowLeft, Loader2, Search, Link2, Radio, BookOpen, Globe, FileText, Database, HelpCircle, GripVertical, Settings, Sparkles, Stethoscope } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/lib/appContext";
@@ -107,6 +107,35 @@ Return format MUST be exactly:
       systemPrompt: "",
       controlIcons: [],
     },
+    doctor: {
+      title: "الدكتور",
+      description: "استشارات طبية من مصادر علمية موثوقة",
+      systemPrompt: `أنت طبيب استشاري متخصص بخبرة عالية في الطب البشري. عندما يطرح طالب الطب أو الطبيب سؤالاً:
+
+1. ابحث في أشهر المصادر الطبية الموثوقة:
+   - PubMed (pubmed.ncbi.nlm.nih.gov) للأبحاث الطبية الموثوقة
+   - Google Scholar (scholar.google.com) للدراسات الطبية الأكاديمية
+   - UpToDate والمراجع الطبية المعتمدة عالمياً
+   - الكتب الطبية المعروفة والمجلات الطبية المرموقة
+
+2. في كل إجابة، يجب أن تتضمن:
+   - شرح طبي دقيق وشامل للحالة أو المرض
+   - التشخيص التفريقي عند الحاجة
+   - خيارات العلاج المبنية على الأدلة العلمية
+   - الفحوصات المخبرية والتصويرية المطلوبة
+   - الآثار الجانبية والاحتياطات الطبية
+   - استشهادات من الدراسات والمراجع الموثوقة
+
+3. اجعل الإجابة:
+   - دقيقة وآمنة طبياً
+   - تتبع أحدث البروتوكولات الطبية
+   - واضحة ومنظمة
+   - توضح عندما تكون هناك خلافات طبية
+   - مع ملاحظة أن هذا استشارة تعليمية فقط وليست بديلة عن استشارة الطبيب الفعلية
+
+4. الرد بصيغة عربية سليمة وطبية دقيقة.`,
+      controlIcons: ["upload-source", "url-input"],
+    },
   };
   
   if (persona && personas[persona]) {
@@ -138,7 +167,8 @@ export default function Chat() {
   const [quizNumQuestions, setQuizNumQuestions] = useState("10");
   const [quizQuestionType, setQuizQuestionType] = useState("multiple-choice");
   const [quizDifficulty, setQuizDifficulty] = useState("medium");
-  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" ? true : false);
+  const [showDoctorMenu, setShowDoctorMenu] = useState(false);
+  const [enableGrounding, setEnableGrounding] = useState(persona === "ask" || persona === "research" || persona === "doctor" ? true : false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSentRef = useRef(false);
@@ -613,7 +643,7 @@ export default function Chat() {
               </Button>
             )}
 
-            {personaInfo.controlIcons?.includes("upload-source") && (
+            {(personaInfo.controlIcons?.includes("upload-source") || persona === "doctor" || persona === "quizzes") && (
               <>
                 <Button
                   variant="ghost"
@@ -637,78 +667,80 @@ export default function Chat() {
                 >
                   <Link2 className="w-4 h-4" />
                 </Button>
-                <div className="relative">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowQuizzesSettings(!showQuizzesSettings)}
-                    disabled={sendMessageMutation.isPending}
-                    data-testid="button-quiz-settings"
-                    className="h-8 w-8"
-                    title={language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                  
-                  {showQuizzesSettings && (
-                    <div className="absolute bottom-10 right-0 bg-card border border-border rounded-lg shadow-lg z-50 p-3 w-72">
-                      <h4 className="font-bold mb-3 text-sm">{language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}</h4>
-                      
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "عدد الأسئلة" : "Number of Questions"}</label>
-                          <input
-                            type="number"
-                            min="1"
-                            max="50"
-                            value={quizNumQuestions}
-                            onChange={(e) => setQuizNumQuestions(e.target.value)}
-                            data-testid="input-quiz-count"
-                            className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
-                          />
-                        </div>
+                {persona === "quizzes" && (
+                  <div className="relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowQuizzesSettings(!showQuizzesSettings)}
+                      disabled={sendMessageMutation.isPending}
+                      data-testid="button-quiz-settings"
+                      className="h-8 w-8"
+                      title={language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}
+                    >
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                    
+                    {showQuizzesSettings && (
+                      <div className="absolute bottom-10 right-0 bg-card border border-border rounded-lg shadow-lg z-50 p-3 w-72">
+                        <h4 className="font-bold mb-3 text-sm">{language === "ar" ? "إعدادات الاختبار" : "Quiz Settings"}</h4>
                         
-                        <div>
-                          <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "نوع الأسئلة" : "Question Type"}</label>
-                          <select
-                            value={quizQuestionType}
-                            onChange={(e) => setQuizQuestionType(e.target.value)}
-                            data-testid="select-question-type"
-                            className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                        <div className="space-y-3">
+                          <div>
+                            <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "عدد الأسئلة" : "Number of Questions"}</label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="50"
+                              value={quizNumQuestions}
+                              onChange={(e) => setQuizNumQuestions(e.target.value)}
+                              data-testid="input-quiz-count"
+                              className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "نوع الأسئلة" : "Question Type"}</label>
+                            <select
+                              value={quizQuestionType}
+                              onChange={(e) => setQuizQuestionType(e.target.value)}
+                              data-testid="select-question-type"
+                              className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                            >
+                              <option value="multiple-choice">{language === "ar" ? "اختيار من متعدد" : "Multiple Choice"}</option>
+                              <option value="true-false">{language === "ar" ? "صح/خطأ" : "True/False"}</option>
+                              <option value="mixed">{language === "ar" ? "مختلط" : "Mixed"}</option>
+                            </select>
+                          </div>
+                          
+                          <div>
+                            <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "مستوى الصعوبة" : "Difficulty Level"}</label>
+                            <select
+                              value={quizDifficulty}
+                              onChange={(e) => setQuizDifficulty(e.target.value)}
+                              data-testid="select-difficulty"
+                              className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
+                            >
+                              <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
+                              <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
+                              <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
+                            </select>
+                          </div>
+                          
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowQuizzesSettings(false)}
+                            data-testid="button-close-settings"
+                            className="w-full mt-2"
                           >
-                            <option value="multiple-choice">{language === "ar" ? "اختيار من متعدد" : "Multiple Choice"}</option>
-                            <option value="true-false">{language === "ar" ? "صح/خطأ" : "True/False"}</option>
-                            <option value="mixed">{language === "ar" ? "مختلط" : "Mixed"}</option>
-                          </select>
+                            {language === "ar" ? "تم" : "Done"}
+                          </Button>
                         </div>
-                        
-                        <div>
-                          <label className="text-xs font-semibold mb-1 block">{language === "ar" ? "مستوى الصعوبة" : "Difficulty Level"}</label>
-                          <select
-                            value={quizDifficulty}
-                            onChange={(e) => setQuizDifficulty(e.target.value)}
-                            data-testid="select-difficulty"
-                            className="w-full px-2 py-1 rounded border border-border bg-background text-sm"
-                          >
-                            <option value="easy">{language === "ar" ? "سهل" : "Easy"}</option>
-                            <option value="medium">{language === "ar" ? "متوسط" : "Medium"}</option>
-                            <option value="hard">{language === "ar" ? "صعب" : "Hard"}</option>
-                          </select>
-                        </div>
-                        
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowQuizzesSettings(false)}
-                          data-testid="button-close-settings"
-                          className="w-full mt-2"
-                        >
-                          {language === "ar" ? "تم" : "Done"}
-                        </Button>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </>
             )}
 

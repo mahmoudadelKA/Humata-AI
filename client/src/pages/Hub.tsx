@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { MessageSquare, HelpCircle, Send, Search, BookOpen, Image, CheckCircle, Sparkles } from "lucide-react";
+import { MessageSquare, HelpCircle, Send, Search, BookOpen, Image, CheckCircle, Sparkles, Stethoscope } from "lucide-react";
 import { useState } from "react";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
@@ -72,6 +72,7 @@ export default function Hub() {
     { id: "images", titleKey: "feature.images", icon: Image, route: "/chat?persona=google-images", glowColor: "yellow" },
     { id: "quizzes", titleKey: "feature.quizzes", icon: CheckCircle, route: "/chat?persona=quizzes", glowColor: "cyan" },
     { id: "ai-images", titleKey: "feature.ai-images", icon: Sparkles, route: "/chat?persona=ai-images", glowColor: "magenta" },
+    { id: "doctor", titleKey: "feature.doctor", icon: Stethoscope, route: "/chat?persona=doctor", glowColor: "green" },
   ];
 
   const features = featureKeys.map(key => ({
