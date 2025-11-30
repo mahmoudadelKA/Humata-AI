@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Home } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
 import { useAppContext } from "@/lib/appContext";
 import { t } from "@/lib/translations";
 
@@ -9,18 +10,9 @@ export function FloatingNavBar() {
   const [location, navigate] = useLocation();
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const modules = [
-    // HOME ICON ONLY
-    { id: "home", titleKey: "nav.home", icon: Home, route: "/", color: "text-cyan-400" },
-  ];
-
   const handleNavigate = (route: string) => {
     console.log("[FloatingNavBar] Navigating to:", route);
     navigate(route);
-  };
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
   };
 
   return (
@@ -33,7 +25,7 @@ export function FloatingNavBar() {
         pointerEvents: "auto"
       }}
     >
-      {/* Home Button Only */}
+      {/* Home Button */}
       <button
         type="button"
         onClick={() => handleNavigate("/")}
@@ -49,6 +41,24 @@ export function FloatingNavBar() {
       >
         <Home className="w-6 h-6 text-cyan-400" />
       </button>
+
+      {/* WhatsApp Contact Link */}
+      <a
+        href="https://wa.me/qr/P6WIWVS7UAU5P1"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="p-3 rounded-full transition-all duration-200 backdrop-blur-lg hover:scale-110 active:scale-95 cursor-pointer inline-flex items-center justify-center"
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          border: "1px solid rgba(31, 193, 120, 0.3)",
+          boxShadow: "0 0 10px rgba(31, 193, 120, 0.2)",
+          pointerEvents: "auto"
+        }}
+        title="Contact via WhatsApp"
+        data-testid="button-floating-nav-whatsapp"
+      >
+        <SiWhatsapp className="w-6 h-6" style={{ color: "#1fC158" }} />
+      </a>
     </div>
   );
 }
