@@ -310,33 +310,25 @@ export default function Chat() {
 
   if (persona === "ai-images") {
     return (
-      <div className="min-h-screen bg-background cyber-grid flex flex-col" dir={language === "ar" ? "rtl" : "ltr"}>
-        <header className="border-b border-border/30 backdrop-blur-sm bg-background/50 sticky top-0 z-40">
-          <div className="px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h2 className={`text-lg font-bold text-foreground ${language === "ar" ? "text-xl" : ""}`}>
-                {personaInfo.title}
-              </h2>
-            </div>
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="icon"
-                data-testid="button-back"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
-          </div>
-        </header>
-        <main className="flex-1 overflow-hidden w-full">
-          <iframe
-            src="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
-            title="Kiira AI - AI Image Generation"
-            className="w-full h-full border-0"
-            data-testid="kiira-ai-iframe"
-          />
-        </main>
+      <div className="h-screen w-screen bg-background flex flex-col overflow-hidden" dir={language === "ar" ? "rtl" : "ltr"}>
+        <div className="absolute top-4 right-4 z-50">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              size="icon"
+              data-testid="button-back"
+              className="bg-card/80 backdrop-blur-sm hover:bg-card"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </Link>
+        </div>
+        <iframe
+          src="https://www.kiira.ai/chat-page/group/d4jlfsnngsas7395p9t0?agentAccountNo=seagen_nano_banana_2_agent&routeName=search&categoryId=Recommend"
+          title="Kiira AI - AI Image Generation"
+          className="w-full h-full border-0"
+          data-testid="kiira-ai-iframe"
+        />
       </div>
     );
   }
