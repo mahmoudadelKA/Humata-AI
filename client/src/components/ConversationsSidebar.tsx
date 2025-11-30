@@ -142,14 +142,14 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                 </button>
 
                 {openMenu === conv.id && (
-                  <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg z-50 w-40">
+                  <div className={`absolute top-1/2 transform -translate-y-1/2 ${language === "ar" ? "right-full mr-2" : "left-full ml-2"} bg-card border border-border rounded-lg shadow-lg z-50 w-44 py-1 animate-in fade-in-50 duration-200`}>
                     <button
                       onClick={() => {
                         setRenamingId(conv.id);
                         setNewTitle(conv.title);
                         setOpenMenu(null);
                       }}
-                      className={`w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center gap-2 text-foreground/80 hover:text-foreground border-b border-border/30 ${language === "ar" ? "flex-row-reverse" : ""}`}
+                      className={`w-full px-4 py-2.5 text-sm hover:bg-muted/60 flex items-center gap-3 text-foreground/80 hover:text-foreground transition-colors ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
                       data-testid="button-rename"
                     >
                       <Edit2 className="w-4 h-4 flex-shrink-0" />
@@ -157,7 +157,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                     </button>
                     <button
                       onClick={() => handleDownload(conv)}
-                      className={`w-full px-3 py-2 text-left text-sm hover:bg-muted flex items-center gap-2 text-foreground/80 hover:text-foreground border-b border-border/30 ${language === "ar" ? "flex-row-reverse" : ""}`}
+                      className={`w-full px-4 py-2.5 text-sm hover:bg-muted/60 flex items-center gap-3 text-foreground/80 hover:text-foreground transition-colors ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
                       data-testid="button-download"
                     >
                       <Download className="w-4 h-4 flex-shrink-0" />
@@ -165,7 +165,7 @@ export function ConversationsSidebar({ onSelectConversation, currentConversation
                     </button>
                     <button
                       onClick={() => deleteMutation.mutate(conv.id)}
-                      className={`w-full px-3 py-2 text-left text-sm hover:bg-red-500/10 flex items-center gap-2 text-red-500 hover:text-red-600 ${language === "ar" ? "flex-row-reverse" : ""}`}
+                      className={`w-full px-4 py-2.5 text-sm hover:bg-red-500/10 flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors ${language === "ar" ? "text-right flex-row-reverse" : "text-left"}`}
                       data-testid="button-delete"
                     >
                       <Trash2 className="w-4 h-4 flex-shrink-0" />
