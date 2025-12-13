@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import fs from "fs";
 import { storage } from "./storage";
-import { sendChatMessage, uploadFileToGemini } from "./gemini";
+import { sendChatMessage, uploadFileToGemini, getApiKeyStatus } from "./gemini";
 import { randomUUID } from "crypto";
 import { signupSchema, loginSchema, type SignupInput, type LoginInput, type User } from "@shared/schema";
 import crypto from "crypto";
@@ -88,12 +88,16 @@ export async function registerRoutes(
       }
 
       // Fetch the image
+      const proxyController = new AbortController();
+      const proxyTimeoutId = setTimeout(() => proxyController.abort(), 10000);
+      
       const response = await fetch(imageUrl, {
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         },
-        timeout: 10000,
+        signal: proxyController.signal,
       });
+      clearTimeout(proxyTimeoutId);
 
       if (!response.ok) {
         res.status(response.status).json({ error: "Failed to fetch image" });
@@ -284,7 +288,12 @@ export async function registerRoutes(
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 10000);
           
-          const imageRes = await fetch(wikiUrl, { signal: controller.signal });
+          const imageRes = await fetch(wikiUrl, { 
+            signal: controller.signal,
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            }
+          });
           clearTimeout(timeoutId);
           const imageData = await imageRes.json();
           
@@ -438,6 +447,7 @@ export async function registerRoutes(
     }
   });
 
+  // Single file upload (backward compatible)
   app.post("/api/upload", upload.single("file"), async (req: Request, res: Response) => {
     try {
       const file = req.file;
@@ -472,6 +482,48 @@ export async function registerRoutes(
       res.status(500).json({ 
         success: false, 
         error: error.message || "Failed to upload file" 
+      });
+    }
+  });
+
+  // Multiple file upload endpoint
+  app.post("/api/upload-multiple", upload.array("files", 10), async (req: Request, res: Response) => {
+    try {
+      const files = req.files as Express.Multer.File[];
+      
+      console.log(`[Routes] Multiple upload request - files count: ${files?.length || 0}`);
+      
+      if (!files || files.length === 0) {
+        console.error("[Routes] No files in upload request");
+        res.status(400).json({ success: false, error: "No files uploaded" });
+        return;
+      }
+
+      const uploadResults: Array<{ base64Data: string; fileName: string; mimeType: string }> = [];
+
+      for (const file of files) {
+        console.log(`[Routes] Processing file: ${file.originalname}, type: ${file.mimetype}, size: ${file.size}`);
+        
+        const uploadResult = await uploadFileToGemini(file.path, file.mimetype, file.originalname);
+        uploadResults.push(uploadResult);
+
+        fs.unlink(file.path, (err) => {
+          if (err) console.error("[Routes] Failed to delete temp file:", err);
+          else console.log(`[Routes] Temp file deleted: ${file.path}`);
+        });
+      }
+
+      console.log(`[Routes] Multiple upload successful - ${uploadResults.length} files processed`);
+
+      res.json({
+        success: true,
+        files: uploadResults,
+      });
+    } catch (error: any) {
+      console.error("[Routes] Multiple upload error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: error.message || "Failed to upload files" 
       });
     }
   });
@@ -579,6 +631,22 @@ export async function registerRoutes(
       status: "online", 
       timestamp: new Date().toISOString(),
       model: "gemini-2.5-flash",
+    });
+  });
+
+  // API Key Status Endpoint - shows how many keys are available
+  app.get("/api/keys/status", (req: Request, res: Response) => {
+    const status = getApiKeyStatus();
+    res.json({
+      success: true,
+      keys: {
+        total: status.total,
+        available: status.available,
+        failed: status.failed
+      },
+      message: status.total === 0 
+        ? "لم يتم إضافة أي مفاتيح API" 
+        : `${status.available} مفتاح متاح من ${status.total}`
     });
   });
 

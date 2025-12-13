@@ -28,6 +28,7 @@ interface UploadedFileInfo {
   base64Data: string;
   fileName: string;
   mimeType: string;
+  id: string; // Unique ID for each file
 }
 
 const getPersonaIcon = (persona: string | null) => {
@@ -301,7 +302,7 @@ export default function Chat() {
   const [initialMessage, setInitialMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<string>("");
-  const [uploadedFileInfo, setUploadedFileInfo] = useState<UploadedFileInfo | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFileInfo[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [showUrlModal, setShowUrlModal] = useState(false);
@@ -330,7 +331,7 @@ export default function Chat() {
     if (newPersona !== persona) {
       setMessages([]); // Clear previous messages
       setConversationId(""); // Reset conversation
-      setUploadedFileInfo(null); // Clear uploaded file
+      setUploadedFiles([]); // Clear uploaded files
       setInputValue(""); // Clear input
       setUrlInput(""); // Clear URL input
       autoSentRef.current = false; // Reset auto-send flag
@@ -402,10 +403,12 @@ export default function Chat() {
       return response.json() as Promise<UploadedFileInfo>;
     },
     onSuccess: (data) => {
-      setUploadedFileInfo(data);
+      // Add file with unique ID to the list (support multiple files)
+      const fileWithId = { ...data, id: `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` };
+      setUploadedFiles(prev => [...prev, fileWithId]);
       toast({
-        title: "File uploaded",
-        description: `${data.fileName} ready for analysis`,
+        title: "تم رفع الملف",
+        description: `${data.fileName} جاهز للتحليل`,
       });
     },
     onError: (error: any) => {
@@ -454,7 +457,8 @@ export default function Chat() {
     onSuccess: (data) => {
       setMessages((prev) => [...prev, data.message]);
       setConversationId(data.sessionId);
-      setUploadedFileInfo(null);
+      // Note: Files are NOT cleared automatically - user must explicitly remove them
+      // This allows discussing the same file multiple times
       // Refresh conversations list when a new message is sent
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
     },
@@ -502,18 +506,21 @@ export default function Chat() {
   }, [initialMessage, sendMessageMutation]);
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() && !uploadedFileInfo) {
+    if (!inputValue.trim() && uploadedFiles.length === 0) {
       return;
     }
+
+    // Build file info for user message display
+    const fileInfoForDisplay = uploadedFiles.length > 0 
+      ? { name: uploadedFiles.map(f => f.fileName).join(", "), type: uploadedFiles[0].mimeType }
+      : undefined;
 
     const userMessage = {
       id: Date.now().toString(),
       role: "user" as const,
-      content: inputValue || (uploadedFileInfo ? "Analyze this file" : ""),
+      content: inputValue || (uploadedFiles.length > 0 ? "حلل هذه الملفات" : ""),
       timestamp: new Date(),
-      fileInfo: uploadedFileInfo
-        ? { name: uploadedFileInfo.fileName, type: uploadedFileInfo.mimeType }
-        : undefined,
+      fileInfo: fileInfoForDisplay,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -523,12 +530,31 @@ export default function Chat() {
       ? `${userMessage.content}\n\n[Quiz Settings: ${quizNumQuestions} questions, Type: ${quizQuestionType}, Difficulty: ${quizDifficulty}]`
       : userMessage.content;
     
-    sendMessageMutation.mutate({
-      message: messageToSend,
-      base64Data: uploadedFileInfo?.base64Data,
-      fileName: uploadedFileInfo?.fileName,
-      mimeType: uploadedFileInfo?.mimeType,
-    });
+    // Send with multiple files support - files are NOT cleared after sending
+    // User must explicitly remove files or navigate away
+    if (uploadedFiles.length > 0) {
+      // Use first file for backward compatibility with single file
+      sendMessageMutation.mutate({
+        message: messageToSend,
+        base64Data: uploadedFiles[0].base64Data,
+        fileName: uploadedFiles[0].fileName,
+        mimeType: uploadedFiles[0].mimeType,
+      });
+    } else {
+      sendMessageMutation.mutate({
+        message: messageToSend,
+      });
+    }
+  };
+
+  // Remove a specific file by ID
+  const handleRemoveFile = (fileId: string) => {
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
+  };
+
+  // Clear all uploaded files
+  const handleClearAllFiles = () => {
+    setUploadedFiles([]);
   };
 
   const handleFileSelect = async (file: File) => {
@@ -591,7 +617,7 @@ export default function Chat() {
                 setConversationId("");
                 setMessages([]);
                 setInputValue("");
-                setUploadedFileInfo(null);
+                setUploadedFiles([]);
               }}
             />
           ) : null}
@@ -645,7 +671,7 @@ export default function Chat() {
                     setConversationId("");
                     setMessages([]);
                     setInputValue("");
-                    setUploadedFileInfo(null);
+                    setUploadedFiles([]);
                     setIsSidebarOpen(false);
                   }}
                 />
@@ -799,21 +825,40 @@ export default function Chat() {
 
       <footer className="sticky bottom-0">
         <div className="max-w-3xl w-full mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4">
-          {uploadedFileInfo && (
-            <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Upload className="w-4 h-4" />
-                <span>{uploadedFileInfo.fileName}</span>
+          {/* Multiple files display */}
+          {uploadedFiles.length > 0 && (
+            <div className="p-3 bg-accent/10 border border-accent/30 rounded-xl text-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-primary">
+                  {language === "ar" ? `${uploadedFiles.length} ملف مرفق` : `${uploadedFiles.length} file(s) attached`}
+                </span>
+                {uploadedFiles.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearAllFiles}
+                    data-testid="button-clear-all-files"
+                    className="h-6 px-2 text-destructive hover:text-destructive"
+                  >
+                    {language === "ar" ? "حذف الكل" : "Clear All"}
+                  </Button>
+                )}
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setUploadedFileInfo(null)}
-                data-testid="button-clear-file"
-                className="h-6 px-2"
-              >
-                ✕
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                {uploadedFiles.map((file) => (
+                  <div key={file.id} className="flex items-center gap-2 bg-background/50 rounded-lg px-2 py-1">
+                    <Upload className="w-3 h-3" />
+                    <span className="max-w-32 truncate">{file.fileName}</span>
+                    <button
+                      onClick={() => handleRemoveFile(file.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors"
+                      data-testid={`button-remove-file-${file.id}`}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -1044,8 +1089,7 @@ export default function Chat() {
             <Button
               onClick={handleSendMessage}
               disabled={
-                !inputValue.trim() &&
-                !uploadedFileInfo &&
+                (!inputValue.trim() && uploadedFiles.length === 0) ||
                 sendMessageMutation.isPending
               }
               data-testid="button-send"
